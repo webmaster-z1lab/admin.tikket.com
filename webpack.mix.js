@@ -1,0 +1,37 @@
+const mix = require('laravel-mix')
+
+/*
+ |--------------------------------------------------------------------------
+ | Mix Asset Management
+ |--------------------------------------------------------------------------
+ |
+ | Mix provides a clean, fluent API for defining some Webpack build steps
+ | for your Laravel application. By default, we are compiling the Sass
+ | file for the application as well as bundling up all the JS files.
+ |
+ */
+
+let vendors = [
+    'vue',
+    'vuex',
+    'vee-validate',
+    'axios',
+    'sweetalert2',
+    'lodash',
+    'collect.js',
+    'http-build-query',
+    'vue-currency-filter',
+    'vee-validate/dist/locale/pt_BR',
+]
+
+mix.js('resources/js/app.js', 'public/js')
+   .sass('resources/sass/app.scss', 'public/css')
+    .extract(vendors)
+
+if (mix.inProduction()) {
+    mix.sourceMaps().version()
+    mix.copyDirectory('resources/seo', 'public')
+    mix.disableNotifications()
+}
+
+//mix.browserSync('127.0.0.1:8000')
