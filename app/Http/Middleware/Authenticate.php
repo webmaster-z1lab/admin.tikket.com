@@ -15,7 +15,14 @@ class Authenticate extends Middleware
     protected function redirectTo($request)
     {
         if (! $request->expectsJson()) {
-            return route('login');
+            if (! $request->bearerToken())
+                return route('login');
+
+            $token = http_build_query([
+                'token' => $request->bearerToken()
+            ]);
+
+            return \OpenID::askForToken() . '&' . $token;
         }
     }
 }
