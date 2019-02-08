@@ -11,7 +11,7 @@
 |
 */
 
-Route::view('/', 'home.index')->name('home');
+Route::view('/', 'home.index')->name('home')->middleware('auth');
 
 Route::prefix('evento')->as('event.')->group(function ()
 {
