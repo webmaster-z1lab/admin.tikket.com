@@ -38,6 +38,7 @@ class Kernel extends HttpKernel
             \JacobBennett\Http2ServerPush\Middleware\AddHttp2ServerPush::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \Barryvdh\Cors\HandleCors::class,
         ],
 
         'api' => [
@@ -61,7 +62,6 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'cors'          => \App\Http\Middleware\Cors::class,
 //        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
     ];
 
