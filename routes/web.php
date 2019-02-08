@@ -12,3 +12,8 @@
 */
 
 Route::view('/', 'home.index')->name('home');
+
+Route::prefix('evento')->as('event.')->group(function ()
+{
+    Route::view('/novo-evento/{event?}', 'event.new')->name('new');
+});

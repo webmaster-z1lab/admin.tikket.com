@@ -5,29 +5,15 @@
         </a>
 
         <ul class="metismenu side-nav">
-            <li class="side-nav-title side-nav-item">Navigation</li>
+            <li class="side-nav-title side-nav-item">Navegação</li>
 
             <li class="side-nav-item">
-                <a href="javascript: void(0);" class="side-nav-link">
-                    <i class="dripicons-meter"></i>
-                    <span class="badge badge-success float-right">2</span>
-                    <span> Dashboards </span>
+                <a href="/" class="side-nav-link" aria-expanded="false">
+                    <i class="far fa-calendar-alt"></i>
+                    <span> Meus Eventos </span>
                 </a>
-                <ul class="side-nav-second-level" aria-expanded="false">
-                    <li>
-                        <a href="index.html">Ecommerce</a>
-                    </li>
-                    <li>
-                        <a href="dashboard-crm.html">CRM</a>
-                    </li>
-                </ul>
             </li>
-
         </ul>
-
         <div class="clearfix"></div>
-
     </div>
-    <!-- Sidebar -left -->
-
 </div>

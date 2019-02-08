@@ -25,8 +25,8 @@ let vendors = [
 ]
 
 mix.js('resources/js/app.js', 'public/js')
-   .sass('resources/sass/app.scss', 'public/css')
-    .extract(vendors)
+    .js('resources/js/event/new/main.js', 'public/js/event/new')
+    // .extract(vendors)
 
 if (mix.inProduction()) {
     mix.sourceMaps().version()

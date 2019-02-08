@@ -33,23 +33,6 @@
     <div class="content-page">
         <div class="content">
             @include('layouts.components.header')
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="page-title-box">
-                            <div class="page-title-right">
-                                <ol class="breadcrumb m-0">
-                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Hyper</a></li>
-                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Pages</a></li>
-                                    <li class="breadcrumb-item active">Starter</li>
-                                </ol>
-                            </div>
-
-                            <h4 class="page-title">Starter</h4>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             @yield('content')
         </div>
@@ -62,6 +45,10 @@
 
 <div class="rightbar-overlay"></div>
 
+@routes()
+
 <script src="{{ getenv('AWS_CDN_ENDPOINT') }}/template/hyper/1.4.0/js/app.min.js"></script>
+
+@stack('scripts')
 </body>
 </html>

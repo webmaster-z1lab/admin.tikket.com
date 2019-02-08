@@ -58,8 +58,8 @@ class ApiService
      *
      * @param string $resource
      * @param string $method
-     * @param array  $headers
-     * @param array  $body
+     * @param array $headers
+     * @param array $body
      */
     public function __construct(string $resource, string $method, array $headers = [], array $body = [])
     {
