@@ -16,7 +16,7 @@ class Authenticate extends Middleware
     {
         if (! $request->expectsJson()) {
             if (! $request->bearerToken())
-                return route('login');
+                return str_finish(env('MAIN_SITE'), '/login');
 
             $token = http_build_query([
                 'token' => $request->bearerToken()
