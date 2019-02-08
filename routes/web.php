@@ -11,20 +11,7 @@
 |
 */
 
-Route::get('login', function () {
-    $client = new \GuzzleHttp\Client();
-
-    $respone = $client->post(str_finish(env('AUTH_SERVER'), '/api/actions/login'), [
-        'json' => [
-            'email' => 'filipe-pinheiro@hotmail.com',
-            'password' => '12345678'
-        ]
-    ]);
-
-    $data = json_decode($respone->getBody());
-
-    return redirect(OpenID::askForToken() . '&token=' . $data->access_token);
-})->name('login');
+Route::get('login', '\Z1lab\OpenID\Http\Controllers\LoginController@index')->middleware('guest')->name('login');
 
 Route::view('/', 'home.index')->name('home')->middleware('auth');
 

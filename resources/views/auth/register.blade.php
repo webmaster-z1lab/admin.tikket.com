@@ -1,60 +1,83 @@
-@extends('layouts.app')
-
-@section('action', 'Free Sign Up')
-@section('message', 'Don\'t have an account? Create your account, it takes less than a minute')
+@extends('layouts.auth')
 
 @section('content')
-    <form method="POST" action="{{ route('register') }}">
-        {{ csrf_field() }}
+    <div id="vue-register">
+        <loading-component :is-loading="isLoading"></loading-component>
 
-        <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
-            <label for="name">Name</label>
+        <form class="mt-5" method="POST">
+            <div class="mb-7">
+                <h1 class="h3 text-primary font-weight-normal mb-0">Bem-vindo ao <span class="font-weight-bold">quantofica.com</span></h1>
+                <p>Preencha o formulário para iniciar.</p>
 
-            <input id="name" type="text" class="form-control" name="name" value="{{ old('name') }}" required autofocus placeholder="Type your full name">
+                <alert-vue v-show="alert.active" :type="alert.type" :msg="alert.msg"></alert-vue>
+            </div>
 
-            @if ($errors->has('name'))
-                <span class="help-block">
-                    <strong>{{ $errors->first('name') }}</strong>
-                </span>
-            @endif
-        </div>
+            <div class="form-group mb-4" :class="errors.has('name') ? 'u-has-error' : ''">
+                <label class="h6 small d-block text-uppercase" for="name">Nome</label>
 
-        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-            <label for="email">E-Mail Address</label>
+                <input type="text" class="form-control" name="name" placeholder="Nome" id="name"
+                       v-model="name" data-vv-as="'Nome'" v-validate="'required'" data-vv-validate-on="change">
 
-            <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required placeholder="email@example.com">
+                <div v-show="errors.has('name')" class="invalid-feedback" style="display: block">
+                    @{{ errors.first('name') }}
+                </div>
+            </div>
 
-            @if ($errors->has('email'))
-                <span class="help-block">
-                    <strong>{{ $errors->first('email') }}</strong>
-                </span>
-            @endif
-        </div>
+            <div class="form-group mb-4" :class="errors.has('email') ? 'u-has-error' : ''">
+                <label class="h6 small d-block text-uppercase" for="email">Endereço de email</label>
 
-        <div class="form-group">
-            <label for="password">Password</label>
+                <input type="email" class="form-control" name="email" placeholder="email@exemplo.com" id="email"
+                       v-model="email" data-vv-as="'Email'" v-validate="'required|email'" data-vv-validate-on="change">
 
-            <input id="password" type="password" class="form-control" name="password" required placeholder="******">
-        </div>
+                <div v-show="errors.has('email')" class="invalid-feedback" style="display: block">
+                    @{{ errors.first('email') }}
+                </div>
+            </div>
 
-        <div class="form-group">
-            <label for="password-confirm">Confirm Password</label>
+            <div class="form-group mb-4" :class="errors.has('password') ? 'u-has-error' : ''">
+                <label class="h6 small d-block text-uppercase" for="password">Senha</label>
 
-            <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required placeholder="******">
-        </div>
+                <input type="password" class="form-control" name="password" placeholder="********" id="password"
+                       v-model="password" data-vv-as="'Senha'" v-validate="'required|min:8'" data-vv-validate-on="change" ref="password">
 
-        <div class="form-group mb-0 text-center">
-            <button type="submit" class="btn btn-primary btn-block">
-                Register
-            </button>
-        </div>
-    </form>
-@endsection
+                <div v-show="errors.has('password')" class="invalid-feedback" style="display: block">
+                    @{{ errors.first('password') }}
+                </div>
+            </div>
 
-@section('complement')
-    <div class="row mt-3">
-        <div class="col-12 text-center">
-            <p class="text-muted">Already have account? <a href="{{ route('login') }}" class="text-dark ml-1"><b>Log In</b></a></p>
-        </div>
+            <div class="form-group mb-3" :class="errors.has('password_confirm') ? 'u-has-error' : ''">
+                <label class="h6 small d-block text-uppercase" for="password_confirmation">Confirmação de senha</label>
+
+                <input type="password" class="form-control" name="password_confirm" placeholder="********" data-vv-validate-on="change" id="password-form"
+                       v-model="password_confirm" data-vv-as="'Confirme a Senha'" v-validate="'required|confirmed:password'" @keyup.enter="registerSubmit">
+
+                <div v-show="errors.has('password_confirm')" class="invalid-feedback" style="display: block">
+                    @{{ errors.first('password_confirm') }}
+                </div>
+            </div>
+
+            <div class="form-group mb-5">
+                <div class="d-flex align-items-center text-muted">
+                    <small>
+                        Escolher Avançar significa que você concorda com os nossos <a href="{{ route('terms') }}" class="js-animation-link link-muted">termos de uso</a> e a nossa <a href="{{ route('privacy') }}" class="js-animation-link link-muted">política de privacidade e cookies</a>.
+                    </small>
+                </div>
+            </div>
+
+            <div class="row align-items-center mb-5">
+                <div class="col-5 col-sm-6">
+                    <span>Já possui uma conta?</span>
+                    <a href="{{ route('login') }}">Acesse</a>
+                </div>
+
+                <div class="col-7 col-sm-6 text-right">
+                    <button type="button" class="btn btn-primary u-btn-primary transition-3d-hover" @click="registerSubmit">Registrar</button>
+                </div>
+            </div>
+        </form>
     </div>
 @endsection
+
+@push('scripts')
+    <script src="{{ mix("js/auth/register.js") }}"></script>
+@endpush

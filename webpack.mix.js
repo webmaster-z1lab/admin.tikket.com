@@ -26,6 +26,9 @@ let vendors = [
 
 mix.js('resources/js/app.js', 'public/js')
     .js('resources/js/event/new/main.js', 'public/js/event/new')
+    .js('resources/js/auth/login.js', 'public/js/auth')
+    .js('resources/js/auth/register.js', 'public/js/auth')
+    .js('resources/js/auth/account-recovery.js', 'public/js/auth')
     // .extract(vendors)
 
 if (mix.inProduction()) {

@@ -1,44 +1,59 @@
-@extends('layouts.app')
-
-@section('action', 'Sign In')
-@section('message', 'Enter your email address and password to access admin panel.')
+@extends('layouts.auth')
 
 @section('content')
-    <form method="POST" action="{{ route('login') }}">
-        {{ csrf_field() }}
+    <div id="vue-login">
+        <loading-component :is-loading="isLoading"></loading-component>
 
-        <div class="form-group {{--{{ $errors->has('email') ? 'has-error' : '' }}--}}">
-            <label for="email" class="control-label">Email address</label>
-            <input id="email" type="text" class="form-control" name="email" value="{{ old('email') }}" required autofocus placeholder="example@email.com">
+        <form class="mt-5" method="POST">
+            <div class="mb-7">
+                <h2 class="h3 text-primary font-weight-normal mb-0">Bem-vindo <span class="font-weight-bold">de volta</span></h2>
+                <p>Acesse para gerenciar sua conta.</p>
 
-            {{--@if ($errors->has('email'))
-                <span class="help-block">
-                    <strong>{{ $errors->first('email') }}</strong>
-                </span>
-            @endif--}}
-        </div>
-
-        <div class="form-group {{--{{ $errors->has('password') ? 'has-error' : '' }}--}}">
-            <label for="password" class="control-label">Password</label>
-
-            <input id="password" type="password" class="form-control" name="password" required placeholder="******">
-
-           {{-- @if ($errors->has('password'))
-                <span class="help-block">
-                    <strong>{{ $errors->first('password') }}</strong>
-                </span>
-            @endif--}}
-        </div>
-
-        <div class="form-group mb-3">
-            <div class="custom-control custom-checkbox">
-                <input type="checkbox"  name="remember" class="custom-control-input" id="checkbox-signin" {{ old('remember') ? 'checked' : '' }}>
-                <label class="custom-control-label" for="checkbox-signin">Remember me</label>
+                <alert-vue v-show="alert.active" :type="alert.type" :msg="alert.msg"></alert-vue>
             </div>
-        </div>
 
-        <div class="form-group mb-0 text-center">
-            <button class="btn btn-primary btn-block" type="submit"> Log In </button>
-        </div>
-    </form>
+            <div class="form-group mb-4" :class="errors.has('email') ? 'u-has-error' : ''">
+                <label class="h6 small d-block text-uppercase" for="email">Endereço de email</label>
+
+                <input type="email" class="form-control" name="email" placeholder="email@exemplo.com" id="email"
+                       v-model="email" data-vv-as="'Email'" v-validate="'required|email'" data-vv-validate-on="change">
+
+                <div v-show="errors.has('email')" class="invalid-feedback" style="display: block">
+                    @{{ errors.first('email') }}
+                </div>
+            </div>
+
+            <div class="form-group mb-4" :class="errors.has('password') ? 'u-has-error' : ''">
+                <div class="d-flex justify-content-between align-items-center">
+                    <label class="h6 small d-block text-uppercase" for="password">Senha</label>
+
+                    <div class="mb-2">
+                        <a class="small u-link-muted" href="{{ route('account-recovery') }}">Esqueceu sua senha?</a>
+                    </div>
+                </div>
+
+                <input type="password" class="form-control" name="password" placeholder="********" id="password"
+                       v-model="password" data-vv-as="'Senha'" v-validate="'required'" data-vv-validate-on="change" @keyup.enter="loginSubmit">
+
+                <div v-show="errors.has('password')" class="invalid-feedback" style="display: block">
+                    @{{ errors.first('password') }}
+                </div>
+            </div>
+
+            <div class="row align-items-center mb-5">
+                <div class="col-8">
+                    <span>É novo por aqui?</span>
+                    <a href="{{ route('register') }}">Registre-se</a>
+                </div>
+
+                <div class="col-4 text-right">
+                    <button type="button" class="btn btn-primary transition-3d-hover" @click="loginSubmit">Acessar</button>
+                </div>
+            </div>
+        </form>
+    </div>
 @endsection
+
+@push('scripts')
+    <script src="{{ mix("js/auth/login.js") }}"></script>
+@endpush
