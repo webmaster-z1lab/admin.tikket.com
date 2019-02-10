@@ -1,18 +1,18 @@
 <template>
     <div class="container-fluid">
-        <div class="row">
+        <loading-component :is-loading="isLoading"></loading-component>
+
+        <div class="row" v-if="!pageError">
             <div class="col-12">
                 <div class="page-title-box">
                     <div class="page-title-right">
-                        <!--<a href="{{route('event.new')}}" class="btn btn-primary">Criar Evento</a>-->
+                        <a href="/" class="btn btn-warning btn-sm">Voltar a Home</a>
+                        <a href="/" class="btn btn-danger btn-sm">Apagar Rascunho</a>
                     </div>
 
                     <h4 class="page-title">Novo Evento</h4>
                 </div>
             </div>
-        </div>
-
-        <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
@@ -42,15 +42,16 @@
                 </div>
             </div>
         </div>
+
+        <router-view v-if="pageError && !isLoading"></router-view>
     </div>
 </template>
 
 <script>
     import LoadingComponent from '../../components/loadingComponent'
     import LocalStorage from "../../vendor/storage"
-    import swal from 'sweetalert2'
 
-    import {mapActions, mapState} from 'vuex'
+    import {mapActions} from 'vuex'
     import {toSeek} from "../../vendor/common";
 
     export default {
@@ -63,6 +64,7 @@
         },
         data: () => ({
             isLoading: true,
+            pageError: false,
             key_active: null,
             menu_form: {
                 'Informações Base': {
@@ -83,7 +85,29 @@
                 }
             }
         }),
+        created() {
+            this.fetchData()
+        },
         methods: {
+            ...mapActions(['changeEvent']),
+            fetchData() {
+                if (this.$route.name !== 'page_not_found') {
+                    let event_id = new LocalStorage('event__').getItem('id')
+
+                    if (event_id) {
+                        toSeek(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${event_id}`).then(
+                            async response => {
+                                await this.changeEvent(response.data)
+                            }
+                        )
+                    }
+
+                    this.isLoading = false
+                } else {
+                    this.pageError = true
+                    this.isLoading = false
+                }
+            },
             classActive(name, key) {
                 let active = collect(this.menu_form[name].routes).filter((value, key) => value === this.$route.name).all()
 
@@ -95,6 +119,6 @@
 
                 return key < this.key_active ? 'confirm' : ''
             }
-        },
+        }
     }
 </script>

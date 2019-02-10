@@ -7,6 +7,9 @@ import VueMain from './main.vue'
 import store from './store/store'
 import routes from './router'
 
+/* Local Storage */
+import LocalStorage from "../../vendor/storage"
+
 /* Maps */
 import * as VueGoogleMaps from "vue2-google-maps";
 
@@ -28,6 +31,20 @@ Vue.use(VueRouter)
 const router = new VueRouter({
     routes
 });
+
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(record => record.meta.requiresStartEvent)) {
+        let event_id = new LocalStorage('event__').getItem('id')
+
+        if (event_id){
+            next()
+        } else {
+            next({name: '422'})
+        }
+    } else {
+        next()
+    }
+})
 
 /* Money */
 Vue.use(VueCurrencyFilter,

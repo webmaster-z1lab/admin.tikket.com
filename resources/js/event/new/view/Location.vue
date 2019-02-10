@@ -160,6 +160,7 @@
             place_name: '',
             lat: '',
             lng: '',
+            maps_url: '',
             newLocation: true,
             //map
             center: {lat: -20.7287352, lng: -42.8650568},
@@ -174,7 +175,7 @@
             })
         },
         methods: {
-            ...mapActions(['changeCart']),
+            ...mapActions(['changeEvent']),
             setPlace(place) {
                 if (place) {
                     const marker = {
@@ -191,6 +192,7 @@
                     this.place_name = place.name
                     this.lat = marker.lat
                     this.lng = marker.lng
+                    this.maps_url = place.url
                     this.street = this.getGoogleApi(place.address_components, 'route').long_name
                     this.cep = this.getGoogleApi(place.address_components, 'postal_code').long_name
                     this.number = this.getGoogleApi(place.address_components, 'street_number').long_name
@@ -226,15 +228,24 @@
                             this.isLoading = true
 
                             let data = {
-                                callback: "payment",
-                                tickets: this.cart.attributes.tickets,
+                                name:        this.place_name,
+                                street:      this.street,
+                                number:      this.number,
+                                district:    this.district,
+                                complement:  this.complement,
+                                city:        this.city,
+                                state:       this.state,
+                                postal_code: this.cep.replace('-', ''),
+                                formatted:   this.formatted,
+                                maps_url:    this.maps_url,
+                                coordinate:  {lat: this.lat, lng: this.lng},
                                 _method: 'PATCH'
                             }
 
-                            await sendAPIPOST(`${process.env.MIX_API_VERSION_ENDPOINT}/carts/${this.cart.id}/tickets`, data).then(
+                            await sendAPIPOST(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}/address`, data).then(
                                 async response => {
-                                    await this.changeCart(response.data.data)
-                                    this.$router.push({name: 'payment'})
+                                    await this.changeEvent(response.data.data)
+                                    this.$router.push({name: 'tickets'})
                                 }
                             ).catch(
                                 (error) => {
