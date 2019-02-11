@@ -2,126 +2,151 @@
     <div class="col-12">
         <div class="row">
             <div class="col-md-6">
-                <div v-if="!newLocation">
+                <div v-if="!newLocation && !change_address">
                     <div class="page-title-right">
-                        <a href="" class="btn btn-primary">Novo Endereço</a>
+                        <button type="button" class="btn btn-outline-primary" @click="change_address = true">Trocar Endereço</button>
                     </div>
 
-                    <div class="card cta-box bg-success text-white mt-3">
+                    <div class="card cta-box bg-info text-white mt-3">
                         <div class="card-body">
                             <div class="media-body">
-                                <h4 class="mt-1 mb-1">Michael Franklin</h4>
-                                <p class="font-13"> Authorised Brand Seller</p>
+                                <h4 class="mt-1 mb-1">Endereço Cadastrado</h4>
+                                <p class="font-13"> Local: {{event.attributes.address.name}}</p>
 
                                 <ul class="mb-0 list-inline">
                                     <li class="list-inline-item mr-3">
-                                        <h5 class="mb-1">$ 25,184</h5>
-                                        <p class="mb-0 font-13">Total Revenue</p>
-                                    </li>
-                                    <li class="list-inline-item">
-                                        <h5 class="mb-1">5482</h5>
-                                        <p class="mb-0 font-13">Number of Orders</p>
+                                        <h5 class="mb-1">Endereço: {{event.attributes.address.formatted}}</h5>
                                     </li>
                                 </ul>
                             </div>
                         </div>
                     </div>
+
+                    <ul class="list-inline mb-2 mt-3 wizard">
+                        <li class="next list-inline-item float-right">
+                            <router-link :to="{name: 'tickets'}" class="btn btn-primary" >Continuar</router-link>
+                        </li>
+                    </ul>
                 </div>
 
                 <div v-else>
-                    <div class="form-group">
-                        <label class="col-form-label"> Endereço ou Nome do Local do Evento <span class="text-danger">*</span></label>
-                        <gmap-autocomplete @place_changed="setPlace" class="form-control"></gmap-autocomplete>
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label class="col-form-label"> Evento Online?</label>
+                            <div class="custom-control custom-checkbox form-custom" style="padding-left: 0">
+                                <input type="checkbox" id="switch1" data-switch="bool" name="private"
+                                       v-model="event_online">
+                                <label for="switch1" data-on-label="Sim" data-off-label="Não"></label>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <button type="button" class="btn btn-warning" @click="change_address = false" style="margin-left: 80%;">Cancelar</button>
+                        </div>
                     </div>
 
-                    <div class="row" v-if="place">
-                        <div class="form-group col-md-8">
-                            <label class="col-form-label">
-                                Nome do Local <span class="text-danger">*</span>
-                            </label>
-                            <input class="form-control" type="text" name="place_name" placeholder="Nome do Bairro"
-                                   :class="errors.has('place_name') ? 'is-invalid' : ''" v-model="place_name" data-vv-as="'Nome do Local'" v-validate="'required'">
-                            <div v-show="errors.has('place_name')" class="invalid-feedback">
-                                {{ errors.first('place_name') }}
+
+                    <div v-if="!event_online">
+                        <div class="form-group">
+                            <label class="col-form-label"> Endereço ou Nome do Local do Evento <span class="text-danger">*</span></label>
+                            <gmap-autocomplete @place_changed="setPlace" class="form-control"></gmap-autocomplete>
+                        </div>
+
+                        <div class="row" v-if="place">
+                            <div class="form-group col-md-8">
+                                <label class="col-form-label">
+                                    Nome do Local <span class="text-danger">*</span>
+                                </label>
+                                <input class="form-control" type="text" name="place_name" placeholder="Nome do Bairro"
+                                       :class="errors.has('place_name') ? 'is-invalid' : ''" v-model="place_name" data-vv-as="'Nome do Local'" v-validate="'required'">
+                                <div v-show="errors.has('place_name')" class="invalid-feedback">
+                                    {{ errors.first('place_name') }}
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="form-group col-md-4">
-                            <label class="col-form-label">
-                                CEP <span class="text-danger">*</span>
-                            </label>
-                            <input type="text" class="form-control disabled" readonly disabled name="cep" :value="cep">
-                        </div>
-
-                        <div class="col-md-12">
-                            <label class="col-form-label">
-                                Logradouro <span class="text-danger">*</span>
-                            </label>
-                            <input class="form-control" type="text" name="street" placeholder="Nome da rua"
-                                   :class="errors.has('street') ? 'is-invalid' : ''" v-model="street" data-vv-as="'Logradouro'" v-validate="'required'">
-                            <div v-show="errors.has('street')" class="invalid-feedback">
-                                {{ errors.first('street') }}
+                            <div class="form-group col-md-4">
+                                <label class="col-form-label">
+                                    CEP <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control disabled" readonly disabled name="cep" :value="cep">
                             </div>
-                        </div>
 
-                        <div class="form-group col-md-5">
-                            <label class="col-form-label">
-                                Bairro <span class="text-danger">*</span>
-                            </label>
-                            <input class="form-control" type="text" name="district" placeholder="Nome do Bairro"
-                                   :class="errors.has('district') ? 'is-invalid' : ''" v-model="district" data-vv-as="'Bairro'" v-validate="'required'">
-                            <div v-show="errors.has('district')" class="invalid-feedback">
-                                {{ errors.first('district') }}
+                            <div class="col-md-12">
+                                <label class="col-form-label">
+                                    Logradouro <span class="text-danger">*</span>
+                                </label>
+                                <input class="form-control" type="text" name="street" placeholder="Nome da rua"
+                                       :class="errors.has('street') ? 'is-invalid' : ''" v-model="street" data-vv-as="'Logradouro'" v-validate="'required'">
+                                <div v-show="errors.has('street')" class="invalid-feedback">
+                                    {{ errors.first('street') }}
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="form-group col-md-4">
-                            <label class="col-form-label">
-                                Complemento
-                            </label>
-                            <input class="form-control" type="text" name="complement" placeholder="Ex: Casa, Loja 01..." v-model="complement">
-                            <div v-show="errors.has('complement')" class="invalid-feedback">
-                                {{ errors.first('complement') }}
+                            <div class="form-group col-md-5">
+                                <label class="col-form-label">
+                                    Bairro <span class="text-danger">*</span>
+                                </label>
+                                <input class="form-control" type="text" name="district" placeholder="Nome do Bairro"
+                                       :class="errors.has('district') ? 'is-invalid' : ''" v-model="district" data-vv-as="'Bairro'" v-validate="'required'">
+                                <div v-show="errors.has('district')" class="invalid-feedback">
+                                    {{ errors.first('district') }}
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="form-group col-md-3">
-                            <label class="col-form-label">
-                                Número <span class="text-danger">*</span>
-                            </label>
-                            <input class="form-control" type="number" name="number" placeholder="Ex: 55"
-                                   :class="errors.has('number') ? 'is-invalid' : ''" v-model="number" data-vv-as="'Número'" v-validate="'required'">
-                            <div v-show="errors.has('number')" class="invalid-feedback" style="display: block">
-                                {{ errors.first('number') }}
+                            <div class="form-group col-md-4">
+                                <label class="col-form-label">
+                                    Complemento
+                                </label>
+                                <input class="form-control" type="text" name="complement" placeholder="Ex: Casa, Loja 01..." v-model="complement">
+                                <div v-show="errors.has('complement')" class="invalid-feedback">
+                                    {{ errors.first('complement') }}
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="form-group col-md-6">
-                            <label class="col-form-label">
-                                Estado <span class="text-danger">*</span>
-                            </label>
-                            <input type="text" class="form-control disabled" readonly disabled name="state" :value="state">
-                        </div>
+                            <div class="form-group col-md-3">
+                                <label class="col-form-label">
+                                    Número <span class="text-danger">*</span>
+                                </label>
+                                <input class="form-control" type="number" name="number" placeholder="Ex: 55"
+                                       :class="errors.has('number') ? 'is-invalid' : ''" v-model="number" data-vv-as="'Número'" v-validate="'required'">
+                                <div v-show="errors.has('number')" class="invalid-feedback" style="display: block">
+                                    {{ errors.first('number') }}
+                                </div>
+                            </div>
 
-                        <div class="form-group col-md-6">
-                            <label class="col-form-label">
-                                Cidade <span class="text-danger">*</span>
-                            </label>
-                            <input type="text" class="form-control disabled" readonly disabled name="city" :value="city">
-                        </div>
+                            <div class="form-group col-md-6">
+                                <label class="col-form-label">
+                                    Estado <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control disabled" readonly disabled name="state" :value="state">
+                            </div>
 
-                        <div class="col-12">
-                            <ul class="list-inline mb-2 mt-3 wizard">
-                                <li class="next list-inline-item float-right">
-                                    <button type="button" class="btn btn-primary" @click="submit">Salvar e Continuar</button>
-                                </li>
-                            </ul>
+                            <div class="form-group col-md-6">
+                                <label class="col-form-label">
+                                    Cidade <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control disabled" readonly disabled name="city" :value="city">
+                            </div>
+
+                            <div class="col-12">
+                                <ul class="list-inline mb-2 mt-3 wizard">
+                                    <li class="next list-inline-item float-right">
+                                        <button type="button" class="btn btn-primary" @click="submit">Salvar e Continuar</button>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
+
+                    <ul class="list-inline mb-2 mt-3 wizard" v-else>
+                        <li class="next list-inline-item float-right">
+                            <router-link :to="{name: 'tickets'}" class="btn btn-primary">Continuar</router-link>
+                        </li>
+                    </ul>
                 </div>
             </div>
             <div class="col-md-6 right">
-                <gmap-map :center="center" :zoom="12" style="width:80%;  height: 300px; margin-left:20%;">
+                <gmap-map :center="center" :zoom="zoom" style="width:80%;  height: 300px; margin-left:20%;">
                     <gmap-marker :position="marker.position" @click="center=marker.position"></gmap-marker>
                 </gmap-map>
             </div>
@@ -161,18 +186,32 @@
             lat: '',
             lng: '',
             maps_url: '',
-            newLocation: true,
             //map
             center: {lat: -20.7287352, lng: -42.8650568},
+            zoom: 12,
             marker: {},
             place: null,
             //loading
-            isLoading: false
+            isLoading: false,
+            //configs
+            change_address: false,
+            event_online: false
         }),
         computed: {
             ...mapState({
                 event: state => state.event
-            })
+            }),
+            newLocation(){
+                const isAddress = _.has(this.event, 'attributes.address')
+
+                if (isAddress) {
+                    this.center.lat = this.event.attributes.address.coordinate.location.lat
+                    this.center.lng = this.event.attributes.address.coordinate.location.lng
+                    this.zoom = 18
+                }
+
+                return !isAddress
+            }
         },
         methods: {
             ...mapActions(['changeEvent']),

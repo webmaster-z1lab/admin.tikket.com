@@ -16,7 +16,7 @@ import * as VueGoogleMaps from "vue2-google-maps";
 Vue.use(VueGoogleMaps, {
     load: {
         key: "AIzaSyAZVMJvQZclH-viCjrp6xm4bzUnyQv8FOo",
-        libraries: "places" // necessary for places input
+        libraries: "places"
     }
 });
 
@@ -39,7 +39,7 @@ router.beforeEach((to, from, next) => {
         if (event_id){
             next()
         } else {
-            next({name: '422'})
+            next({name: 'error', params: {code: '422'}})
         }
     } else {
         next()
