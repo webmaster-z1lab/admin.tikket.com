@@ -180,6 +180,7 @@
             number: '',
             district: '',
             complement: '',
+            formatted: '',
             state: '',
             city: '',
             place_name: '',
@@ -202,11 +203,19 @@
                 event: state => state.event
             }),
             newLocation(){
-                const isAddress = _.has(this.event, 'attributes.address')
+                const isAddress = _.has(this.event, 'attributes.address.name')
 
                 if (isAddress) {
                     this.center.lat = this.event.attributes.address.coordinate.location.lat
                     this.center.lng = this.event.attributes.address.coordinate.location.lng
+
+                    this.marker = {
+                        position: {
+                            lat: this.event.attributes.address.coordinate.location.lat,
+                            lng: this.event.attributes.address.coordinate.location.lng
+                        }
+                    }
+
                     this.zoom = 18
                 }
 
@@ -239,6 +248,7 @@
                     this.district = this.getGoogleApi(place.address_components, 'sublocality_level_1').long_name
                     this.state = this.getGoogleApi(place.address_components, 'administrative_area_level_1').short_name
                     this.city = this.getGoogleApi(place.address_components, 'administrative_area_level_2').long_name
+                    this.formatted = place.formatted_address
                 }
             },
             geolocate: function () {

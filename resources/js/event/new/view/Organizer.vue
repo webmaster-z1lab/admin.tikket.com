@@ -65,6 +65,9 @@
                 if (value !== null) {
                     this.name = value.attributes.name
                     this.description = value.attributes.description
+                } else {
+                    this.name = ''
+                    this.description = ''
                 }
             },
             event(value) {

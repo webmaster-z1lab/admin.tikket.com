@@ -26,11 +26,6 @@
                             </ul>
 
                             <div class="tab-content b-0 mb-0">
-
-                                <div id="bar" class="progress mb-3" style="height: 7px;">
-                                    <div class="bar progress-bar progress-bar-striped progress-bar-animated bg-success" :style="`width: ${progress_bar}%`"></div>
-                                </div>
-
                                 <div class="row justify-content-center">
                                     <slot />
                                 </div>
@@ -55,27 +50,22 @@
         name: 'LayoutDefault',
         data: () => ({
             key_active: null,
-            progress_bar: 25,
             menu_form: {
                 'Informações Base': {
                     icon: "fas fa-file-contract mr-1",
-                    routes: ['information'],
-                    progress: 25
+                    routes: ['information']
                 },
                 'Organizador': {
                     icon: "fas fa-user-cog mr-1",
-                    routes: ['organizer'],
-                    progress: 50
+                    routes: ['organizer']
                 },
                 'Localização': {
                     icon: "fas fa-map-marker-alt mr-1",
-                    routes: ['location'],
-                    progress: 75
+                    routes: ['location']
                 },
                 'Ingressos': {
                     icon: "fas fa-ticket-alt mr-1",
-                    routes: ['tickets', 'tickets.ticket'],
-                    progress: 100
+                    routes: ['tickets', 'tickets.ticket']
                 }
             }
         }),
@@ -85,8 +75,6 @@
 
                 if (!_.isEmpty(active)) {
                     this.key_active = key
-                    this.progress_bar = this.menu_form[name].progress
-
                     return 'active'
                 }
 

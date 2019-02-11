@@ -12,9 +12,9 @@ export default {
         id: null,
         name: '',
         summary: '',
-        private: false,
-        start_date: '',
-        end_date: '',
+        starts_at: false,
+        quant_min: 1,
+        quant_max: 5,
         category: '',
         secondary_category: '',
         description: ''

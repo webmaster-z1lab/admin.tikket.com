@@ -1,13 +1,14 @@
 <template>
     <transition name="component-fade" mode="out-in">
         <div class="col-8">
-            <form class="needs-validation">
-                <loading-component :is-loading="isLoading"></loading-component>
+            <loading-component :is-loading="isLoading"></loading-component>
 
-                <div class="row">
+            <form class="needs-validation mt-2">
+                <h4 class="header-title">Cadastro de Ingresso</h4>
+                <div class="row mt-3">
                     <div class="form-group col-12">
                         <label class="col-form-label"> Nome do Ingresso <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="name" v-model="event.name"
+                        <input type="text" class="form-control" name="name" v-model="name"
                                :class="errors.has('name') ? 'is-invalid' : ''" v-validate="'required|max:100'"
                                data-vv-as="Nome do Evento"/>
                         <div v-show="errors.has('name')" class="invalid-feedback">
@@ -16,90 +17,81 @@
                     </div>
 
                     <div class="form-group col-12">
-                        <label class="col-form-label"> Breve Descrição do Evento <span
-                                class="text-danger">*</span></label>
-                        <textarea class="form-control" name="summary" v-model="event.summary"
-                                  :class="errors.has('summary') ? 'is-invalid' : ''" v-validate="'required|max:250'"
-                                  data-vv-as="Breve Descrição do Evento"></textarea>
+                        <label class="col-form-label"> Breve Descrição do Ingresso</label>
+                        <textarea class="form-control" name="summary" v-model="summary" :class="errors.has('summary') ? 'is-invalid' : ''" v-validate="'max:250'" data-vv-as="Breve Descrição do Evento"></textarea>
                         <div v-show="errors.has('summary')" class="invalid-feedback">
                             {{ errors.first('summary') }}
                         </div>
                     </div>
 
-                    <div class="form-group col-12">
-                        <label class="col-form-label"> Evento Privado?</label>
-                        <div class="custom-control custom-checkbox form-custom" style="padding-left: 0">
-                            <input type="checkbox" id="switch1" data-switch="bool" name="private"
-                                   v-model="event.private">
-                            <label for="switch1" data-on-label="Sim" data-off-label="Não"></label>
-                        </div>
-                    </div>
-
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                         <label class="col-form-label"> Data de Início <span class="text-danger">*</span></label>
-                        <the-mask class="form-control" type="text" name="start_date" placeholder="##/##/#### ##:##"
+                        <the-mask class="form-control" type="text" name="start_date" placeholder="##/##/####"
                                   :class="errors.has('start_date') ? 'is-invalid' : ''"
-                                  v-validate="'required|date_format:DD/MM/YYYY HH:mm'"
-                                  data-vv-as="Data de Início" :masked="true" :mask="'##/##/#### ##:##'"
-                                  v-model="event.start_date">
+                                  v-validate="'required|date_format:DD/MM/YYYY|date_before:${event.attributes.starts_at}'"
+                                  data-vv-as="Data de Início" :masked="true" :mask="'##/##/####'"
+                                  v-model="starts_at">
                         </the-mask>
                         <div v-show="errors.has('start_date')" class="invalid-feedback">
                             {{ errors.first('start_date') }}
                         </div>
                     </div>
 
-                    <div class="form-group col-md-6">
-                        <label class="col-form-label"> Data de Término <span class="text-danger">*</span></label>
-                        <the-mask class="form-control" type="text" name="end_date" placeholder="##/##/#### ##:##"
-                                  :class="errors.has('end_date') ? 'is-invalid' : ''"
-                                  v-validate="'required|date_format:DD/MM/YYYY H:m'"
-                                  data-vv-as="Data de Início" :masked="true" :mask="'##/##/#### ##:##'"
-                                  v-model="event.end_date">
-                        </the-mask>
-                        <div v-show="errors.has('end_date')" class="invalid-feedback">
-                            {{ errors.first('end_date') }}
+                    <div class="form-group col-4">
+                        <label class="col-form-label"> Quantidade Mímina <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" name="quant_min" v-model="quant_min"
+                               :class="errors.has('quant_min') ? 'is-invalid' : ''" v-validate="'required'" data-vv-as="Quantidade Mímina"/>
+                        <div v-show="errors.has('quant_min')" class="invalid-feedback">
+                            {{ errors.first('quant_min') }}
                         </div>
                     </div>
 
-                    <div class="form-group col-md-6">
-                        <label class="col-form-label"> Categoria Principal <span class="text-danger">*</span></label>
-                        <select class="form-control" name="category" :class="errors.has('category') ? 'is-invalid' : ''"
-                                v-validate="'required'" data-vv-as="Categoria principal" v-model="event.category">
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
-                        </select>
-                        <div v-show="errors.has('category')" class="invalid-feedback">
-                            {{ errors.first('category') }}
+                    <div class="form-group col-4">
+                        <label class="col-form-label"> Quantidade Máxima <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" name="quant_max" v-model="quant_max"
+                               :class="errors.has('quant_max') ? 'is-invalid' : ''" v-validate="'required'" data-vv-as="Quantidade Máxima"/>
+                        <div v-show="errors.has('quant_max')" class="invalid-feedback">
+                            {{ errors.first('quant_max') }}
                         </div>
                     </div>
 
-                    <div class="form-group col-md-6">
-                        <label class="col-form-label"> Categoria Secundária </label>
-                        <select class="form-control" name="secondary_category" v-model="event.secondary_category">
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
-                        </select>
-                    </div>
+                    <div class="col-12 mt-3">
+                        <h5 class="header-title mb-3">Dados de Lotes</h5>
 
-                    <div class="form-group col-12">
-                        <label class="col-form-label"> Descrição do Evento </label>
-                        <div>
-                            <vue-editor name="description" :class="errors.has('description') ? 'is-invalid' : ''"
-                                        data-vv-as="Descrição do Evento" v-validate="'required'"
-                                        v-model="event.description"></vue-editor>
+                        <div class="form-group row mb-3">
+                            <label class="col-md-2 col-form-label">Lote Único</label>
+                            <div class="form-group col-md-3">
+                                <label class="col-form-label"> Número de Ingressos <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="name" v-model="name"
+                                       :class="errors.has('name') ? 'is-invalid' : ''" v-validate="'required|max:100'"
+                                       data-vv-as="Nome do Evento"/>
+                                <div v-show="errors.has('name')" class="invalid-feedback">
+                                    {{ errors.first('name') }}
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="col-form-label"> Data de termino <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="name" v-model="name"
+                                       :class="errors.has('name') ? 'is-invalid' : ''" v-validate="'required|max:100'"
+                                       data-vv-as="Nome do Evento"/>
+                                <div v-show="errors.has('name')" class="invalid-feedback">
+                                    {{ errors.first('name') }}
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="col-form-label"> Valor <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="name" v-model="name"
+                                       :class="errors.has('name') ? 'is-invalid' : ''" v-validate="'required|max:100'"
+                                       data-vv-as="Nome do Evento"/>
+                                <div v-show="errors.has('name')" class="invalid-feedback">
+                                    {{ errors.first('name') }}
+                                </div>
+                            </div>
+                            <p>R$200,00</p>
                         </div>
-                        <div v-show="errors.has('description')" class="invalid-feedback">
-                            {{ errors.first('description') }}
-                        </div>
+                        <button type="button" class="btn btn-success btn-block">Adicionar lote</button>
                     </div>
                 </div>
-
 
                 <ul class="list-inline mb-2 mt-3 wizard">
                     <li class="next list-inline-item float-right">

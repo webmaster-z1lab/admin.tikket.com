@@ -146,9 +146,9 @@
 
                             await sendAPIPOST(`${process.env.MIX_API_VERSION_ENDPOINT}/events${this.start_event ? '' : ('/' + this.event.id)}`, data).then(
                                 async response => {
-                                    await this.changeEvent(response.data.data)
-
                                     if (this.start_event) new LocalStorage('event__').setItem('id', response.data.data.id)
+
+                                    await this.changeEvent(response.data.data)
 
                                     this.$router.push({name: 'organizer'})
                                 }

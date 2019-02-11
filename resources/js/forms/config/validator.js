@@ -81,7 +81,16 @@ const today = {
 
 const dateAfter = {
     getMessage(field, args, data) {
-        return (data && data.message) || `O valor do campo ${field} deve ser maior que o momento atual.`;
+        return (data && data.message) || `O valor do campo ${field} deve ser maior que ${args}.`;
+    },
+    validate(value, args) {
+        return moment(value, 'DD/MM/YYYY HH:mm') > moment(args, 'DD/MM/YYYY HH:mm')
+    }
+};
+
+const dateBefore = {
+    getMessage(field, args, data) {
+        return (data && data.message) || `O valor do campo ${field} deve ser menor que ${args}.`;
     },
     validate(value, args) {
         return moment(value, 'DD/MM/YYYY HH:mm') > moment(args, 'DD/MM/YYYY HH:mm')
@@ -96,4 +105,4 @@ Validator.extend('document', document);
 Validator.extend('legal_age', legalAge);
 Validator.extend('today', today);
 Validator.extend('date_after', dateAfter);
-
+Validator.extend('date_before', dateBefore);
