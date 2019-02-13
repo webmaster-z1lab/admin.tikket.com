@@ -30,6 +30,9 @@
         computed: {
             layout() {
                 return `layout-${(this.$route.meta.layout || 'default')}`
+            },
+            transition() {
+                return this.$route.meta.transition | 'none'
             }
         },
         created() {

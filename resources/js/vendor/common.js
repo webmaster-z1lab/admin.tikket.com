@@ -191,6 +191,34 @@ function strFinish(text) {
  * @param params
  * @returns {Promise<any>}
  */
+export async function sendUploadAPIPOST(url, params) {
+    let promise = new Promise((resolve, reject) => {
+        HTTP({
+            method: 'POST',
+            url: url,
+            data: params,
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then(
+            response => {
+                resolve(response)
+            }
+        ).catch(
+            error => {
+                reject(error)
+            }
+        )
+    })
+
+    return await promise
+}
+
+/**
+ * @param url
+ * @param params
+ * @returns {Promise<any>}
+ */
 export async function sendAPIPOST(url, params) {
     let promise = new Promise((resolve, reject) => {
         HTTP.post(url, params).then(result => resolve(result)).catch((error) => reject(error))

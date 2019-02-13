@@ -13,15 +13,19 @@
             </div>
         </div>
 
-        <p class="text-muted font-14 mb-4">
-            haha
-        </p>
+        <div class="form-group col-12">
+            <label class="col-form-label"> Absolver Taxa?</label>
+            <div class="custom-control custom-checkbox form-custom" style="padding-left: 0">
+                <input type="checkbox" id="switch1" data-switch="bool" name="private" v-model="fee">
+                <label for="switch1" data-on-label="Sim" data-off-label="Não"></label>
+            </div>
+        </div>
 
         <div class="table-responsive-sm mt-3">
             <table class="table table-striped table-centered mb-0">
                 <thead>
                 <tr>
-                    <th>Nome do Ingresso</th>
+                    <th>Nome</th>
                     <th>Valor</th>
                     <th>Taxa</th>
                     <th>Preço Final</th>
@@ -29,24 +33,23 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
+                <tr v-for="entrance in event.relationships.entrances">
+                    <td>{{entrance.attributes.name}}</td>
+                    <td>{{(entrance.attributes.lots[0].value / 100) | currency}}</td>
+                    <td>{{(entrance.attributes.lots[0].fee / 100) | currency}}</td>
+                    <td>{{(entrance.attributes.lots[0].price / 100) | currency}}</td>
+                    <td class="table-action text-center">
+                        <a href="javascript:;" class="action-icon" @click="ticket(false, entrance)"><i class="mdi mdi-pencil"></i></a>
+                        <a href="javascript:;" class="action-icon" @click="deleteTicket(entrance)"> <i class="mdi mdi-delete"></i></a>
+                    </td>
                 </tr>
-                <!--<tr>-->
-                    <!--<td>asasas</td>-->
-                    <!--<td>1289804962</td>-->
-                    <!--<td>asssas</td>-->
-                    <!--<td class="table-action text-center">-->
-                        <!--<a href="" class="action-icon"> <i class="mdi mdi-eye"></i></a>-->
-                        <!--<a href="" class="action-icon"> <i class="mdi mdi-pencil"></i></a>-->
-                        <!--<a href="javascript:;" class="action-icon"> <i class="mdi mdi-delete"></i></a>-->
-                    <!--</td>-->
-                <!--</tr>-->
                 </tbody>
             </table>
 
             <div class="text-center mt-2">
                 <figure class="mx-auto mb-4">
-                    <img src="https://cdn.z1lab.com.br/images/undraw/undraw_analysis_4jis.svg" alt="SVG" width="20%">
+                    <img src="https://cdn.z1lab.com.br/images/undraw/undraw_analysis_4jis.svg" alt="SVG"
+                         width="20%">
                 </figure>
 
                 <div class="mb-4">
@@ -54,9 +57,9 @@
 
                     <p class="h5">Para continuar você precisa ter pelo menos um ingresso cadastrado!</p>
 
-                    <router-link :to="{name: 'company_registration'}" class="btn btn-icon btn-primary">
+                    <button type="button" @click="ticket(true)" class="btn btn-icon btn-primary">
                         Adicionar Ingresso
-                    </router-link>
+                    </button>
                 </div>
             </div>
         </div>
@@ -67,37 +70,97 @@
     import LoadingComponent from '../../../components/loadingComponent'
     import swal from 'sweetalert2'
 
-    import {TheMask} from 'vue-the-mask'
     import {mapActions, mapState} from 'vuex'
-    import {sendAPIPOST} from "../../../vendor/common"
-    import {VueEditor} from 'vue2-editor'
+    import {sendAPIPOST, sendAPIDELETE} from "../../../vendor/common"
 
     export default {
         name: "Ticket",
-        $_veeValidate: {
-            validator: 'new'
-        },
         components: {
-            LoadingComponent,
-            TheMask,
-            VueEditor
+            LoadingComponent
         },
         data: () => ({
-            isLoading: false
+            isLoading: false,
+            fee: false
         }),
+        watch: {
+            fee(value) {
+                if (value !== this.event.attributes.fee_is_hidden) {
+                    sendAPIPOST(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}/fee`, {fee: value}).then(
+                        response => {
+                            this.changeEvent(response.data.data)
+                        }
+                    ).catch(
+                        (error) => { }
+                    )
+                }
+            }
+        },
         computed: {
             ...mapState({
                 event: state => state.event
             })
         },
         methods: {
-            ...mapActions(['setTicket']),
+            ...mapActions(['setTicket', 'changeEvent']),
             ticket(new_ticket, ticket) {
                 if (new_ticket) {
+                    this.setTicket({
+                        id: null,
+                        name: '',
+                        free_ticket: false,
+                        summary: '',
+                        starts_at: '',
+                        quant_min: 1,
+                        quant_max: 5,
+                        lots: [
+                            {
+                                amount:  '',
+                                finishes_at: '',
+                                value: 0
+                            }
+                        ]
+                    })
+
                     this.$router.push({name: 'tickets.ticket'})
                 } else {
+                    this.setTicket({
+                        id: ticket.id,
+                        name: ticket.attributes.name,
+                        free_ticket: ticket.attributes.is_free,
+                        summary: ticket.attributes.description,
+                        starts_at: ticket.attributes.starts_at,
+                        quant_min: ticket.attributes.min_buy,
+                        quant_max: ticket.attributes.max_buy,
+                        lots: ticket.attributes.lots
+                    })
 
+                    this.$router.push({name: 'tickets.ticket'})
                 }
+            },
+            deleteTicket(ticket){
+                sendAPIDELETE(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}/entrances`, data).then(
+                    response => {
+                        this.changeCart(response.data.data)
+                        this.$router.push({name: 'payment'})
+                    }
+                ).catch(
+                    (error) => {
+                        if (_.isObject(error.response)) {
+                            swal({
+                                type: 'error',
+                                title: 'Ops, algo deu errado!',
+                                text: error.response.data.errors.detail
+                            })
+                        } else {
+                            console.dir(error)
+                        }
+                    }
+                ).finally(
+                    () => {
+                        Pace.stop()
+                        this.isLoading = false
+                    }
+                )
             },
             submit() {
                 this.$validator.validateAll().then(

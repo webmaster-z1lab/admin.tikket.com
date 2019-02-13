@@ -81,8 +81,44 @@
                         {{ errors.first('description') }}
                     </div>
                 </div>
-            </div>
 
+                <div class="col-md-12 mt-4">
+                    <div class="row">
+                        <div class="col-md-6 align-self-center">
+                            <div class="alert alert-primary" role="alert">
+                                <h4 class="alert-heading">Capa do Evento!</h4>
+                                <p>A dimensão recomendada é de 1600 x 838.</p>
+                                <p>Formato JPEG, WEBP, SVG ou PNG de no máximo 2MB.</p>
+                                <hr>
+                                <p class="mb-0">Imagens com dimensões diferentes serão redimensionadas.</p>
+                            </div>
+                            <div class="text-right mt-3" v-if="attachment">
+                                <button type="button" class="btn btn-primary btn-sm" @click="clickUpload">Trocar Imagem</button>
+                                <button type="button" class="btn btn-danger btn-sm" @click="removeAttachment">Remover</button>
+                            </div>
+                        </div>
+                        <div class="col-md-6 align-self-center">
+                            <div class="form-group" @dragover.prevent @drop="onDrop" v-if="!attachment">
+                                <div class="dropzone dz-clickable" :class="errors.has(uploadFieldName) ? 'is-invalid' : ''" @click="clickUpload">
+                                    <div class="dz-message needsclick">
+                                        <i class="h1 text-muted dripicons-cloud-upload"></i>
+                                        <h4>Clique Aqui ou Arraste para adicionar uma Imagem.</h4>
+                                    </div>
+                                </div>
+                                <div v-show="errors.has(uploadFieldName)" class="invalid-feedback" style="display: block">
+                                    {{ errors.first(uploadFieldName) }}
+                                </div>
+                            </div>
+                            <div v-else>
+                                <img :src="attachment.imageURL" alt="" class="img" width="100%"/>
+                            </div>
+
+                            <input type="file" :name="uploadFieldName" @change="onFileChange($event.target.name, $event.target.files)"
+                                   style="display: none" data-vv-as="Imagem" v-validate="'required'" ref="files"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <ul class="list-inline mb-2 mt-3 wizard">
                 <li class="next list-inline-item float-right">
@@ -93,6 +129,17 @@
     </div>
 </template>
 
+<style>
+    .dropzone.is-invalid {
+        border: 2px dashed #de6557;
+        background: #fff;
+        border-radius: 6px;
+        cursor: pointer;
+        min-height: 150px;
+        padding: 20px;
+    }
+</style>
+
 <script>
     import LoadingComponent from '../../../components/loadingComponent'
     import swal from 'sweetalert2'
@@ -102,7 +149,7 @@
     import {TheMask} from 'vue-the-mask'
     import {VueEditor} from 'vue2-editor'
     import {mapActions, mapState} from 'vuex'
-    import {sendAPIPOST, toSeek} from "../../../vendor/common"
+    import {sendUploadAPIPOST, toSeek} from "../../../vendor/common"
 
     export default {
         name: "Information",
@@ -116,7 +163,10 @@
         },
         data: () => ({
             isLoading: false,
-            categories: {}
+            categories: {},
+            attachment: null,
+            uploadFieldName: 'cover',
+            maxSize: 1024
         }),
         computed: {
             ...mapState({
@@ -126,6 +176,50 @@
         },
         methods: {
             ...mapActions(['changeEvent']),
+            onDrop: function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+
+                this.onFileChange(e.dataTransfer.name, e.dataTransfer.files);
+            },
+            clickUpload() {
+                this.$refs.files.click()
+            },
+            onFileChange(fieldName, file) {
+                const {maxSize} = this
+                let imageFile = file[0]
+
+                //check if user actually selected a file
+                if (file.length > 0) {
+                    let size = imageFile.size / maxSize / maxSize
+                    if (!imageFile.type.match('image.*')) {
+                        // check whether the upload is an image
+                        $.NotificationApp.send("Ops, algo deu errado!", "Por favor, escolha um arquivo de imagem", 'top-right', 'rgba(0,0,0,0.2)', 'error');
+                    } else if (size > 1) {
+                        // check whether the size is greater than the size limit
+                        $.NotificationApp.send("Ops, algo deu errado!", "Por favor, escolha um arquivo que seja menor que 2MB", 'top-right', 'rgba(0,0,0,0.2)', 'error');
+                    } else {
+                        let imageURL = URL.createObjectURL(imageFile)
+
+                        this.attachment = {imageFile, imageURL}
+                    }
+                }
+            },
+            removeAttachment() {
+                this.attachment = null;
+            },
+            createImage(file) {
+                let reader = new FileReader(),
+                    me = this
+
+                reader.onload = (e) => {
+                    me.image = e.target.result
+                }
+
+                reader.readAsDataURL(file)
+
+                return this.image
+            },
             submit() {
                 this.$validator.validateAll().then(
                     async res => {
@@ -133,18 +227,19 @@
                             Pace.start()
                             this.isLoading = true
 
-                            let data = {
-                                name: this.event.attributes.name,
-                                description: this.event.attributes.description,
-                                body: this.event.attributes.body,
-                                category: this.event.attributes.category,
-                                starts_at: moment(this.event.attributes.starts_at, 'DD/MM/YYYY HH:mm').format('YYYY-MM-DD HH:mm'),
-                                finishes_at: moment(this.event.attributes.finishes_at, 'DD/MM/YYYY HH:mm').format('YYYY-MM-DD HH:mm'),
-                                is_public: _.isBoolean(this.event.attributes.is_public) ? this.event.attributes.is_public : false,
-                                _method: this.start_event ? 'POST' : 'PUT'
-                            }
+                            const params = new FormData();
 
-                            await sendAPIPOST(`${process.env.MIX_API_VERSION_ENDPOINT}/events${this.start_event ? '' : ('/' + this.event.id)}`, data).then(
+                            params.set('name', this.event.attributes.name)
+                            params.set('description', this.event.attributes.description)
+                            params.set('body', this.event.attributes.body)
+                            params.set('category', this.event.attributes.category)
+                            params.set('starts_at', moment(this.event.attributes.starts_at, 'DD/MM/YYYY HH:mm').format('YYYY-MM-DD HH:mm'))
+                            params.set('finishes_at', moment(this.event.attributes.finishes_at, 'DD/MM/YYYY HH:mm').format('YYYY-MM-DD HH:mm'))
+                            params.append('is_public', _.isBoolean(this.event.attributes.is_public) ? this.event.attributes.is_public : false)
+                            params.append('cover', this.attachment.imageFile)
+                            params.set('_method', this.start_event ? 'POST' : 'PUT')
+
+                            await sendUploadAPIPOST(`${process.env.MIX_API_VERSION_ENDPOINT}/events${this.start_event ? '' : ('/' + this.event.id)}`, params).then(
                                 async response => {
                                     if (this.start_event) new LocalStorage('event__').setItem('id', response.data.data.id)
 
@@ -176,6 +271,15 @@
             }
         },
         mounted() {
+            window.addEventListener("dragover",function(e){
+                e = e || event;
+                e.preventDefault();
+            },false);
+            window.addEventListener("drop",function(e){
+                e = e || event;
+                e.preventDefault();
+            },false);
+
             toSeek(`${process.env.MIX_API_VERSION_ENDPOINT}/categories`).then(response => this.categories = response.data).catch(error => console.dir(error))
         }
     }

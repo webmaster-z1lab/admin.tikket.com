@@ -93,7 +93,7 @@ const dateBefore = {
         return (data && data.message) || `O valor do campo ${field} deve ser menor que ${args}.`;
     },
     validate(value, args) {
-        return moment(value, 'DD/MM/YYYY HH:mm') > moment(args, 'DD/MM/YYYY HH:mm')
+        return moment(value, 'DD/MM/YYYY HH:mm') < moment(args, 'DD/MM/YYYY HH:mm')
     }
 };
 

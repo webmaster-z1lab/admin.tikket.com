@@ -11,10 +11,18 @@
                     <h4 class="page-title">Novo Evento</h4>
                 </div>
             </div>
+
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
                         <h4 class="header-title mb-3">Criando Evento</h4>
+                        <div class="alert alert-primary alert-dismissible bg-primary text-white border-0 fade show" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                            <strong>Obs - </strong>
+                            Utilize a barra de navegação abaixo para se locomover mais facilmente entre as páginas para editar ou checar informações já salvas.
+                        </div>
                         <div id="progressbarwizard">
                             <ul class="nav nav-pills nav-justified form-wizard-header mb-3">
                                 <li class="nav-item" v-for="(item, key, index) in menu_form">
@@ -51,7 +59,7 @@
         data: () => ({
             key_active: null,
             menu_form: {
-                'Informações Base': {
+                'Info. Base': {
                     icon: "fas fa-file-contract mr-1",
                     routes: ['information']
                 },

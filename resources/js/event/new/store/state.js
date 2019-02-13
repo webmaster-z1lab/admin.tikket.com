@@ -11,12 +11,17 @@ export default {
     ticket: {
         id: null,
         name: '',
+        free_ticket: false,
         summary: '',
-        starts_at: false,
+        starts_at: '',
         quant_min: 1,
         quant_max: 5,
-        category: '',
-        secondary_category: '',
-        description: ''
+        lots: [
+            {
+                amount: '',
+                finishes_at: '',
+                value: 0
+            }
+        ]
     }
 }
