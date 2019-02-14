@@ -1,10 +1,8 @@
 <template>
     <transition name="slide-fade">
         <div class="col-10">
-            <loading-component :is-loading="isLoading"></loading-component>
-
             <form class="needs-validation mt-2">
-                <h4 class="header-title">Cadastro de Ingresso</h4>
+                <h4 class="header-title">{{ticket.id === null ? 'Cadastro de Ingresso' : ticket.name}}</h4>
                 <div class="row mt-3">
                     <div class="form-group" :class="ticket.free_ticket ? 'col-md-8' : 'col-md-10'">
                         <label class="col-form-label"> Nome do Ingresso <span class="text-danger">*</span></label>
@@ -142,7 +140,7 @@
                                 </div>
                             </div>
                             <div class="form-group col-md-2 align-self-center text-center">
-                                <label class="col-form-label"> Total do Ingresso</label>
+                                <label class="col-form-label"> Valor Final</label>
                                 <h5 class="text-success">{{amount_ticket(lot.value) | currency}}</h5>
                             </div>
                             <div class="col-md-1 align-self-center">
@@ -184,14 +182,12 @@
 </style>
 
 <script>
-    import LoadingComponent from '../../../components/loadingComponent'
-    import swal from 'sweetalert2'
     import moment from 'moment'
 
     import {TheMask} from 'vue-the-mask'
     import {Money} from 'v-money'
     import {mapActions, mapState} from 'vuex'
-    import {sendAPIPOST} from "../../../vendor/common"
+    import {sendAPIPOST, exceptionError} from "../../../vendor/common"
 
     export default {
         name: "NewTicket",
@@ -199,12 +195,10 @@
             validator: 'new'
         },
         components: {
-            LoadingComponent,
             TheMask,
             Money
         },
         data: () => ({
-            isLoading: false,
             money_format: {
                 decimal: ',',
                 thousands: '.',
@@ -239,43 +233,33 @@
                 this.$validator.validateAll().then(
                     async res => {
                         if (res) {
-                            Pace.start()
-                            this.isLoading = true
+                            this.$emit('loading', true)
 
-                            let data = {
+                            let edit_ticket = _.isNull(this.ticket.id),
+                                route_continue = edit_ticket ? '' : `/${this.ticket.id}`,
+                                data = {
                                 name: this.ticket.name,
                                 is_free: this.ticket.free_ticket,
-                                max_buy: this.ticket.quant_max,
-                                min_buy: this.ticket.quant_min,
+                                max_buy: parseInt(this.ticket.quant_max),
+                                min_buy: parseInt(this.ticket.quant_min),
                                 description: this.ticket.summary,
                                 starts_at: moment(this.ticket.starts_at, 'DD/MM/YYYY').format('YYYY-MM-DD'),
                                 lots: this.formatLot(this.ticket.lots),
-                                _method: _.isNull(this.ticket.id) ? 'POST' : 'PATCH'
+                                _method: edit_ticket ? 'POST' : 'PATCH'
                             }
 
-                            await sendAPIPOST(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}/entrances`, data).then(
-                                async response => {
+                            await sendAPIPOST(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}/entrances${route_continue}`, data)
+                                .then(async response => {
+                                    $.NotificationApp.send(
+                                        "Tudo Certo!",
+                                        `Ingresso ${edit_ticket ? 'Criado' : 'Editado'} com sucesso.`,
+                                        'top-right', 'rgba(0,0,0,0.2)', 'success')
+
                                     await this.changeEvent(response.data.data)
                                     this.$router.push({name: 'tickets'})
-                                }
-                            ).catch(
-                                (error) => {
-                                    if (_.isObject(error.response)) {
-                                        swal({
-                                            type: 'error',
-                                            title: 'Ops, algo deu errado!',
-                                            text: error.response.data.errors.detail
-                                        })
-                                    } else {
-                                        console.dir(error)
-                                    }
-                                }
-                            ).finally(
-                                () => {
-                                    Pace.stop()
-                                    this.isLoading = false
-                                }
-                            )
+                                })
+                                .catch((error) => exceptionError(error))
+                                .finally(() => this.$emit('loading', false))
                         }
                     }
                 )

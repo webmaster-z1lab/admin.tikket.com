@@ -1,8 +1,6 @@
 <template>
     <div class="col-8">
         <form class="needs-validation">
-            <loading-component :is-loading="isLoading"></loading-component>
-
             <div class="row">
                 <div class="form-group col-md-6">
                     <label class="col-form-label">Escolher Organizador <span class="text-danger">*</span></label>
@@ -46,19 +44,13 @@
 </template>
 
 <script>
-    import LoadingComponent from '../../../components/loadingComponent'
-    import swal from 'sweetalert2'
-
     import {mapActions, mapState} from 'vuex'
-    import {sendAPIPOST, toSeek} from "../../../vendor/common"
+    import {sendAPIPOST, toSeek, exceptionError} from "../../../vendor/common"
 
     export default {
         name: "Organizer",
         $_veeValidate: {
             validator: 'new'
-        },
-        components: {
-            LoadingComponent
         },
         watch: {
             select_organizer(value) {
@@ -75,7 +67,6 @@
             }
         },
         data: () => ({
-            isLoading: false,
             organizers: [],
             name: '',
             description: '',
@@ -92,8 +83,7 @@
                 this.$validator.validateAll().then(
                     async res => {
                         if (res) {
-                            Pace.start()
-                            this.isLoading = true
+                            this.$emit('loading', true)
 
                             let data = {
                                 name: this.name,
@@ -101,29 +91,18 @@
                                 _method: 'POST'
                             }
 
-                            await sendAPIPOST(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}/producers`, data).then(
-                                async response => {
+                            await sendAPIPOST(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}/producers`, data)
+                                .then(async response => {
                                     await this.changeEvent(response.data.data)
+                                    $.NotificationApp.send(
+                                        "Tudo Certo!",
+                                        `Organizador vinculado com sucesso ao evento.`,
+                                        'top-right', 'rgba(0,0,0,0.2)', 'success')
+
                                     this.$router.push({name: 'location'})
-                                }
-                            ).catch(
-                                (error) => {
-                                    if (_.isObject(error.response)) {
-                                        swal({
-                                            type: 'error',
-                                            title: 'Ops, algo deu errado!',
-                                            text: error.response.data.errors.detail
-                                        })
-                                    } else {
-                                        console.dir(error)
-                                    }
-                                }
-                            ).finally(
-                                () => {
-                                    Pace.stop()
-                                    this.isLoading = false
-                                }
-                            )
+                                })
+                                .catch((error) => exceptionError(error))
+                                .finally(() => this.$emit('loading', false))
                         }
                     }
                 )
@@ -133,8 +112,7 @@
             if (_.has(this.event, 'relationships.producer.attributes.user_id')) this.select_organizer = this.event.relationships.producer
 
             toSeek(`${process.env.MIX_API_VERSION_ENDPOINT}/producers`)
-                .then(response => !_.isEmpty(response.data) ? this.organizers = response.data : '')
-                .catch(error => console.dir(error))
+                .then(response => !_.isEmpty(response.data) ? this.organizers = response.data : '').catch((error) => exceptionError(error))
         }
     }
 </script>

@@ -1,8 +1,6 @@
 <template>
     <div class="col-8">
         <form class="needs-validation">
-            <loading-component :is-loading="isLoading"></loading-component>
-
             <div class="row">
                 <div class="form-group col-12">
                     <label class="col-form-label"> Nome do Evento <span class="text-danger">*</span></label>
@@ -141,15 +139,13 @@
 </style>
 
 <script>
-    import LoadingComponent from '../../../components/loadingComponent'
-    import swal from 'sweetalert2'
     import moment from 'moment'
     import LocalStorage from "../../../vendor/storage"
 
     import {TheMask} from 'vue-the-mask'
     import {VueEditor} from 'vue2-editor'
     import {mapActions, mapState} from 'vuex'
-    import {sendUploadAPIPOST, toSeek} from "../../../vendor/common"
+    import {sendUploadAPIPOST, toSeek, exceptionError} from "../../../vendor/common"
 
     export default {
         name: "Information",
@@ -157,16 +153,14 @@
             validator: 'new'
         },
         components: {
-            LoadingComponent,
             TheMask,
             VueEditor
         },
         data: () => ({
-            isLoading: false,
             categories: {},
             attachment: null,
             uploadFieldName: 'cover',
-            maxSize: 1024
+            maxSize: 2048
         }),
         computed: {
             ...mapState({
@@ -224,8 +218,7 @@
                 this.$validator.validateAll().then(
                     async res => {
                         if (res) {
-                            Pace.start()
-                            this.isLoading = true
+                            this.$emit('loading', true)
 
                             const params = new FormData();
 
@@ -239,32 +232,18 @@
                             params.append('cover', this.attachment.imageFile)
                             params.set('_method', this.start_event ? 'POST' : 'PUT')
 
-                            await sendUploadAPIPOST(`${process.env.MIX_API_VERSION_ENDPOINT}/events${this.start_event ? '' : ('/' + this.event.id)}`, params).then(
-                                async response => {
+                            await sendUploadAPIPOST(`${process.env.MIX_API_VERSION_ENDPOINT}/events${this.start_event ? '' : ('/' + this.event.id)}`, params)
+                                .then( async response => {
                                     if (this.start_event) new LocalStorage('event__').setItem('id', response.data.data.id)
 
                                     await this.changeEvent(response.data.data)
 
+                                    $.NotificationApp.send("Tudo Certo!", `Evento iniciado com sucesso.`, 'top-right', 'rgba(0,0,0,0.2)', 'success')
+
                                     this.$router.push({name: 'organizer'})
-                                }
-                            ).catch(
-                                (error) => {
-                                    if (_.isObject(error.response)) {
-                                        swal({
-                                            type: 'error',
-                                            title: 'Ops, algo deu errado!',
-                                            text: error.response.data.errors.detail
-                                        })
-                                    } else {
-                                        console.dir(error)
-                                    }
-                                }
-                            ).finally(
-                                () => {
-                                    Pace.stop()
-                                    this.isLoading = false
-                                }
-                            )
+                                })
+                                .catch((error) => exceptionError(error))
+                                .finally(() => this.$emit('loading', false))
                         }
                     }
                 )
@@ -280,7 +259,7 @@
                 e.preventDefault();
             },false);
 
-            toSeek(`${process.env.MIX_API_VERSION_ENDPOINT}/categories`).then(response => this.categories = response.data).catch(error => console.dir(error))
+            toSeek(`${process.env.MIX_API_VERSION_ENDPOINT}/categories`).then(response => this.categories = response.data).catch((error) => exceptionError(error))
         }
     }
 </script>

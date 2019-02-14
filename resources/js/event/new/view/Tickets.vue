@@ -16,7 +16,7 @@
         <div class="form-group col-12">
             <label class="col-form-label"> Absolver Taxa?</label>
             <div class="custom-control custom-checkbox form-custom" style="padding-left: 0">
-                <input type="checkbox" id="switch1" data-switch="bool" name="private" v-model="fee">
+                <input type="checkbox" id="switch1" data-switch="bool" name="private" v-model="event.attributes.fee_is_hidden" @click="changeFee">
                 <label for="switch1" data-on-label="Sim" data-off-label="Não"></label>
             </div>
         </div>
@@ -26,18 +26,19 @@
                 <thead>
                 <tr>
                     <th>Nome</th>
-                    <th>Valor</th>
+                    <th>Data Inicial</th>
                     <th>Taxa</th>
-                    <th>Preço Final</th>
+                    <th>Forma de Exibição</th>
                     <th class="text-center">Ações</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr v-for="entrance in event.relationships.entrances">
                     <td>{{entrance.attributes.name}}</td>
-                    <td>{{(entrance.attributes.lots[0].value / 100) | currency}}</td>
+                    <td>{{entrance.attributes.starts_at}}</td>
                     <td>{{(entrance.attributes.lots[0].fee / 100) | currency}}</td>
-                    <td>{{(entrance.attributes.lots[0].price / 100) | currency}}</td>
+                    <td v-if="event.attributes.fee_is_hidden">{{(entrance.attributes.lots[0].price / 100) | currency}}</td>
+                    <td v-else>{{(entrance.attributes.lots[0].value / 100) | currency}} (+ taxa de serviço de {{(entrance.attributes.lots[0].fee / 100) | currency }})</td>
                     <td class="table-action text-center">
                         <a href="javascript:;" class="action-icon" @click="ticket(false, entrance)"><i class="mdi mdi-pencil"></i></a>
                         <a href="javascript:;" class="action-icon" @click="deleteTicket(entrance)"> <i class="mdi mdi-delete"></i></a>
@@ -46,7 +47,7 @@
                 </tbody>
             </table>
 
-            <div class="text-center mt-2">
+            <div class="text-center mt-2" v-if="checkEntrances">
                 <figure class="mx-auto mb-4">
                     <img src="https://cdn.z1lab.com.br/images/undraw/undraw_analysis_4jis.svg" alt="SVG"
                          width="20%">
@@ -63,45 +64,45 @@
                 </div>
             </div>
         </div>
+
+        <ul class="list-inline mb-2 mt-3 wizard" v-if="!checkEntrances">
+            <li class="next list-inline-item float-right">
+                <button type="button" class="btn btn-success" @click="submit">Concluir</button>
+            </li>
+        </ul>
     </div>
 </template>
 
 <script>
-    import LoadingComponent from '../../../components/loadingComponent'
     import swal from 'sweetalert2'
+    import LocalStorage from "../../../vendor/storage"
 
     import {mapActions, mapState} from 'vuex'
-    import {sendAPIPOST, sendAPIDELETE} from "../../../vendor/common"
+    import {sendAPIPOST, sendAPIDELETE, exceptionError} from "../../../vendor/common"
 
     export default {
         name: "Ticket",
-        components: {
-            LoadingComponent
-        },
-        data: () => ({
-            isLoading: false,
-            fee: false
-        }),
-        watch: {
-            fee(value) {
-                if (value !== this.event.attributes.fee_is_hidden) {
-                    sendAPIPOST(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}/fee`, {fee: value}).then(
-                        response => {
-                            this.changeEvent(response.data.data)
-                        }
-                    ).catch(
-                        (error) => { }
-                    )
-                }
-            }
-        },
         computed: {
             ...mapState({
                 event: state => state.event
-            })
+            }),
+            checkEntrances() {
+                return _.isEmpty(this.event.relationships.entrances)
+            }
         },
         methods: {
             ...mapActions(['setTicket', 'changeEvent']),
+            changeFee(e) {
+                this.$emit('loading', true)
+
+                sendAPIPOST(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}/fee`, {fee_is_hidden: e.target.checked, _method: 'PATCH'})
+                    .then(response => {
+                        $.NotificationApp.send("Tudo Certo!", "Forma de trabalhar com a taxa modificada.", 'top-right', 'rgba(0,0,0,0.2)', 'success');
+                        this.changeEvent(response.data.data)
+                    })
+                    .catch((error) => exceptionError(error))
+                    .finally(() => this.$emit('loading', false))
+            },
             ticket(new_ticket, ticket) {
                 if (new_ticket) {
                     this.setTicket({
@@ -123,6 +124,16 @@
 
                     this.$router.push({name: 'tickets.ticket'})
                 } else {
+                    let lots = []
+
+                    for (let lot of ticket.attributes.lots) {
+                        lots.push({
+                            amount: lot.amount,
+                            finishes_at: lot.finishes_at,
+                            value: (lot.value / 100)
+                        })
+                    }
+
                     this.setTicket({
                         id: ticket.id,
                         name: ticket.attributes.name,
@@ -131,76 +142,48 @@
                         starts_at: ticket.attributes.starts_at,
                         quant_min: ticket.attributes.min_buy,
                         quant_max: ticket.attributes.max_buy,
-                        lots: ticket.attributes.lots
+                        lots: lots
                     })
 
                     this.$router.push({name: 'tickets.ticket'})
                 }
             },
             deleteTicket(ticket){
-                sendAPIDELETE(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}/entrances`, data).then(
-                    response => {
-                        this.changeCart(response.data.data)
-                        this.$router.push({name: 'payment'})
-                    }
-                ).catch(
-                    (error) => {
-                        if (_.isObject(error.response)) {
-                            swal({
-                                type: 'error',
-                                title: 'Ops, algo deu errado!',
-                                text: error.response.data.errors.detail
+                swal({
+                    title: 'Você tem certeza?',
+                    text: "Ao fazer isso o Ingresso será apagado!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sim, apagar!'
+                }).then((result) => {
+                    if (result.value) {
+                        this.$emit('loading', true)
+
+                        sendAPIDELETE(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}/entrances/${ticket.id}`, {})
+                            .then(response => {
+                                $.NotificationApp.send("Tudo Certo!", "Ingresso removido.", 'top-right', 'rgba(0,0,0,0.2)', 'success');
+
+                                this.changeEvent(response.data.data)
                             })
-                        } else {
-                            console.dir(error)
-                        }
+                            .catch((error) => exceptionError(error))
+                            .finally(() => this.$emit('loading', false))
                     }
-                ).finally(
-                    () => {
-                        Pace.stop()
-                        this.isLoading = false
-                    }
-                )
+                })
             },
             submit() {
-                this.$validator.validateAll().then(
-                    async res => {
-                        if (res) {
-                            Pace.start()
-                            this.isLoading = true
+                this.$emit('loading', true)
 
-                            let data = {
-                                callback: "payment",
-                                tickets: this.cart.attributes.tickets,
-                                _method: 'PATCH'
-                            }
+                sendAPIPOST(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}/finalize`, {_method: 'PATCH'})
+                    .then(response => {
+                        new LocalStorage('event__').removeItem('id')
 
-                            await sendAPIPOST(`${process.env.MIX_API_VERSION_ENDPOINT}/carts/${this.cart.id}/tickets`, data).then(
-                                async response => {
-                                    await this.changeCart(response.data.data)
-                                    this.$router.push({name: 'payment'})
-                                }
-                            ).catch(
-                                (error) => {
-                                    if (_.isObject(error.response)) {
-                                        swal({
-                                            type: 'error',
-                                            title: 'Ops, algo deu errado!',
-                                            text: error.response.data.errors.detail
-                                        })
-                                    } else {
-                                        console.dir(error)
-                                    }
-                                }
-                            ).finally(
-                                () => {
-                                    Pace.stop()
-                                    this.isLoading = false
-                                }
-                            )
-                        }
-                    }
-                )
+                        window.location.href = route('home')
+                    })
+                    .catch((error) => exceptionError(error))
+                    .finally(() => this.$emit('loading', false))
+
             }
         }
     }

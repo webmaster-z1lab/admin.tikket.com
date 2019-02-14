@@ -155,12 +155,9 @@
 </template>
 
 <script>
-    import LoadingComponent from '../../../components/loadingComponent'
-    import swal from 'sweetalert2'
-
     import {TheMask} from 'vue-the-mask'
     import {mapActions, mapState} from 'vuex'
-    import {sendAPIPOST} from "../../../vendor/common"
+    import {sendAPIPOST, exceptionError} from "../../../vendor/common"
     import {VueEditor} from 'vue2-editor'
 
     export default {
@@ -169,7 +166,6 @@
             validator: 'new'
         },
         components: {
-            LoadingComponent,
             TheMask,
             VueEditor
         },
@@ -192,8 +188,6 @@
             zoom: 12,
             marker: {},
             place: null,
-            //loading
-            isLoading: false,
             //configs
             change_address: false,
             event_online: false
@@ -225,6 +219,8 @@
         methods: {
             ...mapActions(['changeEvent']),
             setPlace(place) {
+                this.$emit('loading', true)
+
                 if (place) {
                     const marker = {
                         lat: place.geometry.location.lat(),
@@ -250,6 +246,8 @@
                     this.city = this.getGoogleApi(place.address_components, 'administrative_area_level_2').long_name
                     this.formatted = place.formatted_address
                 }
+
+                this.$emit('loading', false)
             },
             geolocate: function () {
                 navigator.geolocation.getCurrentPosition(position => {
@@ -273,8 +271,7 @@
                 this.$validator.validateAll().then(
                     async res => {
                         if (res) {
-                            Pace.start()
-                            this.isLoading = true
+                            this.$emit('loading', true)
 
                             let data = {
                                 name:        this.place_name,
@@ -291,29 +288,15 @@
                                 _method: 'PATCH'
                             }
 
-                            await sendAPIPOST(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}/address`, data).then(
-                                async response => {
+                            await sendAPIPOST(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}/address`, data)
+                                .then(async response => {
                                     await this.changeEvent(response.data.data)
+                                    $.NotificationApp.send("Tudo Certo!", `Local adicionado ao evento com sucesso.`, 'top-right', 'rgba(0,0,0,0.2)', 'success')
+
                                     this.$router.push({name: 'tickets'})
-                                }
-                            ).catch(
-                                (error) => {
-                                    if (_.isObject(error.response)) {
-                                        swal({
-                                            type: 'error',
-                                            title: 'Ops, algo deu errado!',
-                                            text: error.response.data.errors.detail
-                                        })
-                                    } else {
-                                        console.dir(error)
-                                    }
-                                }
-                            ).finally(
-                                () => {
-                                    Pace.stop()
-                                    this.isLoading = false
-                                }
-                            )
+                                })
+                                .catch((error) => exceptionError(error))
+                                .finally(() => this.$emit('loading', false))
                         }
                     }
                 )

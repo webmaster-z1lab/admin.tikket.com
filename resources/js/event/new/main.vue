@@ -2,7 +2,7 @@
     <div>
         <loading-component :is-loading="isLoading"></loading-component>
         <component :is="layout">
-            <router-view />
+            <router-view @loading="loading"/>
         </component>
     </div>
 </template>
@@ -54,6 +54,10 @@
                 }
 
                 this.isLoading = false
+            },
+            loading(value) {
+                this.isLoading = value
+                value ? Pace.start() : Pace.stop()
             }
         }
     }

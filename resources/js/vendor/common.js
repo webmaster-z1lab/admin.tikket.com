@@ -239,3 +239,21 @@ export async function sendAPIDELETE(url, config = {}) {
 
     return await promise
 }
+
+/**
+ * @param error
+ */
+export function exceptionError(error) {
+    if (_.isObject(error.response)) {
+        let message = error.response.data.errors ? error.response.data.errors.detail : error.response.data.message
+
+        $.NotificationApp.send("Ops, algo deu errado!", message, 'top-right', 'rgba(0,0,0,0.2)', 'error')
+    } else {
+        console.dir(error)
+        $.NotificationApp.send(
+            "Algo está errado!",
+            "Atualize a página e tente novamente se persistir entre em contato com a gente!",
+            'top-right', 'rgba(0,0,0,0.2)', 'error'
+        )
+    }
+}

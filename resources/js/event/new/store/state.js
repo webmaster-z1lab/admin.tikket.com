@@ -3,6 +3,7 @@ export default {
     event: {
         attributes: {},
         relationships: {
+            entrances: [],
             producer: {
                 attributes: {}
             }

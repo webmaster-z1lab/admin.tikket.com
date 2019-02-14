@@ -5,7 +5,7 @@
                 <div class="page-title-box">
                     <div class="page-title-right">
                         <a href="/" class="btn btn-warning btn-sm">Voltar a Home</a>
-                        <a href="/" class="btn btn-danger btn-sm">Apagar Rascunho</a>
+                        <button type="button" class="btn btn-danger btn-sm" @click="deleteEvent" v-if="event.id">Apagar Rascunho</button>
                     </div>
 
                     <h4 class="page-title">Novo Evento</h4>
@@ -54,6 +54,12 @@
 </style>
 
 <script>
+    import swal from 'sweetalert2'
+    import LocalStorage from "../../../vendor/storage"
+
+    import {mapState} from 'vuex'
+    import {sendAPIDELETE, exceptionError} from "../../../vendor/common"
+
     export default {
         name: 'LayoutDefault',
         data: () => ({
@@ -77,6 +83,11 @@
                 }
             }
         }),
+        computed: {
+            ...mapState({
+                event: state => state.event
+            })
+        },
         methods: {
             classActive(name, key) {
                 let active = collect(this.menu_form[name].routes).filter((value, key) => value === this.$route.name).all()
@@ -87,6 +98,30 @@
                 }
 
                 return key < this.key_active ? 'confirm' : ''
+            },
+            deleteEvent() {
+                swal({
+                    title: 'Você tem certeza?',
+                    text: "Ao fazer isso você perderá todo o profresso de cadastro!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sim, apagar!'
+                }).then((result) => {
+                    if (result.value) {
+                        this.$emit('loading', true)
+
+                        sendAPIDELETE(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}`, {})
+                            .then(response => {
+                                new LocalStorage('event__').removeItem('id')
+
+                                window.location.href = route('home')
+                            })
+                            .catch((error) => exceptionError(error))
+                            .finally(() => this.$emit('loading', false))
+                    }
+                })
             }
         }
     }
