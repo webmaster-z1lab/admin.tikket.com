@@ -143,7 +143,7 @@
         <i class="mdi mdi-menu"></i>
     </button>
     <div class="app-search">
-        <a href="/" class="btn btn-primary btn-sm">Meus Eventos</a>
+        <a href="{{route('event.my-events')}}" class="btn btn-primary btn-sm">Meus Eventos</a>
         <a href="/" class="btn btn-outline-primary btn-sm">Meus Ingressos</a>
     </div>
 </div>
