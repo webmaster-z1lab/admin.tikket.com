@@ -241,6 +241,13 @@ export async function sendAPIDELETE(url, config = {}) {
 }
 
 /**
+ * @param arr
+ */
+export function sendAlert(arr) {
+    $.NotificationApp.send(arr.title, arr.message, 'top-right', 'rgba(0,0,0,0.2)', arr.type, arr.time | 3000)
+}
+
+/**
  * @param error
  */
 export function exceptionError(error) {
@@ -250,6 +257,7 @@ export function exceptionError(error) {
         $.NotificationApp.send("Ops, algo deu errado!", message, 'top-right', 'rgba(0,0,0,0.2)', 'error')
     } else {
         console.dir(error)
+
         $.NotificationApp.send(
             "Algo está errado!",
             "Atualize a página e tente novamente se persistir entre em contato com a gente!",

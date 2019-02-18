@@ -1,12 +1,14 @@
 <template>
     <div class="text-center">
-        <img src="assets/images/file-searching.svg" height="90" alt="File not found Image">
+        <figure class="mx-auto my-5">
+            <img :src="`http://127.0.0.5:8000/svg/${errorMessage.icon}`" width="80%" alt="File not found Image">
+        </figure>
 
-        <h1 class="text-error mt-4">{{code}}</h1>
-        <h4 class="text-uppercase text-danger mt-3">{{errorMessage.title}}</h4>
-        <p class="text-muted mt-3">{{errorMessage.message}}</p>
 
-        <a class="btn btn-info mt-3" href="/"><i class="mdi mdi-reply"></i> Voltar a Home</a>
+        <h3 class="text-uppercase text-primary mt-3"><strong>{{code}} -</strong> {{errorMessage.title}}</h3>
+        <h5 class="text-muted mt-3">{{errorMessage.message}}</h5>
+
+        <a class="btn btn-primary mt-3" href="/evento/meus-eventos"><i class="mdi mdi-reply"></i> Voltar a Home</a>
     </div>
 </template>
 
@@ -19,15 +21,17 @@
             }
         },
         computed: {
-            errorMessage(){
+            errorMessage() {
                 const code = {
                     422: {
                         title: 'Entidade improcessável',
-                        message: ''
+                        message: '',
+                        icon: 'undraw_warning_cyit.svg'
                     },
                     404: {
                         title: 'Página não encontrada',
-                        message: 'Oops! Você está em um link que não existe.'
+                        message: 'Oops! Você está em um link que não existe.',
+                        icon: 'undraw_page_not_found_su7k.svg'
                     }
                 }
 

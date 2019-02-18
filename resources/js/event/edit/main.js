@@ -58,8 +58,8 @@ Vue.use(VueCurrencyFilter,
     })
 
 new Vue({
-    el: '#vue-event-new',
-    name: 'VueEventNew',
+    el: '#vue-event-create',
+    name: 'VueEventCreate',
     render: h => h(VueMain),
     store,
     router

@@ -1,4 +1,4 @@
-@extends('layouts.default')
+@extends('layouts.default-external')
 
 @section('content')
     <div class="container-fluid">
@@ -6,7 +6,7 @@
             <div class="col-12">
                 <div class="page-title-box">
                     <div class="page-title-right">
-                        <a href="{{route('event.new')}}" class="btn btn-primary">Criar Evento</a>
+                        <a href="{{route('event.create')}}" class="btn btn-primary">Criar Evento</a>
                     </div>
 
                     <h4 class="page-title">Meus Eventos</h4>
