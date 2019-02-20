@@ -8,14 +8,13 @@
 </template>
 
 <script>
+    import "../../bootstrap";
+
     import LoadingComponent from '../../components/loadingComponent'
-    import LocalStorage from "../../vendor/storage"
+    import LayoutDefault from "./components/layouts/default"
+    import LayoutError from "./components/layouts/error"
 
-    import LayoutDefault from "./layouts/Default"
-    import LayoutError from "./layouts/Error"
-
-    import {mapActions} from 'vuex'
-    import {toSeek} from "../../vendor/common";
+    import {mapActions, mapState} from 'vuex'
 
     export default {
         name: 'VueMain',
@@ -25,36 +24,27 @@
             LayoutError
         },
         data: () => ({
-            isLoading: true
+            isLoading: false
         }),
-        computed: {
-            layout() {
-                return `layout-${(this.$route.meta.layout || 'default')}`
-            },
-            transition() {
-                return this.$route.meta.transition | 'none'
+        props: {
+            data: {
+                required: true,
+                type: String
             }
         },
         created() {
-            this.fetchData()
+            if (_.isString(this.data)) this.initEvent(this.data)
+        },
+        computed: {
+            ...mapState({
+                event: state => state.event
+            }),
+            layout() {
+                return `layout-${(this.$route.meta.layout || 'default')}`
+            }
         },
         methods: {
-            ...mapActions(['changeEvent']),
-            fetchData() {
-                if (this.$route.meta.layout !== 'error') {
-                    let event_id = new LocalStorage('event__').getItem('id')
-
-                    if (event_id) {
-                        toSeek(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${event_id}`).then(
-                            async response => {
-                                await this.changeEvent(response.data)
-                            }
-                        )
-                    }
-                }
-
-                this.isLoading = false
-            },
+            ...mapActions(['initEvent']),
             loading(value) {
                 this.isLoading = value
                 value ? Pace.start() : Pace.stop()

@@ -59,7 +59,7 @@
                                                 <td>{{$event_active->attributes->name}}</td>
                                                 <td>{{$event_active->attributes->status}}</td>
                                                 <td>{{$event_active->attributes->starts_at}}</td>
-                                                <td>{{$event_active->attributes->name}}</td>
+                                                <td>{{$event_active->attributes->address ? $event_active->attributes->address->formatted : '-'}}</td>
                                                 <td class="table-action text-center">
                                                     <a href="javascript:;" class="action-icon" @click="editEvent({{ json_encode($event_active) }})">
                                                         <i class="mdi mdi-pencil"></i>
@@ -112,7 +112,7 @@
                                                 <td>{{$event_past->attributes->name}}</td>
                                                 <td>{{$event_past->attributes->status}}</td>
                                                 <td>{{$event_past->attributes->starts_at}}</td>
-                                                <td>{{$event_past->attributes->name}}</td>
+                                                <td>{{$event_active->attributes->address ? $event_active->attributes->address->formatted : '-'}}</td>
                                                 <td class="table-action text-center">
                                                     <a href="javascript:;" class="action-icon" @click="test({{ json_encode($event_past->id) }})">
                                                         <i class="mdi mdi-pencil"></i>

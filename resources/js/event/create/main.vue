@@ -11,8 +11,8 @@
     import LoadingComponent from '../../components/loadingComponent'
     import LocalStorage from "../../vendor/storage"
 
-    import LayoutDefault from "./layouts/Default"
-    import LayoutError from "./layouts/Error"
+    import LayoutDefault from "./components/layouts/default"
+    import LayoutError from "./components/layouts/error"
 
     import {mapActions} from 'vuex'
     import {toSeek} from "../../vendor/common";
@@ -30,9 +30,6 @@
         computed: {
             layout() {
                 return `layout-${(this.$route.meta.layout || 'default')}`
-            },
-            transition() {
-                return this.$route.meta.transition | 'none'
             }
         },
         created() {

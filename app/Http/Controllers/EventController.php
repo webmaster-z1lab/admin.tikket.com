@@ -48,17 +48,8 @@ class EventController extends Controller
         \Meta::set('title', $event->attributes->name);
         \Meta::set('description', $event->attributes->description);
 
-        $address = $event->attributes->address;
-        $producer = $event->relationships->producer->attributes;
-
-        unset($event->attributes->address);
-
         return View('event.edit')
-            ->with('id', $event->id)
-            ->with('address', $address)
-            ->with('producer', $producer)
-            ->with('entrances', $event->relationships->entrances)
-            ->with('event', $event->attributes);
+            ->with('event', $event);
     }
 
 

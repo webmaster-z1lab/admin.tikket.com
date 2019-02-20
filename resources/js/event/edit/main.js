@@ -7,15 +7,12 @@ import VueMain from './main.vue'
 import store from './store/store'
 import routes from './router'
 
-/* Local Storage */
-import LocalStorage from "../../vendor/storage"
-
 /* Maps */
 import * as VueGoogleMaps from "vue2-google-maps";
 
 Vue.use(VueGoogleMaps, {
     load: {
-        key: "AIzaSyAZVMJvQZclH-viCjrp6xm4bzUnyQv8FOo",
+        key: process.env.MIX_GOOGLE_API_KEY,
         libraries: "places"
     }
 });
@@ -28,23 +25,11 @@ require('../../forms/config/validator')
 
 /* Route */
 Vue.use(VueRouter)
+
 const router = new VueRouter({
+    mode: 'history',
     routes
 });
-
-router.beforeEach((to, from, next) => {
-    if (to.matched.some(record => record.meta.requiresStartEvent)) {
-        let event_id = new LocalStorage('event__').getItem('id')
-
-        if (event_id){
-            next()
-        } else {
-            next({name: 'error', params: {code: '422'}})
-        }
-    } else {
-        next()
-    }
-})
 
 /* Money */
 Vue.use(VueCurrencyFilter,
@@ -58,9 +43,11 @@ Vue.use(VueCurrencyFilter,
     })
 
 new Vue({
-    el: '#vue-event-create',
-    name: 'VueEventCreate',
-    render: h => h(VueMain),
+    el: '#vue-event-edit',
+    name: 'VueEventEdit',
+    render(h) {
+        return h(VueMain, {props: {data: this.$el.attributes.data.value}})
+    },
     store,
     router
 });

@@ -1,19 +1,27 @@
-import Information from './view/Information'
-import Organizer from './view/Organizer'
-import Location from './view/Location'
-import Tickets from './view/Tickets'
-import NewTicket from './view/NewTicket'
-import errorComponent from '../../components/errorComponent'
+import Panel from './components/view/panel/index'
+import Participant from './components/view/participant/index'
+import Ticket from './components/view/tickets/index'
+import CheckIn from './components/view/check-in/index'
+import Financial from './components/view/financial/index'
+import ErrorComponent from '../../components/errorComponent'
+
+const withPrefix = (prefix, routes) =>
+    routes.map((route) => {
+        route.path = prefix + route.path;
+        return route;
+    });
 
 const routes = [
-    {path: '/', name: 'home', redirect: 'information'},
-    {path: '/information', name: 'information', component: Information},
-    {path: '/organizer', name: 'organizer', component: Organizer, meta: { requiresStartEvent: true }},
-    {path: '/location', name: 'location', component: Location, meta: { requiresStartEvent: true }},
-    {path: '/tickets', name: 'tickets', component: Tickets, meta: { requiresStartEvent: true }},
-    {path: '/tickets/ticket', name: 'tickets.ticket', component: NewTicket, meta: { requiresStartEvent: true }},
-    {path: '/error/:code', name: 'error', component: errorComponent, meta: {layout: 'error'}, props: true},
-    {path: '*', name: 'page_not_found', component: errorComponent, meta: {layout: 'error'}, props: {code: '404'}}
+    ...withPrefix('/evento/:id', [
+        {path: '/', name: 'home', redirect: {name: 'panel'}},
+        {path: '/painel', name: 'panel', component: Panel},
+        {path: '/participantes', name: 'participant', component: Participant},
+        {path: '/ingressos', name: 'ticket', component: Ticket},
+        {path: '/check-in', name: 'check-in', component: CheckIn},
+        {path: '/financeiro', name: 'financial', component: Financial},
+        {path: '/error/:code', name: 'error', component: ErrorComponent, meta: {layout: 'error'}, props: true},
+        {path: '*', name: 'page_not_found', component: ErrorComponent, meta: {layout: 'error'}, props: {code: '404'}}
+    ])
 ];
 
 export default routes

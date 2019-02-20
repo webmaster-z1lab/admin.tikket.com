@@ -1,9 +1,8 @@
+import * as types from './mutation-types'
+
 export default {
-    'CHANGE_EVENT' (state, payload) {
+    [types.INIT_EVENT] (state, payload) {
         state.event = payload
-        state.start_event = false
-    },
-    'SET_TICKET' (state, payload) {
-        state.ticket = payload
     }
 }
+
