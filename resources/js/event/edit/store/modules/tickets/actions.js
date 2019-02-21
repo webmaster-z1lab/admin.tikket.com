@@ -1,11 +1,7 @@
-export default {
-    /* Create Activity */
-    changeActivityForm(context, payload) {
-        context.commit('CHANGE_ACTIVITY_FORM', payload)
-    },
+import * as types from '../../mutation-types'
 
-    /* Group */
-    changeGroupForm(context, payload) {
-        context.commit('CHANGE_GROUP_FORM', payload)
+export default {
+    setTicket(context, payload) {
+        context.commit(types.SET_TICKETS, payload)
     }
 }

@@ -1,1 +1,5 @@
 export const INIT_EVENT = 'INIT_EVENT'
+export const CHANGE_EVENT = 'CHANGE_EVENT'
+export const CHANGE_LOADING = 'CHANGE_LOADING'
+
+export const SET_TICKETS = 'SET_TICKETS'

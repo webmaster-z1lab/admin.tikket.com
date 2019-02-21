@@ -9,10 +9,16 @@
                 <li class="side-nav-title side-nav-item">Navegação</li>
 
                 <li class="side-nav-item" v-for="(item, key, index) in menu">
-                    <router-link :to="item.index" class="side-nav-link" aria-expanded="false" :class="classActive(key, index)">
+                    <a href="javascript: void(0);" class="side-nav-link" @click="pushIndex(item.index)">
                         <i :class="item.icon"></i>
                         <span> {{key}} </span>
-                    </router-link>
+                        <span class="menu-arrow" v-if="item.sub_menu"></span>
+                    </a>
+                    <ul class="side-nav-second-level" aria-expanded="false" v-if="item.sub_menu">
+                        <router-link tag="li" :to="{name: sub_route.to}" v-for="(sub_route, key) in item.sub_routes" :key="sub_route.name + key">
+                            <a>{{sub_route.name}}</a>
+                        </router-link>
+                    </ul>
                 </li>
             </ul>
             <div class="clearfix"></div>
@@ -27,18 +33,28 @@
             menu: {
                 'Painel de Dados': {
                     icon: "fas fa-solar-panel",
-                    routes: ['painel'],
-                    index: 'painel'
-                },
-                'Participantes': {
-                    icon: "fas fa-users",
-                    routes: ['participantes'],
-                    index: 'participantes'
+                    routes: ['panel', 'edit-event'],
+                    index: 'panel'
                 },
                 'Ingressos': {
                     icon: "fas fa-ticket-alt",
-                    routes: ['ingressos'],
-                    index: 'ingressos'
+                    routes: ['ticket', 'ticket.coupon'],
+                    index: 'ticket',
+                    sub_menu: true,
+                    sub_routes: [
+                        {name: 'Ingressos', to: 'ticket'},
+                        {name: 'Cupons de Desconto', to: 'ticket.coupon'}
+                    ]
+                },
+                'Participantes': {
+                    icon: "fas fa-users",
+                    routes: ['participant', 'participant.manual-inscription'],
+                    index: 'participant',
+                    sub_menu: true,
+                    sub_routes: [
+                        {name: 'Participantes', to: 'participant'},
+                        {name: 'Inscrição Manual', to: 'participant.manual-inscription'}
+                    ]
                 },
                 'Check-In': {
                     icon: "fas fa-clipboard-check",
@@ -47,8 +63,8 @@
                 },
                 'Financeiro': {
                     icon: "fas fa-money-bill-wave",
-                    routes: ['financeiro'],
-                    index: 'financeiro'
+                    routes: ['financial'],
+                    index: 'financial'
                 }
             }
         }),
@@ -64,6 +80,9 @@
                 if (!_.isEmpty(active)) {
                     return 'active'
                 }
+            },
+            pushIndex(value){
+                this.$router.push({name: value})
             }
         }
     }

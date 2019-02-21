@@ -35,6 +35,11 @@
                 type: Boolean,
                 default: false
             }
+        },
+        watch: {
+            isLoading(value) {
+                value ? Pace.start() : Pace.stop()
+            }
         }
     }
 </script>

@@ -35,9 +35,9 @@
 <div class="rightbar-overlay"></div>
 
 @routes()
+@stack('scripts')
 
 <script src="{{ getenv('AWS_CDN_ENDPOINT') }}/template/hyper/1.4.0/js/app.min.js"></script>
 
-@stack('scripts')
 </body>
 </html>

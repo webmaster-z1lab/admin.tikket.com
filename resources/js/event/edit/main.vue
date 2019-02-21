@@ -2,7 +2,7 @@
     <div>
         <loading-component :is-loading="isLoading"></loading-component>
         <component :is="layout">
-            <router-view @loading="loading"/>
+            <router-view v-if="!isLoading"/>
         </component>
     </div>
 </template>
@@ -23,32 +23,25 @@
             LayoutDefault,
             LayoutError
         },
-        data: () => ({
-            isLoading: false
-        }),
         props: {
             data: {
                 required: true,
                 type: String
             }
         },
-        created() {
-            if (_.isString(this.data)) this.initEvent(this.data)
-        },
         computed: {
             ...mapState({
-                event: state => state.event
+                isLoading: state => state.isLoading
             }),
             layout() {
                 return `layout-${(this.$route.meta.layout || 'default')}`
             }
         },
+        created() {
+            if (_.isString(this.data)) this.initEvent(this.data)
+        },
         methods: {
-            ...mapActions(['initEvent']),
-            loading(value) {
-                this.isLoading = value
-                value ? Pace.start() : Pace.stop()
-            }
+            ...mapActions(['initEvent'])
         }
     }
 </script>
