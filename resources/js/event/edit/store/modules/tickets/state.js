@@ -14,5 +14,16 @@ export default {
                 value: 0
             }
         ]
+    },
+    coupons:[],
+    coupon: {
+        id: null,
+        entrance_id: '',
+        tag: '',
+        is_percentage: false,
+        validate_at: '',
+        code: '',
+        discount: 0,
+        reuse: 1
     }
 }

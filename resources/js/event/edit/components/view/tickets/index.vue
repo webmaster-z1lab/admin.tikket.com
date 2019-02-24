@@ -77,6 +77,9 @@
 
     export default {
         name: "index",
+        $_veeValidate: {
+            validator: 'new'
+        },
         components: {
             SubHeader,
             Tickets,

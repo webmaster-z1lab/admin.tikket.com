@@ -19,6 +19,9 @@
 
     export default {
         name: 'VueMain',
+        $_veeValidate: {
+            validator: 'new'
+        },
         components: {
             LoadingComponent,
             LayoutDefault,

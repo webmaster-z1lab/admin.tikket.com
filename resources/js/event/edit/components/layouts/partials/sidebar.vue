@@ -2,7 +2,7 @@
     <div class="left-side-menu">
         <div class="slimscroll-menu">
             <a href="" class="logo text-center">
-                <img :src="`${getEnvAWS}/images/tikket/ticket_gradient.png`" alt="" width="45px">
+                <img src="https://cdn.z1lab.com.br/images/tikket/ticket_gradient.png" alt="" width="45px">
             </a>
 
             <ul class="metismenu side-nav">
@@ -68,11 +68,6 @@
                 }
             }
         }),
-        computed: {
-            getEnvAWS() {
-                return process.env.MIX_AWS_CDN_ENDPOINT
-            }
-        },
         methods: {
             classActive(name, key) {
                 let active = collect(this.menu[name].routes).filter((value, key) => value === this.$route.name).all()

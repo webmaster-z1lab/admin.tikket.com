@@ -69,7 +69,7 @@
     import {sendAPIPOST, sendAPIDELETE, exceptionError, sendAlert} from "../../../../../../vendor/common"
 
     export default {
-        name: "ticket",
+        name: "tickets",
         computed: {
             ...mapState({
                 event: state => state.event

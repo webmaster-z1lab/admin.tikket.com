@@ -44,7 +44,7 @@
 
                         <a href="javascript:void(0);" class="dropdown-item notify-item">
                             <div class="notify-icon">
-                                <img :src="`${getEnvAWS}/template/hyper/1.4.0/images/users/avatar-2.jpg`"
+                                <img src="https://cdn.z1lab.com.br/template/hyper/1.4.0/images/users/avatar-2.jpg"
                                      class="img-fluid rounded-circle" alt=""></div>
                             <p class="notify-details">Cristina Pride</p>
                             <p class="text-muted mb-0 user-msg">
@@ -64,7 +64,7 @@
                         <!-- item-->
                         <a href="javascript:void(0);" class="dropdown-item notify-item">
                             <div class="notify-icon">
-                                <img :src="`${getEnvAWS}/template/hyper/1.4.0/images/users/avatar-4.jpg`"
+                                <img src="https://cdn.z1lab.com.br/template/hyper/1.4.0/images/users/avatar-4.jpg"
                                      class="img-fluid rounded-circle" alt=""></div>
                             <p class="notify-details">Karen Robinson</p>
                             <p class="text-muted mb-0 user-msg">
@@ -98,7 +98,7 @@
                    role="button" aria-haspopup="false"
                    aria-expanded="false">
                                     <span class="account-user-avatar">
-                                        <img :src="`${getEnvAWS}/template/hyper/1.4.0/images/users/avatar-1.jpg`"
+                                        <img src="https://cdn.z1lab.com.br/template/hyper/1.4.0/images/users/avatar-1.jpg"
                                              alt="user-image" class="rounded-circle">
                                     </span>
                     <span>
@@ -150,7 +150,7 @@
             <i class="mdi mdi-menu"></i>
         </button>
         <div class="app-search">
-            <a href="" class="btn btn-primary btn-sm">Meus Eventos</a>
+            <a :href="translateRoutes('event.my-events')" class="btn btn-primary btn-sm">Meus Eventos</a>
             <a href="/" class="btn btn-outline-primary btn-sm">Meus Ingressos</a>
         </div>
     </div>
@@ -159,16 +159,10 @@
 <script>
     export default {
         name: 'headerPartial',
-        data: () => ({
-
-        }),
-        computed: {
-            getEnvAWS() {
-                return process.env.MIX_AWS_CDN_ENDPOINT
-            }
-        },
         methods: {
-
+            translateRoutes(name) {
+                return route(name)
+            }
         }
     }
 </script>

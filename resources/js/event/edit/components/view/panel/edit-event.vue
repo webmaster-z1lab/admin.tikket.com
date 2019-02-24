@@ -49,6 +49,9 @@
 
     export default {
         name: "editEvent",
+        $_veeValidate: {
+            validator: 'new'
+        },
         components: {
             SubHeader,
             InfoBase,

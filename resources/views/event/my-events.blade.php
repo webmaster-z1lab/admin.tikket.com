@@ -64,9 +64,11 @@
                                                     <a href="javascript:;" class="action-icon" @click="editEvent({{ json_encode($event_active) }})">
                                                         <i class="mdi mdi-pencil"></i>
                                                     </a>
-                                                    <a href="javascript:;" class="action-icon" @click="deleteEvent({{ json_encode($event_active->id) }})">
-                                                        <i class="mdi mdi-delete"></i>
-                                                    </a>
+                                                    @if(!isset($event_active->attributes->is_locked))
+                                                        <a href="javascript:;" class="action-icon" @click="deleteEvent({{ json_encode($event_active->id) }})">
+                                                            <i class="mdi mdi-delete"></i>
+                                                        </a>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @empty

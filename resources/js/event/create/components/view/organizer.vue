@@ -49,9 +49,7 @@
 
     export default {
         name: "organizer",
-        $_veeValidate: {
-            validator: 'new'
-        },
+        inject: ['$validator'],
         watch: {
             select_organizer(value) {
                 if (value !== null) {

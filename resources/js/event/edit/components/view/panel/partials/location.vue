@@ -151,9 +151,7 @@
 
     export default {
         name: "location",
-        $_veeValidate: {
-            validator: 'new'
-        },
+        inject: ['$validator'],
         components: {
             TheMask,
             VueEditor
@@ -205,9 +203,9 @@
             }
         },
         methods: {
-            ...mapActions(['changeEvent']),
+            ...mapActions(['changeEvent', 'changeLoading']),
             setPlace(place) {
-                this.$emit('loading', true)
+                this.changeLoading(true)
 
                 if (place) {
                     const marker = {
@@ -235,7 +233,7 @@
                     this.formatted = place.formatted_address
                 }
 
-                this.$emit('loading', false)
+                this.changeLoading(false)
             },
             geolocate: function () {
                 navigator.geolocation.getCurrentPosition(position => {
@@ -259,7 +257,7 @@
                 this.$validator.validateAll().then(
                     async res => {
                         if (res) {
-                            this.$emit('loading', true)
+                            this.changeLoading(true)
 
                             let data = {
                                 name:        this.place_name,
@@ -279,16 +277,15 @@
                             await sendAPIPOST(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}/address`, data)
                                 .then(async response => {
                                     await this.changeEvent(response.data.data)
+
                                     sendAlert({
                                         title: 'Tudo Certo!',
                                         message: 'Local do evento atualizado com sucesso.',
                                         type: 'success'
                                     })
-
-                                    this.$emit('loading', false)
                                 })
                                 .catch((error) => {
-                                    this.$emit('loading', false)
+                                    this.changeLoading(false)
                                     exceptionError(error)
                                 })
                         }

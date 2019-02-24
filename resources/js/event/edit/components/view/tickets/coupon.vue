@@ -1,11 +1,11 @@
 <template>
     <div class="container-fluid">
-        <div class="row">
+        <div class="row justify-content-center">
             <sub-header />
 
-            <div class="col-12">
-                <div class="col-8">
-                    <h1>Painel Principal de administração do evento</h1>
+            <div :class="page === 'coupons' ? 'col-12' : 'col-8 justify-content-center'">
+                <div class="card">
+                    <component :is="page" @changePage="changePage"/>
                 </div>
             </div>
         </div>
@@ -14,23 +14,36 @@
 
 <script>
     import SubHeader from '../../layouts/partials/sub-header'
-    import {mapActions, mapState} from 'vuex'
+    import Coupons from './partials/coupons'
+    import NewEditCoupon from './partials/new-edit-coupon'
+
+    import {mapState} from 'vuex'
 
     export default {
         name: "coupon",
+        $_veeValidate: {
+            validator: 'new'
+        },
         components: {
-            SubHeader
+            SubHeader,
+            Coupons,
+            NewEditCoupon
         },
         data: () => ({
-
+            page: 'coupons'
         }),
         computed: {
             ...mapState({
                 event: state => state.event
-            })
+            }),
+            checkEntrances() {
+                return _.isEmpty(this.event.relationships.entrances)
+            }
         },
-        methods: {
-            ...mapActions(['changeEvent'])
+        methods:{
+            changePage(page) {
+                this.page = page
+            }
         }
     }
 </script>

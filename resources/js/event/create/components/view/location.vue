@@ -147,9 +147,7 @@
 
     export default {
         name: "location",
-        $_veeValidate: {
-            validator: 'new'
-        },
+        inject: ['$validator'],
         components: {
             TheMask,
             VueEditor

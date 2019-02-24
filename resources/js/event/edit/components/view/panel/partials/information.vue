@@ -146,9 +146,7 @@
 
     export default {
         name: "information",
-        $_veeValidate: {
-            validator: 'new'
-        },
+        inject: ['$validator'],
         components: {
             TheMask,
             VueEditor
@@ -165,7 +163,7 @@
             })
         },
         methods: {
-            ...mapActions(['changeEvent']),
+            ...mapActions(['changeEvent', 'changeLoading']),
             onDrop: function(e) {
                 e.stopPropagation();
                 e.preventDefault();
@@ -214,7 +212,7 @@
                 this.$validator.validateAll().then(
                     async res => {
                         if (res) {
-                            this.$emit('loading', true)
+                            this.changeLoading(true)
 
                             const params = new FormData();
 
@@ -237,11 +235,9 @@
                                         message: 'Dados atualizados com sucesso.',
                                         type: 'success'
                                     })
-
-                                    this.$emit('loading', false)
                                 })
                                 .catch((error) => {
-                                    this.$emit('loading', false)
+                                    this.changeLoading(false)
                                     exceptionError(error)
                                 })
                         }

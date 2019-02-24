@@ -192,9 +192,7 @@
 
     export default {
         name: "newEditTicket",
-        $_veeValidate: {
-            validator: 'new'
-        },
+        inject: ['$validator'],
         components: {
             TheMask,
             Money
