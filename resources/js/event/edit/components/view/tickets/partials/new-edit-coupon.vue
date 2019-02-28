@@ -129,11 +129,11 @@
                 masked: false
             },
             porcentage_format: {
-                decimal: '.',
+                decimal: '',
                 thousands: '',
                 prefix: '',
                 suffix: ' %',
-                precision: 1,
+                precision: 0,
                 masked: false
             }
         }),
@@ -147,7 +147,7 @@
             }
         },
         methods: {
-            ...mapActions(['changeEvent', 'changeLoading']),
+            ...mapActions(['setCoupons', 'changeLoading']),
             submit() {
                 this.$validator.validateAll().then(
                     async res => {
@@ -162,7 +162,7 @@
                                     is_percentage: this.coupon.is_percentage,
                                     valid_until: moment(this.coupon.validate_at, 'DD/MM/YYYY').format('YYYY-MM-DD'),
                                     code: this.coupon.code,
-                                    discount: this.coupon.discount,
+                                    discount: parseInt(this.coupon.discount),
                                     quantity: parseInt(this.coupon.reuse),
                                     entrance_id: this.coupon.entrance_id,
                                     _method: edit_coupon ? 'POST' : 'PATCH'
@@ -170,8 +170,7 @@
 
                             await sendAPIPOST(`${process.env.MIX_API_VERSION_ENDPOINT}/coupons${route_continue}`, data)
                                 .then(async response => {
-                                    console.log(response.data.data)
-                                    //await this.changeEvent()
+                                    await this.setCoupons(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}/coupons`)
 
                                     sendAlert({
                                         title: 'Tudo Certo!',

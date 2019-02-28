@@ -13,19 +13,23 @@
                 <tr>
                     <th>Tag</th>
                     <th>Desconto</th>
-                    <th>Reutilizações</th>
-                    <th>Utilizações</th>
+                    <th>Validade</th>
                     <th class="text-center">Ações</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="coupon in coupons">
-                    <td>{{coupon.attributes.name}}</td>
-                    <td>{{coupon.attributes.starts_at}}</td>
-                    <td>{{(coupon.attributes.lots[0].fee / 100) | currency}}</td>
+                <tr v-for="index in coupons">
+                    <td>{{index.attributes.name}}</td>
+                    <td v-if="index.attributes.is_percentage">
+                        {{index.attributes.discount}} %
+                    </td>
+                    <td v-else>
+                        {{(index.attributes.discount / 100) | currency}}
+                    </td>
+                    <td>{{index.attributes.valid_until}}</td>
                     <td class="table-action text-center">
-                        <a href="javascript:;" class="action-icon" @click="coupon(false, coupon)"><i class="mdi mdi-pencil"></i></a>
-                        <a href="javascript:;" class="action-icon" @click="deleteCoupon(coupon)"> <i class="mdi mdi-delete"></i></a>
+                        <a href="javascript:;" class="action-icon" @click="coupon(false, index)"><i class="mdi mdi-pencil"></i></a>
+                        <a href="javascript:;" class="action-icon" @click="deleteCoupon(index)"> <i class="mdi mdi-delete"></i></a>
                     </td>
                 </tr>
                 </tbody>
@@ -89,14 +93,14 @@
                     this.$emit('changePage', 'new-edit-coupon')
                 } else {
                     this.setCoupon({
-                        id: null,
-                        entrance_id: '',
-                        tag: '',
-                        is_percentage: false,
-                        validate_at: '',
-                        code: '',
-                        discount: 0,
-                        reuse: 1
+                        id: coupon.id,
+                        entrance_id: coupon.relationships.entrance.id,
+                        tag: coupon.attributes.name,
+                        is_percentage: coupon.attributes.is_percentage,
+                        validate_at: coupon.attributes.valid_until,
+                        code: coupon.attributes.code,
+                        discount: coupon.attributes.discount,
+                        reuse: coupon.attributes.quantity
                     })
 
                     this.$emit('changePage', 'new-edit-coupon')
@@ -136,7 +140,7 @@
                     if (result.value) {
                         this.changeLoading(true)
 
-                        sendAPIDELETE(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}/coupons/${coupon.id}`, {})
+                        sendAPIDELETE(`${process.env.MIX_API_VERSION_ENDPOINT}/coupons/${coupon.id}`, {})
                             .then(response => {
                                 sendAlert({
                                     title: 'Tudo Certo!',

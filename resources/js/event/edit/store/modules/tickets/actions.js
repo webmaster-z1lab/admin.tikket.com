@@ -11,7 +11,10 @@ export default {
     },
     setCoupons(context, payload) {
         toSeek(payload)
-            .then(response => context.commit(types.SET_COUPONS, response.data))
+            .then(response => {
+                context.dispatch('changeLoading', false)
+                context.commit(types.SET_COUPONS, response.data)
+            })
             .catch((error) => exceptionError(error))
     }
 }

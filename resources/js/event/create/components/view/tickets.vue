@@ -208,7 +208,7 @@
                     .then(response => {
                         new LocalStorage('event__').removeItem('id')
 
-                        window.location.href = route('home')
+                        window.location.href = route('event.edit', response.data.data.id)
                     })
                     .catch((error) => {
                         this.$emit('loading', false)

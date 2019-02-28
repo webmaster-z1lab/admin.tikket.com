@@ -125,7 +125,7 @@
                                           :class="errors.has(`end_at-${index}`) ? 'is-invalid' : ''"
                                           v-validate="`required|date_format:DD/MM/YYYY|date_before:${event.attributes.starts_at}|date_after:${ticket.lots[(index - 1)].finishes_at}`"
                                           data-vv-as="'Data de Final'" :masked="true" :mask="'##/##/####'"
-                                          v-model="lot.end_at"/>
+                                          v-model="lot.finishes_at"/>
                                 <div v-show="errors.has(`end_at-${index}`)" class="invalid-feedback">
                                     {{ errors.first(`end_at-${index}`) }}
                                 </div>
@@ -218,7 +218,7 @@
             addLot() {
                 this.ticket.lots.push({
                     ticket_amount: 0,
-                    end_at: '',
+                    finishes_at: '',
                     ticket_value: 0
                 })
             },
