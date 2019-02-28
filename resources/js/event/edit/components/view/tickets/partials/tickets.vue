@@ -33,10 +33,16 @@
                     <td>{{entrance.attributes.starts_at}}</td>
                     <td>{{(entrance.attributes.lots[0].fee / 100) | currency}}</td>
                     <td v-if="event.attributes.fee_is_hidden">{{(entrance.attributes.lots[0].price / 100) | currency}}</td>
-                    <td v-else>{{(entrance.attributes.lots[0].value / 100) | currency}} (+ taxa de serviço de {{(entrance.attributes.lots[0].fee / 100) | currency }})</td>
+                    <td v-else>
+                        {{(entrance.attributes.lots[0].value / 100) | currency}} (+ taxa de serviço de {{(entrance.attributes.lots[0].fee / 100) | currency }})
+                    </td>
                     <td class="table-action text-center">
-                        <a href="javascript:;" class="action-icon" @click="ticket(false, entrance)"><i class="mdi mdi-pencil"></i></a>
-                        <a href="javascript:;" class="action-icon" @click="deleteTicket(entrance)"> <i class="mdi mdi-delete"></i></a>
+                        <a href="javascript:;" class="action-icon" @click="ticket(false, entrance)">
+                            <i class="mdi mdi-pencil"></i>
+                        </a>
+                        <a href="javascript:;" class="action-icon" @click="deleteTicket(entrance)" v-if="!entrance.attributes.is_locked">
+                            <i class="mdi mdi-delete"></i>
+                        </a>
                     </td>
                 </tr>
                 </tbody>
@@ -44,8 +50,7 @@
 
             <div class="text-center mt-2" v-if="checkEntrances">
                 <figure class="mx-auto mb-4">
-                    <img src="https://cdn.z1lab.com.br/images/undraw/undraw_analysis_4jis.svg" alt="SVG"
-                         width="20%">
+                    <img src="https://cdn.z1lab.com.br/images/undraw/undraw_analysis_4jis.svg" alt="SVG" width="20%">
                 </figure>
 
                 <div class="mb-4">
@@ -104,6 +109,7 @@
                         id: null,
                         name: '',
                         free_ticket: false,
+                        is_locked: false,
                         summary: '',
                         starts_at: '',
                         quant_min: 1,
@@ -112,7 +118,8 @@
                             {
                                 amount:  '',
                                 finishes_at: '',
-                                value: 0
+                                value: 0,
+                                status: 'open'
                             }
                         ]
                     })
@@ -125,7 +132,8 @@
                         lots.push({
                             amount: lot.amount,
                             finishes_at: lot.finishes_at,
-                            value: (lot.value / 100)
+                            value: (lot.value / 100),
+                            status: lot.status
                         })
                     }
 
@@ -133,6 +141,7 @@
                         id: ticket.id,
                         name: ticket.attributes.name,
                         free_ticket: ticket.attributes.is_free,
+                        is_locked: ticket.attributes.is_locked,
                         summary: ticket.attributes.description,
                         starts_at: ticket.attributes.starts_at,
                         quant_min: ticket.attributes.min_buy,

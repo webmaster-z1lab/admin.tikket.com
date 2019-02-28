@@ -3,6 +3,7 @@ export default {
         id: null,
         name: '',
         free_ticket: false,
+        is_locked: false,
         summary: '',
         starts_at: '',
         quant_min: 1,
@@ -11,13 +12,15 @@ export default {
             {
                 amount: '',
                 finishes_at: '',
-                value: 0
+                value: 0,
+                status: 'open'
             }
         ]
     },
     coupons:[],
     coupon: {
         id: null,
+        is_locked: false,
         entrance_id: '',
         tag: '',
         is_percentage: false,

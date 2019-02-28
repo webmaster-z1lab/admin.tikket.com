@@ -28,7 +28,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-md-2">
+                    <div class="form-group col-md-2" v-if="!coupon.is_locked">
                         <label class="col-form-label"> Tipo de desconto</label>
                         <div class="custom-control custom-checkbox form-custom" style="padding-left: 0">
                             <input type="checkbox" id="switch1" data-switch="bool" name="is_percentage" v-model="coupon.is_percentage">
@@ -39,7 +39,8 @@
                     <div class="form-group col-md-3">
                         <label class="col-form-label"> {{coupon.is_percentage ? "Desconto em Porcentagem" : "Desconto em Valor"}} <span class="text-danger">*</span></label>
                         <money class="form-control" v-model="coupon.discount" v-bind="format_discount"
-                               v-validate="'required'" data-vv-as="Desconto" :class="errors.has('discount') ? 'is-invalid' : ''" name="discount"/>
+                               v-bind:disabled="coupon.is_locked"
+                               v-validate="'required|min_value:1'" data-vv-as="Desconto" :class="errors.has('discount') ? 'is-invalid' : ''" name="discount"/>
                         <div v-show="errors.has('discount')" class="invalid-feedback">
                             {{ errors.first('discount') }}
                         </div>
@@ -48,6 +49,7 @@
                     <div class="form-group col-md-4">
                         <label class="col-form-label"> Referente ao Ingresso <span class="text-danger">*</span></label>
                         <select class="form-control" name="entrance_id" :class="errors.has('entrance_id') ? 'is-invalid' : ''"
+                                v-bind:disabled="coupon.is_locked"
                                 v-validate="'required'" data-vv-as="Referente ao Ingresso" v-model="coupon.entrance_id">
                             <option selected value="">Selecione um Ingresso</option>
                             <option v-for="entrances in event.relationships.entrances" :value="entrances.id">{{entrances.attributes.name}}</option>
@@ -70,6 +72,7 @@
                     <div class="form-group col-md-3">
                         <label class="col-form-label">Código <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" name="code" v-model="coupon.code"
+                               v-bind:disabled="coupon.is_locked"
                                :class="errors.has('code') ? 'is-invalid' : ''" v-validate="'required'" data-vv-as="Código"/>
                         <div v-show="errors.has('code')" class="invalid-feedback">
                             {{ errors.first('code') }}

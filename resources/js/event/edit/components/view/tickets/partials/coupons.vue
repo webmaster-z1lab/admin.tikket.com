@@ -29,7 +29,7 @@
                     <td>{{index.attributes.valid_until}}</td>
                     <td class="table-action text-center">
                         <a href="javascript:;" class="action-icon" @click="coupon(false, index)"><i class="mdi mdi-pencil"></i></a>
-                        <a href="javascript:;" class="action-icon" @click="deleteCoupon(index)"> <i class="mdi mdi-delete"></i></a>
+                        <a href="javascript:;" class="action-icon" @click="deleteCoupon(index)" v-if="!index.attributes.is_locked"> <i class="mdi mdi-delete"></i></a>
                     </td>
                 </tr>
                 </tbody>
@@ -81,6 +81,7 @@
                 if (new_ticket) {
                     this.setCoupon({
                         id: null,
+                        is_locked: false,
                         entrance_id: '',
                         tag: '',
                         is_percentage: false,
@@ -94,6 +95,7 @@
                 } else {
                     this.setCoupon({
                         id: coupon.id,
+                        is_locked: coupon.attributes.is_locked,
                         entrance_id: coupon.relationships.entrance.id,
                         tag: coupon.attributes.name,
                         is_percentage: coupon.attributes.is_percentage,

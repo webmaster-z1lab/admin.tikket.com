@@ -25,7 +25,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-md-2">
+                    <div class="form-group col-md-2" v-if="!ticket.is_locked">
                         <label class="col-form-label"> Ingresso Grátis</label>
                         <div class="custom-control custom-checkbox form-custom" style="padding-left: 0">
                             <input type="checkbox" id="switch1" data-switch="bool" name="free_ticket"
@@ -93,14 +93,16 @@
                         <h5 class="header-title mb-3">Dados de Lotes</h5>
 
                         <div class="form-group row mb-3" v-for="(lot, index) in ticket.lots">
-                            <label class="col-md-1 col-form-label align-self-center">{{ticket.lots.length > 1 ? `Lote
-                                ${index + 1}` : 'Lote Único'}}</label>
+                            <label class="col-md-1 col-form-label align-self-center">
+                                {{ticket.lots.length > 1 ? `Lote ${index + 1}` : 'Lote Único'}}
+                            </label>
                             <div class="form-group col-md-2">
                                 <label class="col-form-label"> Quant. de Ingressos <span
                                         class="text-danger">*</span></label>
                                 <input type="number" class="form-control" :name="`ticket_amount-${index}`"
                                        v-model="lot.amount"
                                        :class="errors.has(`ticket_amount-${index}`) ? 'is-invalid' : ''"
+                                       v-bind:disabled="inArr(['closed', 'expired'], lot.status)"
                                        v-validate="'required|min_value:1'" data-vv-as="Quant. de Ingressos"/>
                                 <div v-show="errors.has(`ticket_amount-${index}`)" class="invalid-feedback">
                                     {{ errors.first(`ticket_amount-${index}`) }}
@@ -112,6 +114,7 @@
                                           placeholder="##/##/####"
                                           :class="errors.has(`end_at-${index}`) ? 'is-invalid' : ''"
                                           v-validate="`required|date_format:DD/MM/YYYY|date_before:${event.attributes.starts_at}|date_after:${ticket.starts_at}`"
+                                          v-bind:disabled="inArr(['closed', 'expired'], lot.status)"
                                           data-vv-as="'Data de Final'" :masked="true" :mask="'##/##/####'"
                                           v-model="lot.finishes_at"/>
                                 <div v-show="errors.has(`end_at-${index}`)" class="invalid-feedback">
@@ -124,6 +127,7 @@
                                           placeholder="##/##/####"
                                           :class="errors.has(`end_at-${index}`) ? 'is-invalid' : ''"
                                           v-validate="`required|date_format:DD/MM/YYYY|date_before:${event.attributes.starts_at}|date_after:${ticket.lots[(index - 1)].finishes_at}`"
+                                          v-bind:disabled="inArr(['closed', 'expired'], lot.status)"
                                           data-vv-as="'Data de Final'" :masked="true" :mask="'##/##/####'"
                                           v-model="lot.finishes_at"/>
                                 <div v-show="errors.has(`end_at-${index}`)" class="invalid-feedback">
@@ -135,18 +139,24 @@
                                 <money class="form-control" v-model="lot.value" v-bind="money_format"
                                        v-validate="'required'" data-vv-as="Valor"
                                        :class="errors.has(`ticket_value-${index}`) ? 'is-invalid' : ''"
+                                       v-bind:disabled="lot.status !== 'open'"
                                        :name="`ticket_value-${index}`"/>
                                 <div v-show="errors.has(`ticket_value-${index}`)" class="invalid-feedback">
                                     {{ errors.first(`ticket_value-${index}`) }}
                                 </div>
                             </div>
-                            <div class="form-group col-md-2 align-self-center text-center">
-                                <label class="col-form-label"> Valor Final</label>
-                                <h5 class="text-success">{{amount_ticket(lot.value) | currency}}</h5>
+                            <div class="form-group col-md-2 align-self-center text-center" v-if="event.attributes.fee_is_hidden">
+                                <label class="col-form-label"> Valor Cobrado</label>
+                                <h5 class="text-success">{{amount_ticket(lot.value).amount | currency}}</h5>
                             </div>
-                            <div class="col-md-1 align-self-center">
-                                <button type="button" class="btn btn-danger btn-block" v-if="index > 0"
-                                        @click="removeLot(index)">
+                            <div class="form-group col-md-2 align-self-center text-center" v-else>
+                                <label class="col-form-label"> Valor Cobrado</label>
+                                <h5 class="text-success">
+                                    {{amount_ticket(lot.value).value | currency}} (+ taxa de serviço de {{(amount_ticket(lot.value).fee / 100) | currency }})
+                                </h5>
+                            </div>
+                            <div class="col-md-1 align-self-center" v-if="lot.status === 'open'">
+                                <button type="button" class="btn btn-danger btn-block" v-if="index > 0" @click="removeLot(index)">
                                     <i class="far fa-times-circle"></i>
                                 </button>
                             </div>
@@ -215,6 +225,9 @@
         },
         methods: {
             ...mapActions(['changeEvent', 'changeLoading']),
+            inArr(arr, string){
+                return arr.indexOf(string) !== -1
+            },
             addLot() {
                 this.ticket.lots.push({
                     ticket_amount: 0,
@@ -226,7 +239,27 @@
                 this.ticket.lots.splice(key, 1)
             },
             amount_ticket(value) {
-                return this.event.fee_is_hidden ? value : (value * 10 / 100) + value
+                if(value <= 0) {
+                    return {
+                        amount: 0,
+                        value: 0,
+                        fee: 0
+                    }
+                }
+
+                if (value <= process.env.MIX_MIN_VALUE_FEE) {
+                    return {
+                        amount: (value + (process.env.MIX_MIN_VALUE_FEE * 10 / 100)),
+                        value: value,
+                        fee: process.env.MIX_MIN_VALUE_FEE * 10 / 100
+                    }
+                } else {
+                    return {
+                        amount: (value * 10 / 100) + value,
+                        value: value,
+                        fee: value * 10 / 100
+                    }
+                }
             },
             submit() {
                 this.$validator.validateAll().then(
