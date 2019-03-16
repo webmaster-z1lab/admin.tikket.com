@@ -1,5 +1,6 @@
 import Panel from './components/view/panel/index'
 import EditEvent from './components/view/panel/edit-event'
+import AccessLevel from './components/view/panel/access-level'
 import Participant from './components/view/participant/index'
 import ManualInscription from './components/view/participant/manual-inscription'
 import Ticket from './components/view/tickets/index'
@@ -17,8 +18,11 @@ const withPrefix = (prefix, routes) =>
 const routes = [
     ...withPrefix('/evento/:id', [
         {path: '/', name: 'home', redirect: {name: 'panel'}},
-        {path: '/painel', name: 'panel', component: Panel},
-        {path: '/editar-evento', name: 'edit-event', component: EditEvent},
+        ...withPrefix('/painel', [
+            {path: '/', name: 'panel', component: Panel},
+            {path: '/editar-evento', name: 'panel.edit-event', component: EditEvent},
+            {path: '/access-level', name: 'panel.access-level', component: AccessLevel},
+        ]),
         ...withPrefix('/participantes', [
             {path: '/', name: 'participant', component: Participant},
             {path: '/inscricao-manual', name: 'participant.manual-inscription', component: ManualInscription},

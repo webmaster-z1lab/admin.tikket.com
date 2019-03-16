@@ -12,24 +12,32 @@
                 <thead>
                 <tr>
                     <th>Tag</th>
+                    <th>Código</th>
                     <th>Desconto</th>
-                    <th>Validade</th>
+                    <th>Ref. Ingresso</th>
+                    <th>Utilizações</th>
                     <th class="text-center">Ações</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr v-for="index in coupons">
                     <td>{{index.attributes.name}}</td>
+                    <td>{{index.attributes.code}}</td>
                     <td v-if="index.attributes.is_percentage">
                         {{index.attributes.discount}} %
                     </td>
                     <td v-else>
                         {{(index.attributes.discount / 100) | currency}}
                     </td>
-                    <td>{{index.attributes.valid_until}}</td>
+                    <td>{{index.relationships.entrance.attributes.name}}</td>
+                    <td>{{index.attributes.used}}</td>
                     <td class="table-action text-center">
-                        <a href="javascript:;" class="action-icon" @click="coupon(false, index)"><i class="mdi mdi-pencil"></i></a>
-                        <a href="javascript:;" class="action-icon" @click="deleteCoupon(index)" v-if="!index.attributes.is_locked"> <i class="mdi mdi-delete"></i></a>
+                        <a href="javascript:;" class="action-icon" @click="coupon(false, index)">
+                            <i class="mdi mdi-pencil"></i>
+                        </a>
+                        <a href="javascript:;" class="action-icon" @click="deleteCoupon(index)" v-if="!index.attributes.is_locked">
+                            <i class="mdi mdi-delete"></i>
+                        </a>
                     </td>
                 </tr>
                 </tbody>
@@ -76,7 +84,7 @@
               this.setCoupons(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}/coupons`)
         },
         methods: {
-            ...mapActions(['setCoupon', 'setCoupons', 'changeEvent', 'changeLoading']),
+            ...mapActions(['setCoupon', 'setCoupons', 'changeLoading']),
             coupon(new_ticket, coupon) {
                 if (new_ticket) {
                     this.setCoupon({
@@ -101,7 +109,7 @@
                         is_percentage: coupon.attributes.is_percentage,
                         validate_at: coupon.attributes.valid_until,
                         code: coupon.attributes.code,
-                        discount: coupon.attributes.discount,
+                        discount: coupon.attributes.is_percentage ? coupon.attributes.discount : coupon.attributes.discount / 100,
                         reuse: coupon.attributes.quantity
                     })
 

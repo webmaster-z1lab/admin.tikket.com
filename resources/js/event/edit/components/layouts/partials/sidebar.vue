@@ -33,8 +33,13 @@
             menu: {
                 'Painel de Dados': {
                     icon: "fas fa-solar-panel",
-                    routes: ['panel', 'edit-event'],
-                    index: 'panel'
+                    routes: ['panel', 'panel.edit-event', 'panel.access-level'],
+                    index: 'panel',
+                    sub_menu: true,
+                    sub_routes: [
+                        {name: 'Visão Geral', to: 'panel'},
+                        {name: 'Níveis de Acesso', to: 'panel.access-level'}
+                    ]
                 },
                 'Ingressos': {
                     icon: "fas fa-ticket-alt",

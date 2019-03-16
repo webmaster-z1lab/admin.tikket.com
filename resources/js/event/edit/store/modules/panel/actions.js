@@ -1,11 +1,14 @@
-export default {
-    /* Create Activity */
-    changeActivityForm(context, payload) {
-        context.commit('CHANGE_ACTIVITY_FORM', payload)
-    },
+import * as types from '../../mutation-types'
 
-    /* Group */
-    changeGroupForm(context, payload) {
-        context.commit('CHANGE_GROUP_FORM', payload)
+import {toSeek, exceptionError} from "../../../../../vendor/common";
+
+export default {
+    setAccesses(context, payload) {
+        toSeek(payload)
+            .then(response => {
+                context.dispatch('changeLoading', false)
+                context.commit(types.SET_ACCESSES, response.data)
+            })
+            .catch((error) => exceptionError(error))
     }
 }

@@ -3,7 +3,7 @@
         <div class="row justify-content-center">
             <sub-header />
 
-            <div :class="page === 'coupons' ? 'col-12' : 'col-8 justify-content-center'">
+            <div :class="page === 'accesses' ? 'col-12' : 'col-8 justify-content-center'">
                 <div class="card">
                     <component :is="page" @changePage="changePage"/>
                 </div>
@@ -14,23 +14,23 @@
 
 <script>
     import SubHeader from '../../layouts/partials/sub-header'
-    import Coupons from './partials/coupons'
-    import NewEditCoupon from './partials/new-edit-coupon'
+    import Accesses from './partials/accesses'
+    import NewAccess from './partials/new-access'
 
     import {mapState} from 'vuex'
 
     export default {
-        name: "coupon",
+        name: "accessLevel",
         $_veeValidate: {
             validator: 'new'
         },
         components: {
             SubHeader,
-            Coupons,
-            NewEditCoupon
+            Accesses,
+            NewAccess
         },
         data: () => ({
-            page: 'coupons'
+            page: 'accesses'
         }),
         computed: {
             ...mapState({
