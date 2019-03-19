@@ -140,11 +140,11 @@
                                 </div>
                             </div>
                             <div class="form-group col-md-2 align-self-center text-center" v-if="event.attributes.fee_is_hidden">
-                                <label class="col-form-label"> Valor Cobrado</label>
+                                <label class="col-form-label"> Valor Final</label>
                                 <h5 class="text-success">{{amount_ticket(lot.value).amount | currency}}</h5>
                             </div>
                             <div class="form-group col-md-2 align-self-center text-center" v-else>
-                                <label class="col-form-label"> Valor Cobrado</label>
+                                <label class="col-form-label"> Valor Final</label>
                                 <h5 class="text-success">
                                     {{amount_ticket(lot.value).value | currency}} (+ taxa de serviço de {{(amount_ticket(lot.value).fee / 100) | currency }})
                                 </h5>

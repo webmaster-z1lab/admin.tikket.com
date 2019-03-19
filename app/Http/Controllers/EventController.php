@@ -12,14 +12,14 @@ class EventController extends Controller
      */
     public function myEvents(): View
     {
-        $events = (new ApiService('events/my_events', 'GET'))->find()->collect();
+        $events = (new ApiService('permissions', 'GET'))->find()->collect();
 
         $events_active = collect($events)->filter(function ($item, $key) {
-            return in_array($item->attributes->status, ['draft', 'completed', 'published']);
+            return in_array($item->relationships->event->attributes->status, ['draft', 'completed', 'published']);
         })->all();
 
         $events_past = collect($events)->filter(function ($item, $key) {
-            return in_array($item->attributes->status, ['finalized', 'canceled']);
+            return in_array($item->relationships->event->attributes->status, ['finalized', 'canceled']);
         })->all();
 
         \Meta::set('title', 'Eventos');

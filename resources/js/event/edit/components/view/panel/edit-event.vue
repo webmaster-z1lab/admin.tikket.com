@@ -57,9 +57,6 @@
             InfoBase,
             Location
         },
-        data: () => ({
-
-        }),
         computed: {
             ...mapState({
                 event: state => state.event

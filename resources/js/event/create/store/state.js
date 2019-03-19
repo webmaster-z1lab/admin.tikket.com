@@ -1,7 +1,9 @@
 export default {
     start_event: true,
     event: {
-        attributes: {},
+        attributes: {
+            is_public: true
+        },
         relationships: {
             entrances: [],
             producer: {
