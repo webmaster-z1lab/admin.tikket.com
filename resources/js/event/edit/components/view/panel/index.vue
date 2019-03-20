@@ -12,77 +12,22 @@
 
             <div class="col-12">
                 <div class="row">
-                    <div class="col-md-6 col-xl-3">
+                    <div class="col-md-6 col-xl-3" v-for="(report, key) in reports">
+                        {{sendReport(report)}}
                         <div class="card">
                             <div class="card-body">
                                 <div class="row align-items-center">
                                     <div class="col-6">
-                                        <h5 class="text-muted font-weight-normal mt-0 text-truncate" title="New Leads">
-                                            Valor das Vendas
+                                        <h5 class="text-muted font-weight-normal mt-0 text-truncate" :title="report.name">
+                                            {{report.name}}
                                         </h5>
-                                        <h3 class="my-2 py-1">R$ 0</h3>
+                                        <h3 class="my-2 py-1" v-if="report.exhibition === 'money'">{{report.value | currency}}</h3>
+                                        <h3 class="my-2 py-1" v-else>{{report.value}}</h3>
                                     </div>
                                     <div class="col-6">
                                         <div class="text-right" style="position: relative;">
-                                            <apexchart class="apex-charts" height="60" type="line" :options="options" :series="series"></apexchart>
+                                            <apexchart class="apex-charts" height="60" type="line" :options="report.options" :series="report.series"></apexchart>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 col-xl-3">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row align-items-center">
-                                    <div class="col-6">
-                                        <h5 class="text-muted font-weight-normal mt-0 text-truncate" title="New Leads">
-                                            Valor de Repasse
-                                        </h5>
-                                        <h3 class="my-2 py-1">3,254</h3>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="text-right" style="position: relative;">
-                                            <apexchart class="apex-charts" height="60" type="line" :options="options" :series="series"></apexchart>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 col-xl-3">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row align-items-center">
-                                    <div class="col-6">
-                                        <h5 class="text-muted font-weight-normal mt-0 text-truncate" title="Booked Revenue">Pedidos Canceladas</h5>
-                                        <h3 class="my-2 py-1">$253k</h3>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="text-right" style="position: relative;">
-                                            <apexchart class="apex-charts" height="60" type="line" :options="options" :series="series"></apexchart>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="col-md-6 col-xl-3">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row align-items-center">
-                                    <div class="col-6">
-                                        <h5 class="text-muted font-weight-normal mt-0 text-truncate" title="Deals">
-                                            Ingressos Vendidos
-                                        </h5>
-                                        <h3 class="my-2 py-1">861</h3>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="text-right" style="position: relative;"></div>
                                     </div>
                                 </div>
                             </div>
@@ -155,7 +100,7 @@
     import SubHeader from '../../layouts/partials/sub-header'
 
     import {mapActions, mapState} from 'vuex'
-    import {sendAPIDELETE, sendAPIPATCH, exceptionError, sendAlert} from "../../../../../vendor/common";
+    import {sendAPIDELETE, sendAPIPATCH, exceptionError, sendAlert, toSeek} from "../../../../../vendor/common";
 
     export default {
         name: "index",
@@ -164,42 +109,180 @@
             Apexchart
         },
         data: () => ({
-            options: {
-                chart: {
-                    sparkline: {
-                        enabled: !0
-                    }
-                },
-                stroke: {
-                    width: 2,
-                    curve: "smooth"
-                },
-                markers: {
-                    size: 0
-                },
-                colors: ["#2dd4a4"],
-                tooltip: {
-                    fixed: {
-                        enabled: !1
-                    },
-                    x: {
-                        show: !1
-                    },
-                    y: {
-                        title: {
-                            formatter: function(e) {
-                                return ""
+            reports: {
+                sales: {
+                    url: 'sales',
+                    name: 'Valor das Vendas',
+                    chart: 'line',
+                    exhibition: 'money',
+                    series: [{
+                        data: []
+                    }],
+                    value: 0,
+                    options: {
+                        chart: {
+                            sparkline: {
+                                enabled: !0
+                            }
+                        },
+                        stroke: {
+                            width: 2,
+                            curve: "smooth"
+                        },
+                        markers: {
+                            size: 0
+                        },
+                        colors: ["#2dd4a4"],
+                        tooltip: {
+                            fixed: {
+                                enabled: !1
+                            },
+                            x: {
+                                show: !1
+                            },
+                            y: {
+                                title: {
+                                    formatter: function(e) {
+                                        return ""
+                                    }
+                                }
+                            },
+                            marker: {
+                                show: !1
                             }
                         }
-                    },
-                    marker: {
-                        show: !1
+                    }
+                },
+                fee: {
+                    url: 'fee',
+                    name: 'Valor de Repasse',
+                    chart: 'line',
+                    exhibition: 'money',
+                    series: [{
+                        data: []
+                    }],
+                    value: 0,
+                    options: {
+                        chart: {
+                            sparkline: {
+                                enabled: !0
+                            }
+                        },
+                        stroke: {
+                            width: 2,
+                            curve: "smooth"
+                        },
+                        markers: {
+                            size: 0
+                        },
+                        colors: ["#39afd1"],
+                        tooltip: {
+                            fixed: {
+                                enabled: !1
+                            },
+                            x: {
+                                show: !1
+                            },
+                            y: {
+                                title: {
+                                    formatter: function(e) {
+                                        return ""
+                                    }
+                                }
+                            },
+                            marker: {
+                                show: !1
+                            }
+                        }
+                    }
+                },
+                canceled: {
+                    url: 'canceled',
+                    name: 'Pedidos Canceladas',
+                    chart: 'line',
+                    exhibition: 'int',
+                    series: [{
+                        data: []
+                    }],
+                    value: 0,
+                    options: {
+                        chart: {
+                            sparkline: {
+                                enabled: !0
+                            }
+                        },
+                        stroke: {
+                            width: 2,
+                            curve: "smooth"
+                        },
+                        markers: {
+                            size: 0
+                        },
+                        colors: ["#fa5c7c"],
+                        tooltip: {
+                            fixed: {
+                                enabled: !1
+                            },
+                            x: {
+                                show: !1
+                            },
+                            y: {
+                                title: {
+                                    formatter: function(e) {
+                                        return ""
+                                    }
+                                }
+                            },
+                            marker: {
+                                show: !1
+                            }
+                        }
+                    }
+                },
+                tickets: {
+                    url: 'tickets',
+                    name: 'Ingressos Vendidos',
+                    chart: 'line',
+                    exhibition: 'int',
+                    series: [{
+                        data: []
+                    }],
+                    value: 0,
+                    options: {
+                        chart: {
+                            sparkline: {
+                                enabled: !0
+                            }
+                        },
+                        stroke: {
+                            width: 2,
+                            curve: "smooth"
+                        },
+                        markers: {
+                            size: 0
+                        },
+                        colors: ["#6000a7"],
+                        tooltip: {
+                            fixed: {
+                                enabled: !1
+                            },
+                            x: {
+                                show: !1
+                            },
+                            y: {
+                                title: {
+                                    formatter: function(e) {
+                                        return ""
+                                    }
+                                }
+                            },
+                            marker: {
+                                show: !1
+                            }
+                        }
                     }
                 }
-            },
-            series: [{
-                data: [0, 0]
-            }],
+            }
         }),
         computed: {
             ...mapState({
@@ -324,6 +407,14 @@
                             })
                     }
                 })
+            },
+            sendReport(report) {
+                toSeek(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}/reports/${report.url}`).then(
+                    response => {
+                        report.value = response.data.total
+                        report.series[0].data = response.data.last_days
+                    }
+                )
             }
         }
     }
