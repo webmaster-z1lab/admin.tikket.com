@@ -4,7 +4,7 @@
             <sub-header>
                 <button type="button" class="btn btn-primary" v-if="event.attributes.status === 'completed'"
                         @click="published()">Publicar Evento</button>
-                <button type="button" class="btn btn-primary" v-if="event.attributes.status === 'published' && !event.attributes.is_locked"
+                <button type="button" class="btn btn-warning" v-if="event.attributes.status === 'published' && !event.attributes.is_locked"
                         @click="unpublish()">Despublicar Evento</button>
                 <button type="button" class="btn btn-danger"  v-if="event.attributes.status === 'published' && event.attributes.is_locked"
                         @click="canceled()">Cancelar Evento</button>
@@ -338,6 +338,7 @@
                             sendAPIDELETE(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}`, {})
                                 .then(response => {
                                     this.changeLoading(false)
+                                    this.changeEvent(response.data.data)
 
                                     swal({
                                         title: 'Evento Cancelado',
@@ -366,6 +367,7 @@
                 sendAPIPATCH(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}/publish`, {})
                     .then(response => {
                         this.changeLoading(false)
+                        this.changeEvent(response.data.data)
 
                         sendAlert({
                             title: 'Tudo Certo!',
@@ -381,7 +383,7 @@
             unpublish() {
                 swal({
                     title: 'Você tem certeza?',
-                    text: "Ao fazer isso seu evento não poderá ter incrições nem ficará mais em exibição em nosso site!",
+                    text: "Ao fazer isso seu evento não poderá ter incrições nem será encontrado em nosso site!",
                     type: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -394,6 +396,7 @@
                         sendAPIDELETE(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}`, {})
                             .then(response => {
                                 this.changeLoading(false)
+                                this.changeEvent(response.data.data)
 
                                 sendAlert({
                                     title: 'Tudo Certo!',

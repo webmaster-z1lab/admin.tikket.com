@@ -234,7 +234,7 @@ export async function sendAPIPOST(url, params) {
  */
 export async function sendAPIDELETE(url, config = {}) {
     let promise = new Promise((resolve, reject) => {
-        HTTP.patch(url, config).then(result => resolve(result)).catch((error) => reject(error))
+        HTTP.delete(url, config).then(result => resolve(result)).catch((error) => reject(error))
     });
 
     return await promise
@@ -247,7 +247,7 @@ export async function sendAPIDELETE(url, config = {}) {
  */
 export async function sendAPIPATCH(url, config = {}) {
     let promise = new Promise((resolve, reject) => {
-        HTTP.delete(url, config).then(result => resolve(result)).catch((error) => reject(error))
+        HTTP.patch(url, config).then(result => resolve(result)).catch((error) => reject(error))
     });
 
     return await promise
