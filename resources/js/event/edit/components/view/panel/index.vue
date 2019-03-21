@@ -240,7 +240,7 @@
                     }
                 },
                 tickets: {
-                    url: 'tickets',
+                    url: 'sold-tickets',
                     name: 'Ingressos Vendidos',
                     chart: 'line',
                     exhibition: 'int',

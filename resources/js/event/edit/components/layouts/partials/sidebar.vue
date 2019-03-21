@@ -9,7 +9,7 @@
                 <li class="side-nav-title side-nav-item">Navegação</li>
 
                 <li class="side-nav-item" v-for="(item, key, index) in menu">
-                    <a href="javascript: void(0);" class="side-nav-link" @click="pushIndex(item.index)">
+                    <a href="javascript: void(0);" class="side-nav-link" @click="pushIndex(item)">
                         <i :class="item.icon"></i>
                         <span> {{key}} </span>
                         <span class="menu-arrow" v-if="item.sub_menu"></span>
@@ -82,7 +82,9 @@
                 }
             },
             pushIndex(value){
-                this.$router.push({name: value})
+                if(!value.sub_menu) {
+                    this.$router.push({name: value})
+                }
             }
         }
     }
