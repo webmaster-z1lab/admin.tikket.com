@@ -1,14 +1,19 @@
 <template>
     <div class="left-side-menu">
         <div class="slimscroll-menu">
-            <a href="" class="logo text-center">
-                <img src="https://cdn.z1lab.com.br/images/tikket/ticket_gradient.png" alt="" width="45px">
+            <a href="/" class="logo text-center">
+                <span class="logo-lg" style="font-size: 2.25rem; font-weight: 700; color: white">
+                    <i class="fas fa-ticket-alt mr-1"></i> Tikket
+                </span>
+                    <span class="logo-sm" style="font-size: 2.25rem; font-weight: 700; color: white">
+                    <i class="fas fa-ticket-alt mr-1"></i>
+                </span>
             </a>
 
             <ul class="metismenu side-nav">
                 <li class="side-nav-title side-nav-item">Navegação</li>
 
-                <li class="side-nav-item" v-for="(item, key, index) in menu">
+                <li class="side-nav-item" v-for="(item, key) in menu">
                     <a href="javascript: void(0);" class="side-nav-link" @click="pushIndex(item)">
                         <i :class="item.icon"></i>
                         <span> {{key}} </span>
@@ -58,7 +63,7 @@
                     sub_menu: true,
                     sub_routes: [
                         {name: 'Participantes', to: 'participant'},
-                        {name: 'Inscrição Manual', to: 'participant.manual-inscription'}
+                        {name: 'Pedido Manual', to: 'participant.manual-inscription'}
                     ]
                 },
                 'Check-In': {

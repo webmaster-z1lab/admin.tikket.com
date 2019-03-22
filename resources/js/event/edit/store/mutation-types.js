@@ -7,3 +7,6 @@ export const SET_COUPON = 'SET_COUPON'
 export const SET_COUPONS = 'SET_COUPONS'
 
 export const SET_ACCESSES= 'SET_ACCESSES'
+
+export const SET_ORDER= 'SET_ORDER'
+export const SET_ITEMS= 'SET_ITEMS'

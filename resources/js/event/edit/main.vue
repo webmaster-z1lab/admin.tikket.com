@@ -2,7 +2,7 @@
     <div>
         <loading-component :is-loading="isLoading"></loading-component>
         <component :is="layout">
-            <router-view v-if="!isLoading"/>
+            <router-view/>
         </component>
     </div>
 </template>
