@@ -1,8 +1,8 @@
 <template>
     <div class="tab-content b-0 mb-0">
         <div class="tab-pane show active my-3">
-            <div class="row" id="printable">
-                <div class="col-12">
+            <div class="row justify-content-center" id="printable">
+                <div class="col-8">
                     <div class="card">
                         <div class="card-body">
                             <div class="clearfix">
@@ -51,10 +51,10 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr v-for="(ticket, index) in groupTickets">
-                                                <td>{{index + 1}}</td>
+                                            <tr v-for="(ticket, index, key) in groupTickets">
+                                                <td>{{key + 1}}</td>
                                                 <td>
-                                                    <b>{{ticket[0].name}}</b> <br>
+                                                    <b>{{ticket[0].entrance_name}}</b> <br>
                                                     {{ticket[0].lot ? `Lote ${ticket[0].lot}` : '' }}
                                                 </td>
                                                 <td>{{ticket.length}}</td>
@@ -72,7 +72,7 @@
                                     <div class="clearfix pt-3">
                                         <h6 class="text-muted">Notas:</h6>
                                         <small>
-                                            Caso tenha cadastrado informações do cliente ao ingresso o mesmo terá todas as funcionalidades de
+                                            Caso as informações do cliente tenham sido cadastradas no ingresso o mesmo terá todas as funcionalidades de
                                             segurança do ingresso que nosso sistema oferece,
                                             deve apenas ter uma conta ou se cadastrar com uma conta no nosso sistema com o mesmo email fornecido no ingresso.
                                         </small>
@@ -80,7 +80,7 @@
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="float-right mt-3 mt-sm-0">
-                                        <p><b>Valor Total:</b> <span class="float-right">$4120.00</span></p>
+                                        <p><b>Valor Total: </b> <span class="float-right">{{((order.attributes.amount + order.attributes.fee) / 100) | currency}}</span></p>
                                     </div>
                                     <div class="clearfix"></div>
                                 </div>
@@ -134,8 +134,8 @@
         computed: {
             ...mapState({
                 event: state => state.event,
-                order: state => state.participant.order,
-                items: state => state.participant.items
+                order: state => state.order,
+                items: state => state.items
             }),
             now() {
                 return moment().format('l');

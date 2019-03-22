@@ -19,12 +19,12 @@
                             </td>
                             <td>{{entrance.attributes.lot.available}}</td>
                             <td>{{formatDataTime(entrance.attributes.lot.finishes_at)}}</td>
-                            <td>{{(entrance.attributes.lot.value / 100) | currency}}</td>
+                            <td>{{(entrance.attributes.lot.price / 100) | currency}}</td>
                             <td>
                                 <select class="form-control" v-if="!entrance.attributes.lot.is_sold_out" @change="select" :class="validate ? 'is-invalid' : ''"
                                 :data-id="entrance.id">
                                     <option selected value="0">0</option>
-                                    <option :value="JSON.stringify({quant: index, entrance: entrance})" v-for="index in quantTickets(entrance.attributes.lot.available)">
+                                    <option :value="JSON.stringify({quant: index, entrance: entrance})" v-for="index in entrance.attributes.max_buy">
                                         {{index}}
                                     </option>
                                 </select>
@@ -53,7 +53,7 @@
     import moment from 'moment'
 
     import {mapActions, mapState} from 'vuex'
-    import {sendAlert} from "../../../../../../vendor/common";
+    import {sendAlert} from "../../../vendor/common";
 
     export default {
         name: "choiceTicket",
@@ -92,13 +92,10 @@
                             name: '',
                             email: '',
                             document: '',
-                            price: value.entrance.attributes.lot.value
+                            price: value.entrance.attributes.lot.price
                         })
                     }
                 }
-            },
-            quantTickets(available) {
-                return available > 15 ? 15 : available
             },
             formatDataTime(date){
                 return moment(date, "YYYY-MM-DD[T]HH:mm:ss").format('DD/MM/YYYY HH:mm')

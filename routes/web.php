@@ -20,4 +20,5 @@ Route::prefix('evento')->as('event.')->middleware('auth')->group(function ()
     Route::get('/meus-eventos', 'EventController@myEvents')->name('my-events');
     Route::get('/novo-evento', 'EventController@create')->name('create');
     Route::get('/{id}/{vue?}', 'EventController@administration')->where('id', '\b[0-9a-fA-F]{24}\b')->where('vue', '.*')->name('edit');
+    Route::get('/pedido-manual/{id}', 'EventController@orderManual')->where('id', '\b[0-9a-fA-F]{24}\b')->name('order-manual');
 });

@@ -3,6 +3,11 @@
         <div class="tab-pane show active my-3">
             <div class="row justify-content-center">
                 <div class="col-8">
+                    <div class="text-center my-4">
+                        <h2 class="mt-0"><i class="fas fa-money-bill"></i></h2>
+                        <h4 class="mt-0">Valor do Pedido: {{ (amountOrder / 100) | currency}}</h4>
+                    </div>
+
                     <div class="card" v-for="(item, index) in items">
                         <div class="card-body">
                             <h4 class="header-title">Ingresso nº {{ index + 1}}</h4>
@@ -72,7 +77,7 @@
     import swal from 'sweetalert2'
 
     import {mapActions, mapState} from 'vuex'
-    import {sendAPIPOST, exceptionError, sendAlert} from "../../../../../../vendor/common";
+    import {sendAPIPOST, exceptionError, sendAlert} from "../../../vendor/common";
 
     export default {
         name: "identification",
@@ -83,8 +88,11 @@
         computed: {
             ...mapState({
                 event: state => state.event,
-                items: state => state.participant.items
-            })
+                items: state => state.items
+            }),
+            amountOrder() {
+                return _.sumBy(this.items, 'price')
+            }
         },
         methods: {
             ...mapActions(['changeLoading', 'setOrder', 'setItems']),

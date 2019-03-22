@@ -5,5 +5,5 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ mix("js/event/permission/main.js") }}"></script>
+    <script src="{{ mix("js/event/order-manual/main.js") }}"></script>
 @endpush

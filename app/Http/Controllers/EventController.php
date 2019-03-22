@@ -52,5 +52,18 @@ class EventController extends Controller
             ->with('event', $event);
     }
 
+    /**
+     * @param string $id
+     * @return View
+     */
+    public function orderManual(string $id): View
+    {
+        $event = (new ApiService('events', 'GET'))->find($id)->collect();
 
+        \Meta::set('title', $event->attributes->name);
+        \Meta::set('description', $event->attributes->description);
+
+        return View('event.order-manual')
+            ->with('event', $event);
+    }
 }
