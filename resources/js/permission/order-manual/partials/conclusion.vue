@@ -28,7 +28,7 @@
                                         </p>
                                     </div>
                                 </div>
-                                <div class="col-sm-4">
+                                <div class="col-sm-4 offset-sm-2">
                                     <div class="mt-3 float-sm-right">
                                         <p class="font-13"><strong>Data do Pedido: </strong> &nbsp;&nbsp;&nbsp; {{now}}</p>
                                         <p class="font-13"><strong>Status do Pedido: </strong> <span class="badge badge-success float-right">Pago</span></p>

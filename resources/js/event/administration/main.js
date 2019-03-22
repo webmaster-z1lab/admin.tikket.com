@@ -43,8 +43,8 @@ Vue.use(VueCurrencyFilter,
     })
 
 new Vue({
-    el: '#vue-event-edit',
-    name: 'VueEventEdit',
+    el: '#vue-event-administration',
+    name: 'VueEventAdministration',
     render(h) {
         return h(VueMain, {props: {data: this.$el.attributes.data.value}})
     },

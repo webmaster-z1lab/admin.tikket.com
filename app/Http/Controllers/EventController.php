@@ -41,14 +41,14 @@ class EventController extends Controller
      * @param string $id
      * @return View
      */
-    public function edit(string $id): View
+    public function administration(string $id): View
     {
         $event = (new ApiService('events', 'GET'))->find($id)->collect();
 
         \Meta::set('title', $event->attributes->name);
         \Meta::set('description', $event->attributes->description);
 
-        return View('event.edit')
+        return View('event.administration')
             ->with('event', $event);
     }
 
