@@ -153,8 +153,8 @@
                         }
                     }
                 },
-                fee: {
-                    url: 'fee',
+                netValue: {
+                    url: 'net-value',
                     name: 'Valor de Repasse',
                     chart: 'line',
                     exhibition: 'money',
@@ -198,7 +198,7 @@
                 },
                 canceled: {
                     url: 'canceled',
-                    name: 'Pedidos Canceladas',
+                    name: 'Pedidos Cancelados',
                     chart: 'line',
                     exhibition: 'int',
                     series: [{
@@ -414,8 +414,16 @@
             sendReport(report) {
                 toSeek(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}/reports/${report.url}`).then(
                     response => {
-                        report.value = response.data.total
-                        report.series[0].data = response.data.last_days
+                        if (report.exhibition === 'money') {
+                            report.value = (response.data.total / 100)
+                            report.series[0].data = _.map(response.data.last_days, function (n) {
+                                return n / 100
+                            })
+                        } else {
+                            report.value = response.data.total
+                            report.series[0].data = response.data.last_days
+                        }
+
                     }
                 )
             }

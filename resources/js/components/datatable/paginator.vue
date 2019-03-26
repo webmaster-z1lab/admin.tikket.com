@@ -1,25 +1,32 @@
 <template>
     <div class="table-responsive-sm">
-        <slot :data="data" :page-number="pageNumber"></slot>
+        <slot />
 
-        <div class="row justify-content-between">
+        <div class="row justify-content-between" v-if="active">
             <div class="col-sm-12 col-md-4">
-                <div class="dataTables_info" id="basic-datatable_info" role="status" aria-live="polite">Showing 1 to 10 of 57 entries</div>
+                <div class="dataTables_info" id="basic-datatable_info">Mostrando de {{meta.from}} a {{meta.to}} de {{meta.total}} items</div>
             </div>
             <div class="col-sm-12 col-md-6">
                 <ul class="pagination pagination-rounded justify-content-end">
-                    <li class="paginate_button page-item previous disabled">
-                        <a href="#" aria-controls="basic-datatable" data-dt-idx="0" tabindex="0" class="page-link">
+                    <li class="paginate_button page-item previous" :class="links.prev ? '' : 'disabled'">
+                        <button type="button" @click="changePage(links.prev)" class="page-link">
                             <i class="mdi mdi-chevron-left"></i>
-                        </a>
+                        </button>
                     </li>
-                    <li class="paginate_button page-item active">
-                        <a href="#" aria-controls="basic-datatable" data-dt-idx="1" tabindex="0" class="page-link">1</a>
+                    <li class="paginate_button page-item" v-if="showPrevRange">
+                        <a href="javascript:;" class="page-link">...</a>
                     </li>
-                    <li class="paginate_button page-item next">
-                        <a href="#" aria-controls="basic-datatable" data-dt-idx="7" tabindex="0" class="page-link">
+                    <li class="paginate_button page-item" v-for="page in pages" :class="page === meta.current_page ? 'active' : ''">
+                        <button type="button" class="page-link" @click="changePage(meta.path, {page: page})" v-if="page !== meta.current_page">{{page}}</button>
+                        <button type="button" class="page-link" v-else>{{page}}</button>
+                    </li>
+                    <li class="paginate_button page-item" v-if="showNextRange">
+                        <a href="javascript:;" class="page-link">...</a>
+                    </li>
+                    <li class="paginate_button page-item next" :class="links.next ? '' : 'disabled'">
+                        <button type="button" @click="changePage(links.next)" class="page-link">
                             <i class="mdi mdi-chevron-right"></i>
-                        </a>
+                        </button>
                     </li>
                 </ul>
             </div>
@@ -28,72 +35,79 @@
 </template>
 
 <script>
-    // import filterBy from "../../utilities/filter-by.js";
-    // import page from "../../utilities/page.js";
+    import {toSeek} from "../../vendor/common";
 
     export default {
         props: {
-            source: {
-                type: Array,
-                default: () => []
+            active: {
+                default: true
             },
-            pageSize: {
-                type: Number,
-                default: 25
+            links: {
+                required: true,
+                default: () => ({
+                    first: null,
+                    last: null,
+                    next: null,
+                    prev: null
+                })
             },
-            filter: {
-                type: String
+            meta: {
+                required: true,
+                default: () => ({
+                    current_page: 0,
+                    from: 0,
+                    last_page: 0,
+                    path: "",
+                    per_page: 0,
+                    to: 0,
+                    total: 0
+                })
             }
         },
         data() {
             return {
-                index: 0
-            };
+                range_pages: 10,
+                containers: 0,
+                current_containers: 0
+            }
         },
         computed: {
             pages() {
-                let data = this.source;
+                if (this.meta.last_page <= this.range_pages) {
+                    return this.meta.last_page
+                } else {
+                    let arr = []
 
-                if (this.filter) {
-                    data = filterBy(data, this.filter);
-                }
+                    for(let i = 1; i <= this.meta.last_page; i++) {
+                        if(_.isInteger(i / (this.range_pages - 1))) {
+                            arr.push(i)
+                            arr.push(i + 1)
+                        }
 
-                let pages = page(data, this.pageSize);
+                        arr.push(i)
+                    }
 
-                // need to reset the page number if the data length changes
-                // otherwise the index will be outside the bounds of the data
-                if (this.pageNumber > pages.length) {
-                    this.pageNumber = 1;
-                }
+                    this.containers = Math.ceil(this.meta.last_page / this.range_pages)
+                    this.current_containers = Math.ceil(this.meta.current_page / (this.range_pages - 1))
 
-                return pages;
-            },
-            pageNumber: {
-                get() {
-                    return this.index + 1;
-                },
-                set(value) {
-                    this.index = value - 1;
-                    this.$emit("page-changed", value);
+                    return _.chunk(arr, this.range_pages)[(this.current_containers - 1)]
                 }
             },
-            data() {
-                return this.pages[this.index];
+            showPrevRange() {
+                return this.current_containers > 1
+            },
+            showNextRange() {
+                return this.current_containers < this.containers
             }
         },
         methods: {
-            movePrevious() {
-                this.pageNumber -= this.pageNumber > 1 ? 1 : 0;
-            },
-            moveNext() {
-                this.pageNumber += (this.pageNumber != this.pages.length) ? 1 : 0;
-            },
-            moveTo(pageNumber) {
-                if (pageNumber > 0 && pageNumber <= this.pages.length) {
-                    this.pageNumber = pageNumber;
-                }
+            changePage(page, params = null) {
+                toSeek(page, params).then(
+                    response => {
+                        this.$emit('change-paginate', response)
+                    }
+                )
             }
         }
-
     }
 </script>

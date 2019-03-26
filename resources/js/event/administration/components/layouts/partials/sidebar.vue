@@ -88,7 +88,7 @@
             },
             pushIndex(value){
                 if(!value.sub_menu) {
-                    this.$router.push({name: value})
+                    this.$router.push({name: value.index})
                 }
             }
         }
