@@ -7,7 +7,7 @@
                         <h5 class="text-muted font-weight-normal mt-0 text-truncate" :title="report.name">
                             <i :class="`${report.icon} mr-1`" :style="`color: ${report.color};`" v-if="report.icon"></i> {{report.name}}
                         </h5>
-                        <h3 class="my-2 py-1" v-if="report.type === 'money'">{{report.value | currency}}</h3>
+                        <h3 class="my-2 py-1" v-if="report.type === 'money'">{{value | currency}}</h3>
                         <h3 class="my-2 py-1" v-else>{{value}}</h3>
                     </div>
                     <div class="col-6">

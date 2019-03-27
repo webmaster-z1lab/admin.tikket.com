@@ -12,7 +12,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="header-title">Histórico de Participantes</h4>
+                        <h4 class="header-title mb-4">Histórico de Participantes</h4>
 
                         <paginator :active="showPaginate" :meta="paginate.meta" :links="paginate.links" @changePaginate="changePaginate">
                             <div class="row">
@@ -25,7 +25,7 @@
                             </div>
                             <div class="row my-2">
                                 <div class="col-12">
-                                    <table class="table table-hover table-centered mb-0">
+                                    <table class="table table-sm table-hover table-centered mb-0">
                                         <thead>
                                         <tr>
                                             <th>Status</th>
@@ -104,7 +104,7 @@
                     url: 'canceled-tickets',
                     col: 'col-4',
                     icon: 'fas fa-users',
-                    name: 'Incrições Canceladas',
+                    name: 'Inscrições Canceladas',
                     color: '#fa5c7c',
                     chart: 'line',
                     type: 'int'
@@ -147,9 +147,9 @@
             },
             translateTypeBuy(type) {
                 let obj = {
-                    admin: 'Incrição de Administrador',
-                    pdv: 'Incrição PVD',
-                    online: 'Incrição Online'
+                    admin: 'Inscrição de Administrador',
+                    pdv: 'Inscrição PVD',
+                    online: 'Inscrição Online'
                 }
 
                 return obj[type]
