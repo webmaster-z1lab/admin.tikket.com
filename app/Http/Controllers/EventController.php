@@ -40,9 +40,12 @@ class EventController extends Controller
     /**
      * @param string $id
      * @return View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function administration(string $id): View
     {
+        $this->authorize('admin', $id);
+
         $event = (new ApiService('events', 'GET'))->find($id)->collect();
 
         \Meta::set('title', $event->attributes->name);
@@ -55,9 +58,12 @@ class EventController extends Controller
     /**
      * @param string $id
      * @return View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function orderManual(string $id): View
     {
+        $this->authorize('pdv', $id);
+
         $event = (new ApiService('events', 'GET'))->find($id)->collect();
 
         \Meta::set('title', $event->attributes->name);

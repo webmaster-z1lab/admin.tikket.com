@@ -14,7 +14,7 @@
                     <div class="card-body">
                         <h4 class="header-title mb-4">Histórico de Participantes</h4>
 
-                        <paginator :active="showPaginate" :meta="paginate.meta" :links="paginate.links" @changePaginate="changePaginate">
+                        <paginator :active="showPaginate" :meta="participants.meta" :links="participants.links" @changePaginate="changeParticipants">
                             <div class="row">
                                 <div class="col-sm-12 col-md-6 col-xl-4">
                                     <div class="form-group mb-3">
@@ -39,17 +39,32 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr v-for="value in paginate.data">
-                                            <td>
-                                                <i class="mdi mdi-circle ml-1" :class="colorStatus(value.status)"></i>
+                                        <tr v-if="checkParticipants">
+                                            <td colspan="8">
+                                                <div class="text-center mt-2">
+                                                    <figure class="mx-auto mb-4">
+                                                        <img src="http://127.0.0.5:8000/svg/undraw_mobile_marketing_iqbr.svg" alt="SVG" width="20%">
+                                                    </figure>
+
+                                                    <div class="mb-4">
+                                                        <h1 class="h3"><strong>Nenhum Participante encontrado</strong></h1>
+
+                                                        <p class="h5">Divulgue seu evento para mais pessoas poderem participar.</p>
+                                                    </div>
+                                                </div>
                                             </td>
-                                            <td>{{value.name}}</td>
-                                            <td>{{value.email}}</td>
-                                            <td>{{value.code}}</td>
-                                            <td>{{value.entrance}}</td>
-                                            <td>{{value.order}}</td>
-                                            <td>{{translateTypeBuy(value.channel)}}</td>
-                                            <td>{{value.created_at}}</td>
+                                        </tr>
+                                        <tr v-for="participant in participants.data" v-else>
+                                            <td>
+                                                <i class="mdi mdi-circle ml-1" :class="colorStatus(participant.status)"></i>
+                                            </td>
+                                            <td>{{participant.name}}</td>
+                                            <td>{{participant.email}}</td>
+                                            <td>{{participant.code}}</td>
+                                            <td>{{participant.entrance}}</td>
+                                            <td>{{participant.order}}</td>
+                                            <td>{{translateTypeBuy(participant.channel)}}</td>
+                                            <td>{{participant.created_at}}</td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -79,7 +94,7 @@
             ChartComponent
         },
         data: () => ({
-            paginate: {},
+            participants: {},
             search: '',
             reports: {
                 sold: {
@@ -130,11 +145,14 @@
             }),
             showPaginate() {
                 return this.search !== ''
+            },
+            checkParticipants() {
+                return _.isEmpty(this.participants.data)
             }
         },
         methods: {
-            changePaginate(paginate) {
-                this.paginate = paginate
+            changeParticipants(participants) {
+                this.participants = participants
             },
             colorStatus(status) {
                 let obj = {
@@ -158,7 +176,7 @@
         mounted() {
             toSeek(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}/reports/participants`).then(
                 response => {
-                    this.changePaginate(response)
+                    this.changeParticipants(response)
                 }
             )
         }

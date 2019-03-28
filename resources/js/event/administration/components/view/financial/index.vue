@@ -90,7 +90,7 @@
                     <div class="card-body">
                         <h4 class="header-title mb-4">Histórico de Pedidos</h4>
 
-                        <paginator :active="showPaginate" :meta="paginate.meta" :links="paginate.links" @changePaginate="changePaginate">
+                        <paginator :active="showPaginate" :meta="orders.meta" :links="orders.links" @changePaginate="changeOrders">
                             <div class="row">
                                 <div class="col-sm-12 col-md-6 col-xl-4">
                                     <div class="form-group mb-3">
@@ -114,17 +114,32 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr v-for="value in paginate.data">
-                                            <td>
-                                                <i class="mdi mdi-circle ml-1" :class="colorStatus(value.status)"></i>
+                                        <tr v-if="checkOrders">
+                                            <td colspan="7">
+                                                <div class="text-center mt-2">
+                                                    <figure class="mx-auto mb-4">
+                                                        <img src="http://127.0.0.5:8000/svg/undraw_payments_21w6.svg" alt="SVG" width="20%">
+                                                    </figure>
+
+                                                    <div class="mb-4">
+                                                        <h1 class="h3"><strong>Nenhum Pedido Realizado</strong></h1>
+
+                                                        <p class="h5">Divulgue seu evento para mais pessoas poderem participar.</p>
+                                                    </div>
+                                                </div>
                                             </td>
-                                            <td>{{value.name}}</td>
-                                            <td>{{value.order}}</td>
-                                            <td>{{translateTypeBuy(value.channel)}}</td>
-                                            <td>{{value.created_at}}</td>
-                                            <td>{{(value.price / 100) | currency}}</td>
+                                        </tr>
+                                        <tr v-for="order in orders.data" v-else>
+                                            <td>
+                                                <i class="mdi mdi-circle ml-1" :class="colorStatus(order.status)"></i>
+                                            </td>
+                                            <td>{{order.name}}</td>
+                                            <td>{{order.order}}</td>
+                                            <td>{{translateTypeBuy(order.channel)}}</td>
+                                            <td>{{order.created_at}}</td>
+                                            <td>{{(order.price / 100) | currency}}</td>
                                             <td class="table-action text-center">
-                                                <a href="javascript:;" class="action-icon" @click="openTheModal(value.order, `Pedido - ${value.order}`, 'small')">
+                                                <a href="javascript:;" class="action-icon" @click="openTheModal(order.order, `Pedido - ${order.order}`, 'small')">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
                                             </td>
@@ -172,7 +187,7 @@
             size: 'large',
             title: '',
             order_id: '',
-            paginate: {},
+            orders: {},
             pdvs: {},
             summary: {
                 manual: {
@@ -236,7 +251,7 @@
 
                 toSeek(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}/reports/orders`, params).then(
                     response => {
-                        this.changePaginate(response)
+                        this.changeOrders(response)
                     }
                 )
             }
@@ -250,6 +265,9 @@
             },
             checkPDVs() {
                 return !_.isEmpty(this.pdvs)
+            },
+            checkOrders() {
+                return _.isEmpty(this.orders.data)
             }
         },
         methods: {
@@ -263,8 +281,8 @@
                     type: type === 'values' ? 'money' : 'int'
                 }
             },
-            changePaginate(paginate) {
-                this.paginate = paginate
+            changeOrders(orders) {
+                this.orders = orders
             },
             colorStatus(status) {
                 let obj = {
@@ -297,7 +315,7 @@
             updateOrders() {
                 toSeek(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}/reports/orders`).then(
                     response => {
-                        this.changePaginate(response)
+                        this.changeOrders(response)
                     }
                 )
             }
