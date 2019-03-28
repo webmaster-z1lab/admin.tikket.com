@@ -12,14 +12,14 @@ class EventController extends Controller
      */
     public function myEvents(): View
     {
-        $events = (new ApiService('events/my_events', 'GET'))->find()->collect();
+        $events = (new ApiService('permissions', 'GET'))->find()->collect();
 
         $events_active = collect($events)->filter(function ($item, $key) {
-            return in_array($item->attributes->status, ['draft', 'completed', 'published']);
+            return in_array($item->relationships->event->attributes->status, ['draft', 'completed', 'published']);
         })->all();
 
         $events_past = collect($events)->filter(function ($item, $key) {
-            return in_array($item->attributes->status, ['finalized', 'canceled']);
+            return in_array($item->relationships->event->attributes->status, ['finalized', 'canceled']);
         })->all();
 
         \Meta::set('title', 'Eventos');
@@ -40,17 +40,36 @@ class EventController extends Controller
     /**
      * @param string $id
      * @return View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function edit(string $id): View
+    public function administration(string $id): View
     {
+        $this->authorize('admin', $id);
+
         $event = (new ApiService('events', 'GET'))->find($id)->collect();
 
         \Meta::set('title', $event->attributes->name);
         \Meta::set('description', $event->attributes->description);
 
-        return View('event.edit')
+        return View('event.administration')
             ->with('event', $event);
     }
 
+    /**
+     * @param string $id
+     * @return View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function orderManual(string $id): View
+    {
+        $this->authorize('pdv', $id);
 
+        $event = (new ApiService('events', 'GET'))->find($id)->collect();
+
+        \Meta::set('title', $event->attributes->name);
+        \Meta::set('description', $event->attributes->description);
+
+        return View('event.order-manual')
+            ->with('event', $event);
+    }
 }

@@ -241,6 +241,19 @@ export async function sendAPIDELETE(url, config = {}) {
 }
 
 /**
+ * @param url
+ * @param config
+ * @returns {Promise<any>}
+ */
+export async function sendAPIPATCH(url, config = {}) {
+    let promise = new Promise((resolve, reject) => {
+        HTTP.patch(url, config).then(result => resolve(result)).catch((error) => reject(error))
+    });
+
+    return await promise
+}
+
+/**
  * @param arr
  */
 export function sendAlert(arr) {

@@ -124,7 +124,7 @@
                                           :class="errors.has(`end_at-${index}`) ? 'is-invalid' : ''"
                                           v-validate="`required|date_format:DD/MM/YYYY|date_before:${event.attributes.starts_at}|date_after:${ticket.lots[(index - 1)].finishes_at}`"
                                           data-vv-as="'Data de Final'" :masked="true" :mask="'##/##/####'"
-                                          v-model="lot.end_at"/>
+                                          v-model="lot.finishes_at"/>
                                 <div v-show="errors.has(`end_at-${index}`)" class="invalid-feedback">
                                     {{ errors.first(`end_at-${index}`) }}
                                 </div>
@@ -139,9 +139,15 @@
                                     {{ errors.first(`ticket_value-${index}`) }}
                                 </div>
                             </div>
-                            <div class="form-group col-md-2 align-self-center text-center">
+                            <div class="form-group col-md-2 align-self-center text-center" v-if="event.attributes.fee_is_hidden">
                                 <label class="col-form-label"> Valor Final</label>
-                                <h5 class="text-success">{{amount_ticket(lot.value) | currency}}</h5>
+                                <h5 class="text-success">{{amount_ticket(lot.value).amount | currency}}</h5>
+                            </div>
+                            <div class="form-group col-md-2 align-self-center text-center" v-else>
+                                <label class="col-form-label"> Valor Final</label>
+                                <h5 class="text-success">
+                                    {{amount_ticket(lot.value).value | currency}} (+ taxa de serviço de {{(amount_ticket(lot.value).fee / 100) | currency }})
+                                </h5>
                             </div>
                             <div class="col-md-1 align-self-center">
                                 <button type="button" class="btn btn-danger btn-block" v-if="index > 0"
@@ -217,7 +223,7 @@
             addLot() {
                 this.ticket.lots.push({
                     ticket_amount: 0,
-                    end_at: '',
+                    finishes_at: '',
                     ticket_value: 0
                 })
             },
@@ -225,7 +231,27 @@
                 this.ticket.lots.splice(key, 1)
             },
             amount_ticket(value) {
-                return this.event.fee_is_hidden ? value : (value * 10 / 100) + value
+                if(value <= 0) {
+                    return {
+                        amount: 0,
+                        value: 0,
+                        fee: 0
+                    }
+                }
+
+                if (value <= process.env.MIX_MIN_VALUE_FEE) {
+                    return {
+                        amount: (value + (process.env.MIX_MIN_VALUE_FEE * 10 / 100)),
+                        value: value,
+                        fee: process.env.MIX_MIN_VALUE_FEE * 10 / 100
+                    }
+                } else {
+                    return {
+                        amount: (value * 10 / 100) + value,
+                        value: value,
+                        fee: value * 10 / 100
+                    }
+                }
             },
             submit() {
                 this.$validator.validateAll().then(

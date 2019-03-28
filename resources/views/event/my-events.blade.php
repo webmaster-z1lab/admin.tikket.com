@@ -56,20 +56,36 @@
                                         <tbody>
                                         @forelse($events_active as $event_active)
                                             <tr>
-                                                <td>{{$event_active->attributes->name}}</td>
-                                                <td>{{$event_active->attributes->status}}</td>
-                                                <td>{{$event_active->attributes->starts_at}}</td>
-                                                <td>{{$event_active->attributes->address ? $event_active->attributes->address->formatted : '-'}}</td>
-                                                <td class="table-action text-center">
-                                                    <a href="javascript:;" class="action-icon" @click="editEvent({{ json_encode($event_active) }})">
-                                                        <i class="mdi mdi-pencil"></i>
-                                                    </a>
-                                                    @if(!isset($event_active->attributes->is_locked))
-                                                        <a href="javascript:;" class="action-icon" @click="deleteEvent({{ json_encode($event_active->id) }})">
-                                                            <i class="mdi mdi-delete"></i>
-                                                        </a>
-                                                    @endif
+                                                <td>{{$event_active->relationships->event->attributes->name}}</td>
+                                                <td>{{$event_active->relationships->event->attributes->status}}</td>
+                                                <td>{{$event_active->relationships->event->attributes->starts_at}}</td>
+                                                <td>{{$event_active->relationships->event->attributes->address ? $event_active->relationships->event->attributes->address->formatted : '-'}}
                                                 </td>
+                                                @can('admin', $event_active->relationships->event->id)
+                                                    <td class="table-action text-center">
+                                                        <a href="javascript:;" class="action-icon" @click="editEvent({{ json_encode($event_active->relationships->event) }})">
+                                                            <i class="mdi mdi-pencil"></i>
+                                                        </a>
+                                                        @if(!$event_active->relationships->event->attributes->is_locked)
+                                                            <a href="javascript:;" class="action-icon"
+                                                               @click="deleteEvent({{ json_encode($event_active->relationships->event->id) }})">
+                                                                <i class="mdi mdi-delete"></i>
+                                                            </a>
+                                                        @endif
+                                                    </td>
+                                                @elsecan('pdv', $event_active->relationships->event->id)
+                                                    <td class="table-action text-center">
+                                                        <a href="{{route('event.order-manual', $event_active->relationships->event->id)}}" class="btn btn-primary btn-sm">
+                                                            PDV
+                                                        </a>
+                                                    </td>
+                                                @elsecan('checkIn', $event_active->relationships->event->id)
+                                                    <td class="table-action text-center">
+                                                        <a href="{{route('event.order-manual', $event_active->relationships->event->id)}}" class="btn btn-primary btn-sm">
+                                                            Check-In
+                                                        </a>
+                                                    </td>
+                                                @endcan
                                             </tr>
                                         @empty
                                             <tr>
@@ -111,15 +127,24 @@
                                         <tbody>
                                         @forelse($events_past as $event_past)
                                             <tr>
-                                                <td>{{$event_past->attributes->name}}</td>
-                                                <td>{{$event_past->attributes->status}}</td>
-                                                <td>{{$event_past->attributes->starts_at}}</td>
-                                                <td>{{$event_active->attributes->address ? $event_active->attributes->address->formatted : '-'}}</td>
-                                                <td class="table-action text-center">
-                                                    <a href="javascript:;" class="action-icon" @click="test({{ json_encode($event_past->id) }})">
-                                                        <i class="mdi mdi-pencil"></i>
-                                                    </a>
+                                                <td>{{$event_past->relationships->event->attributes->name}}</td>
+                                                <td>{{$event_past->relationships->event->attributes->status}}</td>
+                                                <td>{{$event_past->relationships->event->attributes->starts_at}}</td>
+                                                <td>{{$event_active->relationships->event->attributes->address ? $event_active->relationships->event->attributes->address->formatted : '-'}}
                                                 </td>
+                                                @can('admin', $event_active->relationships->event->id)
+                                                    <td class="table-action text-center">
+                                                        <a href="javascript:;" class="action-icon" @click="editEvent({{ json_encode($event_past->relationships->event) }})">
+                                                            <i class="mdi mdi-pencil"></i>
+                                                        </a>
+                                                        @if(!$event_active->relationships->event->attributes->is_locked)
+                                                            <a href="javascript:;" class="action-icon"
+                                                               @click="deleteEvent({{ json_encode($event_active->relationships->event->id) }})">
+                                                                <i class="mdi mdi-delete"></i>
+                                                            </a>
+                                                        @endif
+                                                    </td>
+                                                @endcan
                                             </tr>
                                         @empty
                                             <tr>
