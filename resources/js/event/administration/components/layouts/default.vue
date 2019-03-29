@@ -23,12 +23,6 @@
             SideBarPartial,
             HeaderPartial,
             FooterPartial
-        },
-        data: () => ({
-
-        }),
-        methods: {
-
         }
     }
 </script>

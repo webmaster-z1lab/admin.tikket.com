@@ -21,7 +21,7 @@ let vendors = [
     'collect.js',
     'http-build-query',
     'vue-currency-filter',
-    'vee-validate/dist/locale/pt_BR',
+    'vee-validate/dist/locale/pt_BR'
 ]
 
 mix.js('resources/js/app.js', 'public/js')
@@ -29,9 +29,7 @@ mix.js('resources/js/app.js', 'public/js')
     .js('resources/js/event/my-events/main.js', 'public/js/event/my-events')
     .js('resources/js/event/administration/main.js', 'public/js/event/administration')
     .js('resources/js/event/order-manual/main.js', 'public/js/event/order-manual')
-    .js('resources/js/auth/login.js', 'public/js/auth')
-    .js('resources/js/auth/register.js', 'public/js/auth')
-    .js('resources/js/auth/account-recovery.js', 'public/js/auth')
+    .js('resources/js/auth/header.js', 'public/js/auth')
     // .extract(vendors)
 
 if (mix.inProduction()) {
