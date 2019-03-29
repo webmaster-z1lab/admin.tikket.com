@@ -19,7 +19,7 @@
                         <label class="col-form-label">Data de Validade <span class="text-danger">*</span></label>
                         <the-mask class="form-control" type="text" name="validate_at" placeholder="##/##/####"
                                   :class="errors.has('validate_at') ? 'is-invalid' : ''"
-                                  v-validate="`required|date_format:DD/MM/YYYY|today`"
+                                  v-validate="`required|date_format:dd/MM/yyyy|today`"
                                   data-vv-as="Data de Validade" :masked="true" :mask="'##/##/####'"
                                   v-model="coupon.validate_at">
                         </the-mask>

@@ -46,7 +46,7 @@
                     <label class="col-form-label"> Data de Início <span class="text-danger">*</span></label>
                     <the-mask class="form-control" type="text" name="start_date" placeholder="##/##/#### ##:##"
                               :class="errors.has('start_date') ? 'is-invalid' : ''"
-                              v-validate="'required|date_format:DD/MM/YYYY HH:mm|today'"
+                              v-validate="'required|date_format:dd/MM/yyyy HH:mm|today'"
                               data-vv-as="Data de Início" :masked="true" :mask="'##/##/#### ##:##'"
                               v-model="event.attributes.starts_at">
                     </the-mask>
@@ -59,7 +59,7 @@
                     <label class="col-form-label"> Data de Término <span class="text-danger">*</span></label>
                     <the-mask class="form-control" type="text" name="end_date" placeholder="##/##/#### ##:##"
                               :class="errors.has('end_date') ? 'is-invalid' : ''"
-                              v-validate="`required|date_format:DD/MM/YYYY HH:mm|date_after:${event.attributes.starts_at}`"
+                              v-validate="`required|date_format:dd/MM/yyyy HH:mm|date_after:${event.attributes.starts_at}`"
                               data-vv-as="Data de Término" :masked="true" :mask="'##/##/#### ##:##'"
                               v-model="event.attributes.finishes_at">
                     </the-mask>
