@@ -34,7 +34,7 @@
                 <select class="form-control" name="category" :class="errors.has('category') ? 'is-invalid' : ''"
                         v-validate="'required'" data-vv-as="Categoria" v-model="event.attributes.category">
                     <option selected value="">Selecione uma Categoria</option>
-                    <option v-for="category in categories" :value="category.attributes.name">{{category.attributes.name}}</option>
+                    <option v-for="category in categories" :value="category.attributes.value">{{category.attributes.name}}</option>
                 </select>
                 <div v-show="errors.has('category')" class="invalid-feedback">
                     {{ errors.first('category') }}
