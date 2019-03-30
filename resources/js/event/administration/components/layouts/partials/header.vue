@@ -68,7 +68,7 @@
                 if(hora >= 0 && hora <= 12){
                     return "Bom Dia"
                 }
-                if(hora > 12 && hora <= 18){
+                if(hora > 12 && hora < 18){
                     return "Boa Tarde"
                 }
                 if(hora > 18 && hora <= 24){
