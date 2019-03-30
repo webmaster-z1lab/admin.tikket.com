@@ -10,6 +10,7 @@
                     </span>
                     <span>
                         <span class="account-user-name">{{ user.name }}</span>
+                        <span class="account-position">{{ scheduleGreetings }}</span>
                     </span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
@@ -44,7 +45,6 @@
         </button>
         <div class="app-search">
             <a :href="translateRoutes('event.my-events')" class="btn btn-primary btn-sm">Meus Eventos</a>
-            <a href="/" class="btn btn-outline-primary btn-sm">Meus Ingressos</a>
         </div>
     </div>
 </template>
@@ -60,6 +60,22 @@
             user: {},
             urlSite: process.env.MIX_MAIN_SITE
         }),
+        computed: {
+            scheduleGreetings() {
+                let data = new Date();
+                let hora = data.getHours();
+
+                if(hora >= 0 && hora <= 12){
+                    return "Bom Dia"
+                }
+                if(hora > 12 && hora <= 18){
+                    return "Boa Tarde"
+                }
+                if(hora > 18 && hora <= 24){
+                    return "Boa Noite"
+                }
+            }
+        },
         methods: {
             ...mapActions(['changeLoading']),
             translateRoutes(name) {

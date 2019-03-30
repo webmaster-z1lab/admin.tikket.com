@@ -13,7 +13,7 @@
             <ul class="metismenu side-nav">
                 <li class="side-nav-title side-nav-item">Navegação</li>
 
-                <li class="side-nav-item" v-for="(item, key) in menu">
+                <li class="side-nav-item" v-for="(item, key) in menu" :hidden="item.hidden">
                     <a href="javascript: void(0);" class="side-nav-link" @click="pushIndex(item)">
                         <i :class="item.icon"></i>
                         <span> {{key}} </span>
@@ -32,8 +32,16 @@
 </template>
 
 <script>
+    import {mapState} from 'vuex'
+    import {toSeek} from "../../../../../vendor/common";
+
     export default {
         name: 'sideBarPartial',
+        computed: {
+            ...mapState({
+                event: state => state.event
+            })
+        },
         data: () => ({
             menu: {
                 'Painel de Dados': {
@@ -72,6 +80,7 @@
                     index: 'check-in'
                 },
                 'Financeiro': {
+                    hidden: true,
                     icon: "fas fa-money-bill-wave",
                     routes: ['financial'],
                     index: 'financial'
@@ -91,6 +100,15 @@
                     this.$router.push({name: value.index})
                 }
             }
+        },
+        mounted(){
+            toSeek(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}/my-permission`).then(
+                response => {
+                    if(response.data.attributes.type === 'master') {
+                        this.menu.Financeiro.hidden = false
+                    }
+                }
+            )
         }
     }
 </script>
