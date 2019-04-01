@@ -3,7 +3,7 @@
         <div class="row">
             <sub-header />
 
-            <div class="col-12">
+            <div class="col-12" v-if="page === 'tickets'">
                 <div class="row justify-content-center">
                     <chart-component :report="report" v-for="(report, key) in reports" v-bind:key="key"></chart-component>
                 </div>

@@ -43,9 +43,10 @@
 
                                 <div class="form-group mb-3">
                                     <label>CPF</label>
-                                    <input type="text" class="form-control" :name="`document-${index}`" @change="validateAll(item, item.document)"
-                                           v-model="item.document" data-vv-as="CPF"
-                                           :class="errors.has(`document-${index}`) ? 'is-invalid' : ''" v-validate="`${item.validate_user}document`">
+                                    <the-mask class="form-control" type="text" :name="`document-${index}`" placeholder="000.000.000-00"
+                                              @change="validateAll(item, item.document)" v-validate="`${item.validate_user}cpf`"
+                                              data-vv-as="'CPF'" mask="###.###.###-##" v-model="item.document" :class="errors.has(`document-${index}`) ? 'is-invalid' : ''">
+                                    </the-mask>
                                     <div v-show="errors.has(`document-${index}`)" class="invalid-feedback">
                                         {{ errors.first(`document-${index}`) }}
                                     </div>
@@ -71,15 +72,16 @@
 <script>
     import swal from 'sweetalert2'
 
+    import {TheMask} from 'vue-the-mask'
     import {mapActions, mapState} from 'vuex'
     import {sendAPIPOST, exceptionError, sendAlert} from "../../../../../../vendor/common";
 
     export default {
         name: "identification",
         inject: ['$validator'],
-        data: () => ({
-
-        }),
+        components: {
+            TheMask
+        },
         computed: {
             ...mapState({
                 event: state => state.event,

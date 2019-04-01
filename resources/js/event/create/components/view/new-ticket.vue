@@ -222,6 +222,7 @@
             ...mapActions(['changeEvent']),
             addLot() {
                 this.ticket.lots.push({
+                    status: 'open',
                     ticket_amount: 0,
                     finishes_at: '',
                     ticket_value: 0
