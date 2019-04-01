@@ -142,7 +142,7 @@
                             <div class="form-group col-md-3">
                                 <label class="col-form-label"> Valor do Ingresso <span class="text-danger">*</span></label>
                                 <money class="form-control" v-model="lot.value" v-bind="money_format"
-                                       v-validate="'required'" data-vv-as="Valor"
+                                       v-validate="'required|min_value:1'" data-vv-as="Valor"
                                        :class="errors.has(`ticket_value-${index}`) ? 'is-invalid' : ''"
                                        v-bind:disabled="lot.status !== 'open'"
                                        :name="`ticket_value-${index}`"/>
