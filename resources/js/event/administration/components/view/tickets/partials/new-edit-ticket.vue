@@ -49,7 +49,7 @@
                         <label class="col-form-label"> Data de Início <span class="text-danger">*</span></label>
                         <the-mask class="form-control" type="text" name="start_date" placeholder="##/##/####"
                                   :class="errors.has('start_date') ? 'is-invalid' : ''"
-                                  v-bind:disabled="inArr(['published', 'canceled', 'finalized'], event.attributes.status)"
+                                  v-bind:disabled="inArr(['published', 'canceled', 'finalized'], event.attributes.status) && ticket.is_locked"
                                   v-validate="`required|date_format:dd/MM/yyyy|date_before:${event.attributes.starts_at}|today`"
                                   data-vv-as="Data de Início" :masked="true" :mask="'##/##/####'"
                                   v-model="ticket.starts_at">
