@@ -4,7 +4,7 @@
             <sub-header />
 
             <div class="col-12">
-                <div class="card">
+                <div class="card" v-if="event.attributes.status === 'published'">
                     <div class="card-body">
                         <h4 class="header-title mb-3"> Pedido Manual</h4>
                         <form>
@@ -23,6 +23,17 @@
                         </form>
                     </div>
                 </div>
+                <div class="text-center mt-2" v-else>
+                    <figure class="mx-auto mb-4">
+                        <img src="http://127.0.0.5:8000/svg/undraw_voice_control_ofo1.svg" alt="SVG" width="30%">
+                    </figure>
+
+                    <div class="mb-4">
+                        <h1 class="h3"><strong>Evento Aguardando publicação!</strong></h1>
+
+                        <p class="h5">Desculpe, mais antes de poder criar pedidos você deve publicar seu evento.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -34,6 +45,8 @@
     import Identification from './partials/identification'
     import Conclusion from './partials/conclusion'
 
+    import {mapState} from 'vuex'
+
     export default {
         name: "manualInscription",
         $_veeValidate: {
@@ -44,6 +57,11 @@
             ChoiceTicket,
             Identification,
             Conclusion
+        },
+        computed: {
+            ...mapState({
+                event: state => state.event
+            })
         },
         data: () => ({
             key_active: 'choice-ticket',

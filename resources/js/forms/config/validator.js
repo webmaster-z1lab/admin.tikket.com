@@ -73,9 +73,7 @@ const today = {
         return (data && data.message) || `O valor do campo ${field} deve ser maior que o momento atual.`;
     },
     validate(value, args) {
-        const date = moment(value, 'DD/MM/YYYY HH:mm')
-
-        return moment() < date
+        return moment() < moment(value, 'DD/MM/YYYY HH:mm')
     }
 };
 

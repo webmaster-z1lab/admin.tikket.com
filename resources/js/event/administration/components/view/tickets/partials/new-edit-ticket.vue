@@ -8,6 +8,7 @@
                     <div class="form-group" :class="ticket.free_ticket ? 'col-md-8' : 'col-md-10'">
                         <label class="col-form-label"> Nome do Ingresso <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" name="name" v-model="ticket.name"
+                               v-bind:disabled="ticket.is_locked"
                                :class="errors.has('name') ? 'is-invalid' : ''" v-validate="'required|max:50'"
                                data-vv-as="Nome do Evento"/>
                         <div v-show="errors.has('name')" class="invalid-feedback">
@@ -26,7 +27,7 @@
                     </div>
 
                     <div class="form-group col-md-2" v-if="!ticket.is_locked">
-                        <label class="col-form-label"> Ingresso Grátis</label>
+                        <label class="col-form-label"> Ingresso Grátis </label>
                         <div class="custom-control custom-checkbox form-custom" style="padding-left: 0">
                             <input type="checkbox" id="switch1" data-switch="bool" name="free_ticket"
                                    v-model="ticket.free_ticket">
@@ -35,7 +36,7 @@
                     </div>
 
                     <div class="form-group col-12">
-                        <label class="col-form-label"> Breve Descrição do Ingresso</label>
+                        <label class="col-form-label"> Breve Descrição do Ingresso </label>
                         <textarea class="form-control" name="summary" v-model="ticket.summary"
                                   :class="errors.has('summary') ? 'is-invalid' : ''" v-validate="'max:100'"
                                   data-vv-as="Breve Descrição do Evento"></textarea>
@@ -48,6 +49,7 @@
                         <label class="col-form-label"> Data de Início <span class="text-danger">*</span></label>
                         <the-mask class="form-control" type="text" name="start_date" placeholder="##/##/####"
                                   :class="errors.has('start_date') ? 'is-invalid' : ''"
+                                  v-bind:disabled="inArr(['published', 'canceled', 'finalized'], event.attributes.status) && ticket.is_locked"
                                   v-validate="`required|date_format:dd/MM/yyyy|date_before:${event.attributes.starts_at}|today`"
                                   data-vv-as="Data de Início" :masked="true" :mask="'##/##/####'"
                                   v-model="ticket.starts_at">
@@ -63,6 +65,7 @@
                                   :class="errors.has('end_at') ? 'is-invalid' : ''"
                                   v-validate="`required|date_format:dd/MM/yyyy|date_before:${event.attributes.starts_at}|date_after:${ticket.starts_at}`"
                                   data-vv-as="'Data de Final'" :masked="true" :mask="'##/##/####'"
+                                  v-bind:disabled="inArr(['published', 'canceled', 'finalized'], event.attributes.status)"
                                   v-model="ticket.lots[0].finishes_at"/>
                         <div v-show="errors.has('end_at')" class="invalid-feedback">
                             {{ errors.first('end_at') }}
@@ -72,6 +75,7 @@
                     <div class="form-group" :class="ticket.free_ticket ? 'col-md-3' : 'col-md-4'">
                         <label class="col-form-label"> Quantidade Mímina <span class="text-danger">*</span></label>
                         <input type="number" class="form-control" name="quant_min" v-model="ticket.quant_min"
+                               v-bind:disabled="ticket.is_locked"
                                :class="errors.has('quant_min') ? 'is-invalid' : ''" v-validate="'required|min_value:1'"
                                data-vv-as="Quantidade Mímina"/>
                         <div v-show="errors.has('quant_min')" class="invalid-feedback">
@@ -82,6 +86,7 @@
                     <div class="form-group" :class="ticket.free_ticket ? 'col-md-3' : 'col-md-4'">
                         <label class="col-form-label"> Quantidade Máxima <span class="text-danger">*</span></label>
                         <input type="number" class="form-control" name="quant_max" v-model="ticket.quant_max"
+                               v-bind:disabled="ticket.is_locked"
                                :class="errors.has('quant_max') ? 'is-invalid' : ''" v-validate="'required|min_value:1'"
                                data-vv-as="Quantidade Máxima"/>
                         <div v-show="errors.has('quant_max')" class="invalid-feedback">
@@ -114,7 +119,7 @@
                                           placeholder="##/##/####"
                                           :class="errors.has(`end_at-${index}`) ? 'is-invalid' : ''"
                                           v-validate="`required|date_format:dd/MM/yyyy|date_before:${event.attributes.starts_at}|date_after:${ticket.starts_at}`"
-                                          v-bind:disabled="inArr(['closed', 'expired'], lot.status)"
+                                          v-bind:disabled="inArr(['closed', 'expired', 'locked'], lot.status)"
                                           data-vv-as="'Data de Final'" :masked="true" :mask="'##/##/####'"
                                           v-model="lot.finishes_at"/>
                                 <div v-show="errors.has(`end_at-${index}`)" class="invalid-feedback">
@@ -127,7 +132,7 @@
                                           placeholder="##/##/####"
                                           :class="errors.has(`end_at-${index}`) ? 'is-invalid' : ''"
                                           v-validate="`required|date_format:dd/MM/yyyy|date_before:${event.attributes.starts_at}|date_after:${ticket.lots[(index - 1)].finishes_at}`"
-                                          v-bind:disabled="inArr(['closed', 'expired'], lot.status)"
+                                          v-bind:disabled="inArr(['closed', 'expired', 'locked'], lot.status)"
                                           data-vv-as="'Data de Final'" :masked="true" :mask="'##/##/####'"
                                           v-model="lot.finishes_at"/>
                                 <div v-show="errors.has(`end_at-${index}`)" class="invalid-feedback">
@@ -137,7 +142,7 @@
                             <div class="form-group col-md-3">
                                 <label class="col-form-label"> Valor do Ingresso <span class="text-danger">*</span></label>
                                 <money class="form-control" v-model="lot.value" v-bind="money_format"
-                                       v-validate="'required'" data-vv-as="Valor"
+                                       v-validate="'required|min_value:1'" data-vv-as="Valor"
                                        :class="errors.has(`ticket_value-${index}`) ? 'is-invalid' : ''"
                                        v-bind:disabled="lot.status !== 'open'"
                                        :name="`ticket_value-${index}`"/>
@@ -146,11 +151,11 @@
                                 </div>
                             </div>
                             <div class="form-group col-md-2 align-self-center text-center" v-if="event.attributes.fee_is_hidden">
-                                <label class="col-form-label"> Valor Final</label>
+                                <label class="col-form-label"> Valor Final </label>
                                 <h5 class="text-success">{{amount_ticket(lot.value).amount | currency}}</h5>
                             </div>
                             <div class="form-group col-md-2 align-self-center text-center" v-else>
-                                <label class="col-form-label"> Valor Final</label>
+                                <label class="col-form-label"> Valor Final </label>
                                 <h5 class="text-success">
                                     {{amount_ticket(lot.value).value | currency}} (+ taxa de serviço de {{(amount_ticket(lot.value).fee / 100) | currency }})
                                 </h5>
@@ -230,6 +235,7 @@
             },
             addLot() {
                 this.ticket.lots.push({
+                    status: 'open',
                     ticket_amount: 0,
                     finishes_at: '',
                     ticket_value: 0

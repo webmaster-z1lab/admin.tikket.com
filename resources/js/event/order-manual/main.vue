@@ -1,7 +1,7 @@
 <template>
     <div class="col-12 mt-4">
         <loading-component :is-loading="isLoading"></loading-component>
-        <div class="card">
+        <div class="card" v-if="event.attributes.status === 'published'">
             <div class="card-body">
                 <h4 class="header-title mb-3"> Pedido Manual</h4>
                 <form>
@@ -18,6 +18,17 @@
                         <component :is="key_active" @changeKey="changeKey"/>
                     </div>
                 </form>
+            </div>
+        </div>
+        <div class="text-center mt-2" v-else>
+            <figure class="mx-auto mb-4">
+                <img src="http://127.0.0.5:8000/svg/undraw_voice_control_ofo1.svg" alt="SVG" width="30%">
+            </figure>
+
+            <div class="mb-4">
+                <h1 class="h3"><strong>Evento Aguardando publicação!</strong></h1>
+
+                <p class="h5">Desculpe, o evento ainda não foi publicado, assim que o mesmo for publicado você estará livre para realizar pedidos.</p>
             </div>
         </div>
     </div>
@@ -44,7 +55,8 @@
         },
         computed: {
             ...mapState({
-                isLoading: state => state.isLoading
+                isLoading: state => state.isLoading,
+                event: state => state.event
             })
         },
         components: {
