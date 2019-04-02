@@ -295,8 +295,8 @@
             },
             translateTypeBuy(type) {
                 let obj = {
-                    admin: 'Inscrição de Administrador',
-                    pdv: 'Inscrição PVD',
+                    admin: 'Inscrição pelo administrador',
+                    pdv: 'Inscrição por PVD',
                     online: 'Inscrição Online'
                 }
 

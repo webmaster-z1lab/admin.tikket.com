@@ -2,8 +2,7 @@
     <div class="container-fluid">
         <div class="row">
             <sub-header>
-                <button type="button" class="btn btn-primary" v-if="event.attributes.status === 'completed'"
-                        @click="published()">Publicar Evento</button>
+                <button type="button" class="btn btn-primary" v-if="event.attributes.status === 'completed'" @click="published()">Publicar Evento</button>
                 <button type="button" class="btn btn-warning" v-if="event.attributes.status === 'published' && !event.attributes.is_locked"
                         @click="unpublish()">Despublicar Evento</button>
                 <button type="button" class="btn btn-danger"  v-if="event.attributes.status === 'published' && event.attributes.is_locked"

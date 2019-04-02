@@ -3,7 +3,7 @@
         <loading-component :is-loading="isLoading"></loading-component>
 
         <div class="d-flex justify-content-end mb-4">
-            <button type="button" class="btn btn-sm btn-danger" title="cancelar pedido" v-if="cancelOrder" @click="deleteCoupon">
+            <button type="button" class="btn btn-sm btn-danger" title="cancelar pedido" v-if="cancelOrder" @click="canceledOrder">
                 <i class="fas fa-trash"></i> Cancelar Pedido
             </button>
         </div>
@@ -139,7 +139,7 @@
 
                 return obj[type]
             },
-            deleteCoupon(){
+            canceledOrder(){
                 swal({
                     title: 'Você tem certeza?',
                     text: "Ao fazer isso o pedido será cancelado junto com todos ingressos presentes nele!",
@@ -161,8 +161,7 @@
                                 })
 
                                 this.isLoading = false
-                                this.$emit('update')
-                                this.$emit('close')
+                                window.location.reload()
                             })
                             .catch((error) => {
                                 this.isLoading = false
