@@ -66,7 +66,7 @@
                                                         <a href="javascript:;" class="action-icon" @click="editEvent({{ json_encode($event_active->relationships->event) }})">
                                                             <i class="mdi mdi-pencil"></i>
                                                         </a>
-                                                        @if(!$event_active->relationships->event->attributes->is_locked)
+                                                        @if(!$event_active->relationships->event->attributes->is_locked && $event_active->attributes->type === 'master')
                                                             <a href="javascript:;" class="action-icon"
                                                                @click="deleteEvent({{ json_encode($event_active->relationships->event) }})">
                                                                 <i class="mdi mdi-delete"></i>
@@ -137,7 +137,7 @@
                                                         <a href="javascript:;" class="action-icon" @click="editEvent({{ json_encode($event_past->relationships->event) }})">
                                                             <i class="mdi mdi-pencil"></i>
                                                         </a>
-                                                        @if(!$event_active->relationships->event->attributes->is_locked)
+                                                        @if(!$event_active->relationships->event->attributes->is_locked && $event_active->attributes->type === 'master')
                                                             <a href="javascript:;" class="action-icon"
                                                                @click="deleteEvent({{ json_encode($event_active->relationships->event) }})">
                                                                 <i class="mdi mdi-delete"></i>
