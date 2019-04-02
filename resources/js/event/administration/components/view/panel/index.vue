@@ -46,6 +46,14 @@
                                         Evento {{event.attributes.is_public ? 'Público' : 'Privado'}}
                                     </span>
                                 </p>
+                                <h5>Pág. do Evento:</h5>
+                                <p class="mb-0 text-muted font-weight-bold">
+                                    <span class="mr-2" :class="event.attributes.is_public ? 'text-success' : 'text-info'">
+                                        <a :href="`https://tikket.com.br/evento/${event.attributes.url}`" class="alert-link">
+                                            {{`https://tikket.com.br/evento/${event.attributes.url}`}}
+                                        </a>
+                                    </span>
+                                </p>
                             </div>
                             <div class="col-6">
                                 <h5>Endereço:</h5>
@@ -169,13 +177,13 @@
                     },
                     showCancelButton: true,
                     confirmButtonText: 'Cancelar Evento',
-                    confirmButtonColor: '#d33',
+                    confirmButtonColor: '#d33'
                 }).then((result) => {
                     if (result.value) {
                         if (result.value === this.event.attributes.name) {
                             this.changeLoading(true)
 
-                            sendAPIDELETE(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}`, {})
+                            sendAPIPATCH(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}/cancel`, {})
                                 .then(response => {
                                     this.changeLoading(false)
                                     this.changeEvent(response.data.data)
@@ -233,7 +241,7 @@
                     if (result.value) {
                         this.changeLoading(true)
 
-                        sendAPIDELETE(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}`, {})
+                        sendAPIPATCH(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}/unpublish`, {})
                             .then(response => {
                                 this.changeLoading(false)
                                 this.changeEvent(response.data.data)

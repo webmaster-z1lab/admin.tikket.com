@@ -68,7 +68,7 @@
                                                         </a>
                                                         @if(!$event_active->relationships->event->attributes->is_locked)
                                                             <a href="javascript:;" class="action-icon"
-                                                               @click="deleteEvent({{ json_encode($event_active->relationships->event->id) }})">
+                                                               @click="deleteEvent({{ json_encode($event_active->relationships->event) }})">
                                                                 <i class="mdi mdi-delete"></i>
                                                             </a>
                                                         @endif
@@ -81,7 +81,7 @@
                                                     </td>
                                                 @elsecan('checkIn', $event_active->relationships->event->id)
                                                     <td class="table-action text-center">
-                                                        <a href="{{route('event.order-manual', $event_active->relationships->event->id)}}" class="btn btn-primary btn-sm">
+                                                        <a href="javascript:;" class="btn btn-primary btn-sm">
                                                             Check-In
                                                         </a>
                                                     </td>
@@ -139,7 +139,7 @@
                                                         </a>
                                                         @if(!$event_active->relationships->event->attributes->is_locked)
                                                             <a href="javascript:;" class="action-icon"
-                                                               @click="deleteEvent({{ json_encode($event_active->relationships->event->id) }})">
+                                                               @click="deleteEvent({{ json_encode($event_active->relationships->event) }})">
                                                                 <i class="mdi mdi-delete"></i>
                                                             </a>
                                                         @endif
