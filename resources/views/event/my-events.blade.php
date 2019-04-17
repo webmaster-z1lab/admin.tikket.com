@@ -92,7 +92,7 @@
                                                 <td colspan="5">
                                                     <div class="text-center mt-2">
                                                         <figure class="mx-auto mb-4">
-                                                            <img src="{{asset("/svg/undraw_schedule_pnbk.svg")}}" alt="SVG" width="20%">
+                                                            <img src="{{ getenv('AWS_CDN_ENDPOINT') }}/images/undraw/undraw_schedule_pnbk.svg" alt="SVG" width="20%">
                                                         </figure>
 
                                                         <div class="mb-4">
@@ -151,7 +151,7 @@
                                                 <td colspan="5">
                                                     <div class="text-center mt-2">
                                                         <figure class="mx-auto mb-4">
-                                                            <img src="{{asset("svg/undraw_events_2p66.svg")}}" alt="SVG" width="20%">
+                                                            <img src="{{ getenv('AWS_CDN_ENDPOINT') }}/images/undraw/undraw_events_2p66.svg" alt="SVG" width="20%">
                                                         </figure>
 
                                                         <div class="mb-4">

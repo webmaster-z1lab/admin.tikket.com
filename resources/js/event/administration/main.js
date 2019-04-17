@@ -21,7 +21,7 @@ Vue.use(VueGoogleMaps, {
 import VeeValidate from 'vee-validate'
 Vue.use(VeeValidate, { inject: false })
 
-require('../../forms/config/validator')
+require('../../vendor/validator')
 
 /* Route */
 Vue.use(VueRouter)
@@ -41,6 +41,13 @@ Vue.use(VueCurrencyFilter,
         symbolPosition: 'front',
         symbolSpacing: true
     })
+
+/* Filter */
+Vue.filter('aws_url', function (value) {
+    if (!value) return ''
+
+    return `${process.env.MIX_AWS_CDN_ENDPOINT}/${value}`
+})
 
 new Vue({
     el: '#vue-event-administration',

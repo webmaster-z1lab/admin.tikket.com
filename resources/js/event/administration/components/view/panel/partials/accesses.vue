@@ -37,7 +37,7 @@
 
             <div class="text-center mt-2" v-if="checkAccess">
                 <figure class="mx-auto mb-4">
-                    <img src="http://127.0.0.5:8000/svg/undraw_control_panel1_20gm.svg" alt="SVG"
+                    <img :src="'images/undraw/undraw_control_panel1_20gm.svg'| aws_url" alt="SVG"
                          width="20%">
                 </figure>
 

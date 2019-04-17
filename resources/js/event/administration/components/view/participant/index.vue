@@ -43,7 +43,7 @@
                                             <td colspan="8">
                                                 <div class="text-center mt-2">
                                                     <figure class="mx-auto mb-4">
-                                                        <img src="http://127.0.0.5:8000/svg/undraw_mobile_marketing_iqbr.svg" alt="SVG" width="20%">
+                                                        <img :src="'images/undraw/undraw_mobile_marketing_iqbr.svg'| aws_url" alt="SVG" width="20%">
                                                     </figure>
 
                                                     <div class="mb-4">

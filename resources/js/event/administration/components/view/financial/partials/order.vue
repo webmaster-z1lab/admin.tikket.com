@@ -108,22 +108,26 @@
                 let options = {
                     waiting: {
                         color: 'bg-warning',
-                        svg: 'http://127.0.0.5:8000/svg/undraw_loading_frh4.svg',
+                        svg: `${process.env.MIX_AWS_CDN_ENDPOINT}/images/undraw/undraw_loading_frh4.svg`,
                         translate: 'Aguardando Pagamento'
                     },
                     paid: {
                         color: 'bg-success',
-                        svg: 'http://127.0.0.5:8000/svg/undraw_order_confirmed_1m3v.svg',
+                        svg: `${process.env.MIX_AWS_CDN_ENDPOINT}/images/undraw/undraw_order_confirmed_1m3v.svg`,
                         translate: 'Pagamento Confirmado'
                     },
                     canceled: {
                         color: 'bg-danger',
-                        svg: 'http://127.0.0.5:8000/svg/undraw_cancel_u1it.svg',
+                        svg: `${process.env.MIX_AWS_CDN_ENDPOINT}/images/undraw/undraw_cancel_u1it.svg`,
                         translate: 'Cancelado'
                     }
                 }
 
-                return options[this.order.status] || {color: 'bg-primary', svg: 'http://127.0.0.5:8000/svg/undraw_voice_control_ofo1.svg', translate: '' }
+                return options[this.order.status] || {
+                    color: 'bg-primary',
+                    svg: `${process.env.MIX_AWS_CDN_ENDPOINT}/images/undraw/undraw_voice_control_ofo1.svg`,
+                    translate: ''
+                }
             },
             cancelOrder() {
                 return this.order.status === 'waiting' || this.order.status === 'paid'
