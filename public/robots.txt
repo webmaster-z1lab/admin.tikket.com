@@ -1,4 +1,4 @@
-User-Agent: *
+ser-Agent: *
 Disallow:
 Disallow: /user
 Disallow: /sign

@@ -20,8 +20,8 @@
                 <div class="card widget-flat">
                     <div class="card-body">
                         <div class="float-right">
-                            <router-link :to="{name: 'panel.edit-event'}" class="btn btn-icon btn-primary" title="Editar Dados Base do Evento">
-                                <i class="fas fa-cogs"></i>
+                            <router-link :to="{name: 'panel.edit-event'}" class="btn btn-icon btn-primary" title="Editar Dados do Evento">
+                                <i class="fas fa-edit"></i> Editar informações
                             </router-link>
                         </div>
                         <h5 class="text-muted font-weight-bold mt-0">
@@ -56,15 +56,12 @@
                                 </p>
                                 <h5>Compartilhar:</h5>
                                 <p class="mb-0 text-muted">
-                                    <span class="mr-2">
-                                        <button type="button" class="btn btn-icon btn-info">
-                                            <i class="fab fa-facebook-f"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-icon btn-info">
-                                            <i class="fab fa-facebook-f"></i>
-                                        </button>
-                                    </span>
-                                </p>
+
+                                <div class="fb-share-button" :data-href="event.attributes.name" data-layout="button" data-size="large" data-mobile-iframe="true">
+                                    <a target="_blank" class="btn btn-xs btn-info btn-facebook fb-xfbml-parse-ignore" :href="itemUrl(event.attributes.url)">
+                                        <span class="fab fa-facebook mr-1"></span> Facebook
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -157,6 +154,11 @@
         },
         methods: {
             ...mapActions(['changeEvent', 'changeLoading']),
+            itemUrl(url) {
+                let event = `${process.env.MIX_MAIN_SITE}/evento/${url}`
+
+                return `https://www.facebook.com/sharer/sharer.php?u=${event}&src=sdkpreparse`
+            },
             canceled(){
                 swal({
                     title: 'Você tem certeza?',
