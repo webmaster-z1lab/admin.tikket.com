@@ -66,9 +66,9 @@
                                                         <a href="javascript:;" class="action-icon" @click="editEvent({{ json_encode($event_active->relationships->event) }})">
                                                             <i class="mdi mdi-pencil"></i>
                                                         </a>
-                                                        @if(!$event_active->relationships->event->attributes->is_locked)
+                                                        @if(!$event_active->relationships->event->attributes->is_locked && $event_active->attributes->type === 'master')
                                                             <a href="javascript:;" class="action-icon"
-                                                               @click="deleteEvent({{ json_encode($event_active->relationships->event->id) }})">
+                                                               @click="deleteEvent({{ json_encode($event_active->relationships->event) }})">
                                                                 <i class="mdi mdi-delete"></i>
                                                             </a>
                                                         @endif
@@ -81,7 +81,7 @@
                                                     </td>
                                                 @elsecan('checkIn', $event_active->relationships->event->id)
                                                     <td class="table-action text-center">
-                                                        <a href="{{route('event.order-manual', $event_active->relationships->event->id)}}" class="btn btn-primary btn-sm">
+                                                        <a href="javascript:;" class="btn btn-primary btn-sm">
                                                             Check-In
                                                         </a>
                                                     </td>
@@ -92,7 +92,7 @@
                                                 <td colspan="5">
                                                     <div class="text-center mt-2">
                                                         <figure class="mx-auto mb-4">
-                                                            <img src="{{asset("/svg/undraw_schedule_pnbk.svg")}}" alt="SVG" width="20%">
+                                                            <img src="{{ getenv('AWS_CDN_ENDPOINT') }}/images/undraw/undraw_schedule_pnbk.svg" alt="SVG" width="20%">
                                                         </figure>
 
                                                         <div class="mb-4">
@@ -137,9 +137,9 @@
                                                         <a href="javascript:;" class="action-icon" @click="editEvent({{ json_encode($event_past->relationships->event) }})">
                                                             <i class="mdi mdi-pencil"></i>
                                                         </a>
-                                                        @if(!$event_active->relationships->event->attributes->is_locked)
+                                                        @if(!$event_active->relationships->event->attributes->is_locked && $event_active->attributes->type === 'master')
                                                             <a href="javascript:;" class="action-icon"
-                                                               @click="deleteEvent({{ json_encode($event_active->relationships->event->id) }})">
+                                                               @click="deleteEvent({{ json_encode($event_active->relationships->event) }})">
                                                                 <i class="mdi mdi-delete"></i>
                                                             </a>
                                                         @endif
@@ -151,7 +151,7 @@
                                                 <td colspan="5">
                                                     <div class="text-center mt-2">
                                                         <figure class="mx-auto mb-4">
-                                                            <img src="{{asset("svg/undraw_events_2p66.svg")}}" alt="SVG" width="20%">
+                                                            <img src="{{ getenv('AWS_CDN_ENDPOINT') }}/images/undraw/undraw_events_2p66.svg" alt="SVG" width="20%">
                                                         </figure>
 
                                                         <div class="mb-4">

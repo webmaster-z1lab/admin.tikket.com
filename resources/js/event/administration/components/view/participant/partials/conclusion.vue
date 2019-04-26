@@ -127,6 +127,7 @@
     import moment from 'moment'
     moment.locale('pt-br');
 
+    import {toSeek} from "../../../../../../vendor/common";
     import {mapActions, mapState} from 'vuex'
 
     export default {
@@ -148,13 +149,20 @@
             }
         },
         methods: {
-            ...mapActions(['setOrder', 'setItems']),
+            ...mapActions(['setOrder', 'setItems', 'changeEvent']),
             resetOrder() {
                 this.setOrder({})
                 this.setItems({})
 
                 this.$emit('changeKey', 'choice-ticket')
             }
+        },
+        created() {
+            toSeek(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}`).then(
+                response => {
+                    this.changeEvent(response.data)
+                }
+            )
         }
     }
 </script>

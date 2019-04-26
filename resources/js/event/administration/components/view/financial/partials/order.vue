@@ -3,7 +3,7 @@
         <loading-component :is-loading="isLoading"></loading-component>
 
         <div class="d-flex justify-content-end mb-4">
-            <button type="button" class="btn btn-sm btn-danger" title="cancelar pedido" v-if="cancelOrder" @click="deleteCoupon">
+            <button type="button" class="btn btn-sm btn-danger" title="cancelar pedido" v-if="cancelOrder" @click="canceledOrder">
                 <i class="fas fa-trash"></i> Cancelar Pedido
             </button>
         </div>
@@ -108,22 +108,26 @@
                 let options = {
                     waiting: {
                         color: 'bg-warning',
-                        svg: 'http://127.0.0.5:8000/svg/undraw_loading_frh4.svg',
+                        svg: `${process.env.MIX_AWS_CDN_ENDPOINT}/images/undraw/undraw_loading_frh4.svg`,
                         translate: 'Aguardando Pagamento'
                     },
                     paid: {
                         color: 'bg-success',
-                        svg: 'http://127.0.0.5:8000/svg/undraw_order_confirmed_1m3v.svg',
+                        svg: `${process.env.MIX_AWS_CDN_ENDPOINT}/images/undraw/undraw_order_confirmed_1m3v.svg`,
                         translate: 'Pagamento Confirmado'
                     },
                     canceled: {
                         color: 'bg-danger',
-                        svg: 'http://127.0.0.5:8000/svg/undraw_cancel_u1it.svg',
+                        svg: `${process.env.MIX_AWS_CDN_ENDPOINT}/images/undraw/undraw_cancel_u1it.svg`,
                         translate: 'Cancelado'
                     }
                 }
 
-                return options[this.order.status] || {color: 'bg-primary', svg: 'http://127.0.0.5:8000/svg/undraw_voice_control_ofo1.svg', translate: '' }
+                return options[this.order.status] || {
+                    color: 'bg-primary',
+                    svg: `${process.env.MIX_AWS_CDN_ENDPOINT}/images/undraw/undraw_voice_control_ofo1.svg`,
+                    translate: ''
+                }
             },
             cancelOrder() {
                 return this.order.status === 'waiting' || this.order.status === 'paid'
@@ -139,7 +143,7 @@
 
                 return obj[type]
             },
-            deleteCoupon(){
+            canceledOrder(){
                 swal({
                     title: 'Você tem certeza?',
                     text: "Ao fazer isso o pedido será cancelado junto com todos ingressos presentes nele!",
@@ -161,8 +165,7 @@
                                 })
 
                                 this.isLoading = false
-                                this.$emit('update')
-                                this.$emit('close')
+                                window.location.reload()
                             })
                             .catch((error) => {
                                 this.isLoading = false

@@ -50,7 +50,7 @@
 
             <div class="text-center mt-2" v-if="checkEntrances">
                 <figure class="mx-auto mb-4">
-                    <img src="https://cdn.z1lab.com.br/images/undraw/undraw_analysis_4jis.svg" alt="SVG" width="20%">
+                    <img :src="'images/undraw/undraw_analysis_4jis.svg'| aws_url" alt="SVG" width="20%">
                 </figure>
 
                 <div class="mb-4">

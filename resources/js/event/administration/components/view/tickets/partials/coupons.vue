@@ -45,7 +45,7 @@
 
             <div class="text-center mt-2" v-if="checkCoupons">
                 <figure class="mx-auto mb-4">
-                    <img src="http://127.0.0.5:8000/svg/undraw_printing_invoices_5r4r.svg" alt="SVG"
+                    <img :src="'images/undraw/undraw_printing_invoices_5r4r.svg' | aws_url" alt="SVG"
                          width="20%">
                 </figure>
 

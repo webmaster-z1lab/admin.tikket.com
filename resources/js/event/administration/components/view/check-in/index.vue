@@ -6,7 +6,7 @@
             <div class="col-12">
                 <div class="text-center mt-2">
                     <figure class="mx-auto mb-4">
-                        <img src="http://127.0.0.5:8000/svg/undraw_warning_cyit.svg" alt="SVG" width="40%">
+                        <img :src="'images/undraw/undraw_warning_cyit.svg' | aws_url" alt="SVG" width="40%">
                     </figure>
 
                     <div class="mb-4">
