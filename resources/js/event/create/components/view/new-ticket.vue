@@ -269,7 +269,7 @@
                                 min_buy: parseInt(this.ticket.quant_min),
                                 description: this.ticket.summary,
                                 starts_at: moment(this.ticket.starts_at, 'DD/MM/YYYY').format('YYYY-MM-DD'),
-                                lots: this.formatLot(this.ticket.lots),
+                                lots: this.formatLot(this.ticket.lots, this.ticket.free_ticket),
                                 _method: edit_ticket ? 'POST' : 'PATCH'
                             }
 
@@ -293,14 +293,14 @@
                     }
                 )
             },
-            formatLot(lots){
+            formatLot(lots, free){
                 let arr = []
 
                 for(let value in lots) {
                     arr.push({
                         amount:  lots[value].amount,
                         finishes_at: moment(lots[value].finishes_at, 'DD/MM/YYYY').format('YYYY-MM-DD'),
-                        value: lots[value].value
+                        value: !free ? lots[value].value : null
                     })
                 }
 
