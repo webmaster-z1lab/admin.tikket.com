@@ -1,12 +1,14 @@
 @extends('layouts.default-external')
 
 @section('content')
-    <div class="container-fluid">
+    <div id="vue-event-index" class="container-fluid">
+        <loading-component :is-loading="isLoading"></loading-component>
+
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
                     <div class="page-title-right">
-                        <a href="{{route('event.create')}}" class="btn btn-primary">Criar Evento</a>
+                        <a href="javascript:;" class="btn btn-primary" @click="createEvent">Criar Evento</a>
                     </div>
 
                     <h4 class="page-title">Meus Eventos</h4>
@@ -47,22 +49,65 @@
                                             <th>Eventos</th>
                                             <th>Status</th>
                                             <th>Data de Início</th>
-                                            <th>Ingressos</th>
+                                            <th>Localização</th>
                                             <th class="text-center">Ações</th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr>
-                                            <td>asasas</td>
-                                            <td>1289804962</td>
-                                            <td>asssas</td>
-                                            <td>asssas</td>
-                                            <td class="table-action text-center">
-                                                <a href="" class="action-icon"> <i class="mdi mdi-eye"></i></a>
-                                                <a href="" class="action-icon"> <i class="mdi mdi-pencil"></i></a>
-                                                <a href="javascript:;" class="action-icon"> <i class="mdi mdi-delete"></i></a>
-                                            </td>
-                                        </tr>
+                                        @forelse($events_active as $event_active)
+                                            <tr>
+                                                <td>{{$event_active->relationships->event->attributes->name}}</td>
+                                                <td>{{$event_active->relationships->event->attributes->status}}</td>
+                                                <td>{{$event_active->relationships->event->attributes->starts_at}}</td>
+                                                <td>{{$event_active->relationships->event->attributes->address ? $event_active->relationships->event->attributes->address->formatted : '-'}}
+                                                </td>
+                                                @can('admin', $event_active->relationships->event->id)
+                                                    <td class="table-action text-center">
+                                                        <a href="javascript:;" class="action-icon" @click="editEvent({{ json_encode($event_active->relationships->event) }})">
+                                                            <i class="mdi mdi-pencil"></i>
+                                                        </a>
+                                                        @if(!$event_active->relationships->event->attributes->is_locked && $event_active->attributes->type === 'master')
+                                                            <a href="javascript:;" class="action-icon"
+                                                               @click="deleteEvent({{ json_encode($event_active->relationships->event) }})">
+                                                                <i class="mdi mdi-delete"></i>
+                                                            </a>
+                                                        @endif
+                                                    </td>
+                                                @elsecan('pdv', $event_active->relationships->event->id)
+                                                    <td class="table-action text-center">
+                                                        <a href="{{route('event.order-manual', $event_active->relationships->event->id)}}" class="btn btn-primary btn-sm">
+                                                            PDV
+                                                        </a>
+                                                    </td>
+                                                @elsecan('checkIn', $event_active->relationships->event->id)
+                                                    <td class="table-action text-center">
+                                                        <a href="javascript:;" class="btn btn-primary btn-sm">
+                                                            Check-In
+                                                        </a>
+                                                    </td>
+                                                @endcan
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="5">
+                                                    <div class="text-center mt-2">
+                                                        <figure class="mx-auto mb-4">
+                                                            <img src="{{ getenv('AWS_CDN_ENDPOINT') }}/images/undraw/undraw_schedule_pnbk.svg" alt="SVG" width="20%">
+                                                        </figure>
+
+                                                        <div class="mb-4">
+                                                            <h1 class="h3"><strong>Nenhum Evento Futuro</strong></h1>
+
+                                                            <p class="h5">Clique abaixo e adicione um evento, ficaremos muito felizes em fazer parte do seu evento.</p>
+
+                                                            <button type="button" @click="createEvent" class="btn btn-icon btn-primary mt-2">
+                                                                Adicionar Evento
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endforelse
                                         </tbody>
                                     </table>
                                 </div>
@@ -72,23 +117,56 @@
                                     <table class="table table-striped table-centered mb-0">
                                         <thead>
                                         <tr>
-                                            <th>Empresa</th>
-                                            <th>Documento</th>
-                                            <th>Data de Criação</th>
+                                            <th>Eventos</th>
+                                            <th>Status</th>
+                                            <th>Data de Início</th>
+                                            <th>Localização</th>
                                             <th class="text-center">Ações</th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr>
-                                            <td>asasas</td>
-                                            <td>1289804962</td>
-                                            <td>asssas</td>
-                                            <td class="table-action text-center">
-                                                <a href="" class="action-icon"> <i class="mdi mdi-eye"></i></a>
-                                                <a href="" class="action-icon"> <i class="mdi mdi-pencil"></i></a>
-                                                <a href="javascript:;" class="action-icon"> <i class="mdi mdi-delete"></i></a>
-                                            </td>
-                                        </tr>
+                                        @forelse($events_past as $event_past)
+                                            <tr>
+                                                <td>{{$event_past->relationships->event->attributes->name}}</td>
+                                                <td>{{$event_past->relationships->event->attributes->status}}</td>
+                                                <td>{{$event_past->relationships->event->attributes->starts_at}}</td>
+                                                <td>{{$event_active->relationships->event->attributes->address ? $event_active->relationships->event->attributes->address->formatted : '-'}}
+                                                </td>
+                                                @can('admin', $event_active->relationships->event->id)
+                                                    <td class="table-action text-center">
+                                                        <a href="javascript:;" class="action-icon" @click="editEvent({{ json_encode($event_past->relationships->event) }})">
+                                                            <i class="mdi mdi-pencil"></i>
+                                                        </a>
+                                                        @if(!$event_active->relationships->event->attributes->is_locked && $event_active->attributes->type === 'master')
+                                                            <a href="javascript:;" class="action-icon"
+                                                               @click="deleteEvent({{ json_encode($event_active->relationships->event) }})">
+                                                                <i class="mdi mdi-delete"></i>
+                                                            </a>
+                                                        @endif
+                                                    </td>
+                                                @endcan
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="5">
+                                                    <div class="text-center mt-2">
+                                                        <figure class="mx-auto mb-4">
+                                                            <img src="{{ getenv('AWS_CDN_ENDPOINT') }}/images/undraw/undraw_events_2p66.svg" alt="SVG" width="20%">
+                                                        </figure>
+
+                                                        <div class="mb-4">
+                                                            <h1 class="h3"><strong>Nenhum Evento Passado</strong></h1>
+
+                                                            <p class="h5">Clique abaixo e adicione um evento, ficaremos muito felizes em fazer parte do seu evento.</p>
+
+                                                            <button type="button" @click="createEvent" class="btn btn-icon btn-primary mt-2">
+                                                                Adicionar Evento
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endforelse
                                         </tbody>
                                     </table>
                                 </div>
@@ -100,3 +178,8 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script src="{{ mix("js/event/my-events/main.js") }}"></script>
+@endpush
+

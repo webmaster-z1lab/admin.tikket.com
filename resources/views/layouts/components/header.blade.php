@@ -11,25 +11,23 @@
                     <span class="account-user-avatar">
                         <img :src="user.avatar" :alt="`Foto de ${user.name}`" class="rounded-circle">
                     </span>
+
                     <span>
                         <span class="account-user-name">@{{ user.name }}</span>
                         <span class="account-position">@{{ scheduleGreetings }}</span>
                     </span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
-                    <!-- item-->
-                    <a :href="`${urlSite}/usuario/perfil`" class="dropdown-item notify-item">
+                    <a href="{{ config('app.domains.main_site') }}/usuario/perfil" class="dropdown-item notify-item">
                         <i class="mdi mdi-account-circle mr-1"></i>
                         <span>Meu perfil</span>
                     </a>
 
-                    <!-- item-->
-                    <a href="#" class="dropdown-item notify-item">
+                    <a href="{{ config('app.domains.main_site') }}/meus-ingressos" class="dropdown-item notify-item">
                         <i class="fas fa-ticket-alt mr-1"></i>
                         <span>Meus ingressos</span>
                     </a>
 
-                    <!-- item-->
                     <a href="javascript:void(0);" class="dropdown-item notify-item" @click="logoutSubmit">
                         <i class="mdi mdi-logout mr-1"></i>
                         <span>Sair</span>
