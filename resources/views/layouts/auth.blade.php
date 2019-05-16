@@ -15,15 +15,15 @@
     <meta name="csrf-token" content="{{csrf_token()}}">
     {!! \Meta::tag('csrf-token', csrf_token()) !!}
 
-    <link rel="shortcut icon" href="{{ getenv('AWS_CDN_ENDPOINT') }}/images/tikket/ticket_gradient.png">
+    <link rel="shortcut icon" href="{{ config('theme.cdn_url') }}images/tikket/icon-xs.png">
     <link href="//fonts.googleapis.com/css?family=Poppins:300,400,500,600" rel="stylesheet">
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
           integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
-    <link rel="stylesheet" href="{{ getenv('AWS_CDN_ENDPOINT') }}/template/front/2.1.1/vendor/animate.css/animate.min.css">
-    <link rel="stylesheet" href="{{ getenv('AWS_CDN_ENDPOINT') }}/template/front/2.1.1/vendor/slick-carousel/slick/slick.css">
-    <link rel="stylesheet" href="{{ getenv('AWS_CDN_ENDPOINT') }}/template/front/2.1.1/css/theme-purple.min.css">
+    <link rel="stylesheet" href="{{ config('theme.cdn_url') }}template/front/2.1.1/vendor/animate.css/animate.min.css">
+    <link rel="stylesheet" href="{{ config('theme.cdn_url') }}template/front/2.1.1/vendor/slick-carousel/slick/slick.css">
+    <link rel="stylesheet" href="{{ config('theme.cdn_url') }}template/front/2.1.1/css/theme-purple.min.css">
 
     @stack('stylesheet')
 {{--
@@ -53,15 +53,15 @@
         </div>
     </div>
 </main>
-<script src="{{ getenv('AWS_CDN_ENDPOINT') }}/template/front/2.0.2/vendor/jquery/dist/jquery.min.js"></script>
-<script src="{{ getenv('AWS_CDN_ENDPOINT') }}/template/front/2.0.2/vendor/jquery-migrate/dist/jquery-migrate.min.js"></script>
-<script src="{{ getenv('AWS_CDN_ENDPOINT') }}/template/front/2.0.2/vendor/popper.js/dist/umd/popper.min.js"></script>
-<script src="{{ getenv('AWS_CDN_ENDPOINT') }}/template/front/2.0.2/vendor/bootstrap/bootstrap.min.js"></script>
+<script src="{{ config('theme.cdn_url') }}template/front/2.0.2/vendor/jquery/dist/jquery.min.js"></script>
+<script src="{{ config('theme.cdn_url') }}template/front/2.0.2/vendor/jquery-migrate/dist/jquery-migrate.min.js"></script>
+<script src="{{ config('theme.cdn_url') }}template/front/2.0.2/vendor/popper.js/dist/umd/popper.min.js"></script>
+<script src="{{ config('theme.cdn_url') }}template/front/2.0.2/vendor/bootstrap/bootstrap.min.js"></script>
 
-<script src="{{ getenv('AWS_CDN_ENDPOINT') }}/template/front/2.0.2/vendor/slick-carousel/slick/slick.js"></script>
+<script src="{{ config('theme.cdn_url') }}template/front/2.0.2/vendor/slick-carousel/slick/slick.js"></script>
 
-<script src="{{ getenv('AWS_CDN_ENDPOINT') }}/template/front/2.0.2/js/theme.min.js"></script>
-<script src="{{ getenv('AWS_CDN_ENDPOINT') }}/template/front/2.0.2/vendor/slick-carousel/slick/slick.min.js"></script>
+<script src="{{ config('theme.cdn_url') }}template/front/2.0.2/js/theme.min.js"></script>
+<script src="{{ config('theme.cdn_url') }}template/front/2.0.2/vendor/slick-carousel/slick/slick.min.js"></script>
 
 {{--<script src="{{ mix('js/manifest.js') }}"></script>
 <script src="{{ mix('js/vendor.js') }}"></script>--}}

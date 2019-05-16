@@ -14,14 +14,14 @@
     {!! \Meta::tag('csrf-token', csrf_token()) !!}
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="{{ getenv('AWS_CDN_ENDPOINT') }}/images/tikket/ticket_gradient.png">
+    <link rel="shortcut icon" href="{{ config('theme.cdn_url') }}images/tikket/icon-xs.png">
 
     <!-- Load -->
-    <script defer src="{{ getenv('AWS_CDN_ENDPOINT') }}/vendor/pace/1.0.2/pace.min.js"></script>
-    <link href="{{ getenv('AWS_CDN_ENDPOINT') }}/vendor/pace/1.0.2/pace-theme-flash.css" rel="stylesheet">
+    <script defer src="{{ config('theme.cdn_url') }}vendor/pace/1.0.2/pace.min.js"></script>
+    <link href="{{ config('theme.cdn_url') }}vendor/pace/1.0.2/pace-theme-flash.css" rel="stylesheet">
 
-    <link href="{{ getenv('AWS_CDN_ENDPOINT') }}/template/hyper/1.4.0/css/icons.min.css" rel="stylesheet" type="text/css">
-    <link href="{{ getenv('AWS_CDN_ENDPOINT') }}/template/hyper/1.4.0/css/app.min.css" rel="stylesheet" type="text/css">
+    <link href="{{ config('theme.cdn_url') }}template/hyper/1.4.0/css/icons.min.css" rel="stylesheet" type="text/css">
+    <link href="{{ config('theme.cdn_url') }}template/hyper/1.4.0/css/app.min.css" rel="stylesheet" type="text/css">
 
     @stack('stylesheet')
 </head>
@@ -54,7 +54,7 @@
         </div>
     </div>
 </div>
-<script src="{{ getenv('AWS_CDN_ENDPOINT') }}/template/hyper/1.4.0/js/app.min.js"></script>
+<script src="{{ config('theme.cdn_url') }}template/hyper/1.4.0/js/app.min.js"></script>
 
 @stack('scripts')
 </body>

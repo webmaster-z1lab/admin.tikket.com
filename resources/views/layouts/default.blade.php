@@ -10,18 +10,18 @@
     {!! \Meta::tags() !!}
     {!! \Meta::tag('csrf-token', csrf_token()) !!}
 
-    <link rel="shortcut icon" href="{{ getenv('AWS_CDN_ENDPOINT') }}/images/tikket/ticket_gradient.png">
+    <link rel="shortcut icon" href="{{ config('theme.cdn_url') }}images/tikket/icon-xs.png">
 
-    <script defer src="{{ getenv('AWS_CDN_ENDPOINT') }}/vendor/pace/1.0.2/pace.min.js"></script>
-    <link href="{{ getenv('AWS_CDN_ENDPOINT') }}/vendor/pace/1.0.2/pace-theme-flash.css" rel="stylesheet">
+    <script defer src="{{ config('theme.cdn_url') }}vendor/pace/1.0.2/pace.min.js"></script>
+    <link href="{{ config('theme.cdn_url') }}vendor/pace/1.0.2/pace-theme-flash.css" rel="stylesheet">
 
     <link href="//fonts.googleapis.com/css?family=Poppins:300,400,500,600" rel="stylesheet">
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
           integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
-    <link href="{{ getenv('AWS_CDN_ENDPOINT') }}/template/hyper/1.4.0/css/icons.min.css" rel="stylesheet" type="text/css">
-    <link href="{{ getenv('AWS_CDN_ENDPOINT') }}/template/hyper/1.4.0/css/app.min.css" rel="stylesheet" type="text/css">
+    <link href="{{ config('theme.cdn_url') }}template/hyper/1.4.0/css/icons.min.css" rel="stylesheet" type="text/css">
+    <link href="{{ config('theme.cdn_url') }}template/hyper/1.4.0/css/app.min.css" rel="stylesheet" type="text/css">
 
     @stack('stylesheet')
     @stack('defer-scripts')
@@ -47,7 +47,7 @@
 
 @routes()
 
-<script src="{{ getenv('AWS_CDN_ENDPOINT') }}/template/hyper/1.4.0/js/app.min.js"></script>
+<script src="{{ config('theme.cdn_url') }}template/hyper/1.4.0/js/app.min.js"></script>
 
 @stack('scripts')
 </body>

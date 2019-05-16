@@ -2,11 +2,11 @@
     <div class="left-side-menu">
         <div class="slimscroll-menu">
             <a href="/" class="logo text-center">
-                <span class="logo-lg" style="font-size: 2.25rem; font-weight: 700; color: white">
-                    <i class="fas fa-ticket-alt mr-1"></i> Tikket
+                <span class="logo-lg">
+                    <img src="https://d35c048n9fix3e.cloudfront.net/images/tikket/logo-white.svg" alt="Logo Tikket" width="150px">
                 </span>
-                    <span class="logo-sm" style="font-size: 2.25rem; font-weight: 700; color: white">
-                    <i class="fas fa-ticket-alt mr-1"></i>
+                <span class="logo-sm">
+                    <img src="https://d35c048n9fix3e.cloudfront.net/images/tikket/icon-white.svg" alt="Logo Tikket" width="45px">
                 </span>
             </a>
 
