@@ -132,6 +132,10 @@ return [
 
     'domains' => [
         'main_site' => env('MAIN_SITE', 'http://127.0.0.1:8000'),
+        'api'     => env('API_ENDPOINT', 'http://127.0.0.2:8000'),
+        'oauth'   => env('AUTH_SERVER', 'http://127.0.0.3:8000'),
+        'payment' => env('API_PAYMENT', 'http://127.0.0.4:8000'),
+        'admin'   => env('ADMIN_SITE', 'http://127.0.0.5:8000'),
     ],
 
     'cdn_url' => str_finish(env('AWS_CDN_ENDPOINT'), '/'),

@@ -65,7 +65,7 @@ class ApiService
     {
         $this->resource = $resource;
         $this->method = $method;
-        $this->api = str_finish(getenv('API_ENDPOINT'), '/') . 'api/' . getenv('API_VERSION') . '/';
+        $this->api = str_finish(config('app.domains.api'), '/') . 'api/' . getenv('API_VERSION') . '/';
 
         $this->setHeaders($headers);
         $this->setBody($body);
