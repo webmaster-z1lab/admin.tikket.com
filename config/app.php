@@ -138,6 +138,11 @@ return [
         'admin'   => env('ADMIN_SITE', 'http://127.0.0.5:8000'),
     ],
 
+    'api_version' => [
+        'core'  => env('API_VERSION', 'v1'),
+        'oauth' => env('AUTH_SERVER_VERSION', 'v1'),
+    ],
+
     'cdn_url' => str_finish(env('AWS_CDN_ENDPOINT'), '/'),
 
     /*
