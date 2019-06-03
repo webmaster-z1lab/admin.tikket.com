@@ -44,11 +44,11 @@
                     </div>
 
                     <div class="form-group" :class="ticket.free_ticket ? 'col-md-3' : 'col-md-4'">
-                        <label class="col-form-label"> Data de Início <span class="text-danger">*</span></label>
+                        <label class="col-form-label"> Início das Vendas<span class="text-danger">*</span></label>
                         <the-mask class="form-control" type="text" name="start_date" placeholder="##/##/####"
                                   :class="errors.has('start_date') ? 'is-invalid' : ''"
-                                  v-validate="`required|date_format:dd/MM/yyyy|date_before:${event.attributes.starts_at}|today`"
-                                  data-vv-as="Data de Início" :masked="true" :mask="'##/##/####'"
+                                  v-validate="`required|date_format:dd/MM/yyyy|date_before:${event.attributes.starts_at}|today_off_time`"
+                                  data-vv-as="Início das Vendas" :masked="true" :mask="'##/##/####'"
                                   v-model="ticket.starts_at">
                         </the-mask>
                         <div v-show="errors.has('start_date')" class="invalid-feedback">
@@ -57,11 +57,11 @@
                     </div>
 
                     <div class="form-group col-md-3" v-if="ticket.free_ticket">
-                        <label class="col-form-label"> Data de Final <span class="text-danger">*</span></label>
+                        <label class="col-form-label"> Fim das Vendas <span class="text-danger">*</span></label>
                         <the-mask class="form-control" type="text" name="end_at" placeholder="##/##/####"
                                   :class="errors.has('end_at') ? 'is-invalid' : ''"
                                   v-validate="`required|date_format:dd/MM/yyyy|date_before:${event.attributes.starts_at}|date_after:${ticket.starts_at}`"
-                                  data-vv-as="'Data de Final'" :masked="true" :mask="'##/##/####'"
+                                  data-vv-as="'Fim das Vendas'" :masked="true" :mask="'##/##/####'"
                                   v-model="ticket.lots[0].finishes_at"/>
                         <div v-show="errors.has('end_at')" class="invalid-feedback">
                             {{ errors.first('end_at') }}
@@ -106,24 +106,24 @@
                                 </div>
                             </div>
                             <div class="form-group col-md-3" v-if="index <= 0">
-                                <label class="col-form-label"> Data de Final <span class="text-danger">*</span></label>
+                                <label class="col-form-label"> Fim das Vendas <span class="text-danger">*</span></label>
                                 <the-mask class="form-control" type="text" :name="`end_at-${index}`"
                                           placeholder="##/##/####"
                                           :class="errors.has(`end_at-${index}`) ? 'is-invalid' : ''"
                                           v-validate="`required|date_format:dd/MM/yyyy|date_before:${event.attributes.starts_at}|date_after:${ticket.starts_at}`"
-                                          data-vv-as="'Data de Final'" :masked="true" :mask="'##/##/####'"
+                                          data-vv-as="'Fim das Vendas'" :masked="true" :mask="'##/##/####'"
                                           v-model="lot.finishes_at"/>
                                 <div v-show="errors.has(`end_at-${index}`)" class="invalid-feedback">
                                     {{ errors.first(`end_at-${index}`) }}
                                 </div>
                             </div>
                             <div class="form-group col-md-3" v-else>
-                                <label class="col-form-label"> Data de Final <span class="text-danger">*</span></label>
+                                <label class="col-form-label"> Fim das Vendas <span class="text-danger">*</span></label>
                                 <the-mask class="form-control" type="text" :name="`end_at-${index}`"
                                           placeholder="##/##/####"
                                           :class="errors.has(`end_at-${index}`) ? 'is-invalid' : ''"
                                           v-validate="`required|date_format:dd/MM/yyyy|date_before:${event.attributes.starts_at}|date_after:${ticket.lots[(index - 1)].finishes_at}`"
-                                          data-vv-as="'Data de Final'" :masked="true" :mask="'##/##/####'"
+                                          data-vv-as="'Fim das Vendas'" :masked="true" :mask="'##/##/####'"
                                           v-model="lot.finishes_at"/>
                                 <div v-show="errors.has(`end_at-${index}`)" class="invalid-feedback">
                                     {{ errors.first(`end_at-${index}`) }}
@@ -132,7 +132,7 @@
                             <div class="form-group col-md-3">
                                 <label class="col-form-label"> Valor do Ingresso <span class="text-danger">*</span></label>
                                 <money class="form-control" v-model="lot.value" v-bind="money_format"
-                                       v-validate="'required'" data-vv-as="Valor"
+                                       v-validate="`required|min_value:${tx_min}`" data-vv-as="Valor"
                                        :class="errors.has(`ticket_value-${index}`) ? 'is-invalid' : ''"
                                        :name="`ticket_value-${index}`"/>
                                 <div v-show="errors.has(`ticket_value-${index}`)" class="invalid-feedback">
@@ -140,8 +140,10 @@
                                 </div>
                             </div>
                             <div class="form-group col-md-2 align-self-center text-center" v-if="event.attributes.fee_is_hidden">
-                                <label class="col-form-label"> Valor Final</label>
-                                <h5 class="text-success">{{amount_ticket(lot.value).amount | currency}}</h5>
+                                <label class="col-form-label"> Você Recebe</label>
+                                <h5 class="text-success">
+                                    {{(lot.value - amount_ticket(lot.value).fee) | currency}} (tx: {{amount_ticket(lot.value).fee | currency }})
+                                </h5>
                             </div>
                             <div class="form-group col-md-2 align-self-center text-center" v-else>
                                 <label class="col-form-label"> Valor Final</label>
@@ -203,6 +205,7 @@
             Money
         },
         data: () => ({
+            tx_min: ((process.env.MIX_MIN_VALUE_FEE * 10 / 100) + 1),
             money_format: {
                 decimal: ',',
                 thousands: '.',

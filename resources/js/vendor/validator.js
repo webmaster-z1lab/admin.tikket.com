@@ -77,6 +77,33 @@ const today = {
     }
 };
 
+const todayOffTime = {
+    getMessage(field, args, data) {
+        return (data && data.message) || `O valor do campo ${field} deve ser maior que o momento atual.`;
+    },
+    validate(value, args) {
+        return moment().startOf('day') <= moment(value, 'DD/MM/YYYY')
+    }
+};
+
+const dateAfterOffTime = {
+    getMessage(field, args, data) {
+        return (data && data.message) || `O valor do campo ${field} deve ser maior que ${args}.`;
+    },
+    validate(value, args) {
+        return moment(value, 'DD/MM/YYYY') >= moment(args, 'DD/MM/YYYY')
+    }
+};
+
+const dateBeforeOffTime = {
+    getMessage(field, args, data) {
+        return (data && data.message) || `O valor do campo ${field} deve ser menor que ${args}.`;
+    },
+    validate(value, args) {
+        return moment(value, 'DD/MM/YYYY') <= moment(args, 'DD/MM/YYYY')
+    }
+};
+
 const dateAfter = {
     getMessage(field, args, data) {
         return (data && data.message) || `O valor do campo ${field} deve ser maior que ${args}.`;
@@ -102,5 +129,8 @@ Validator.extend('cpf', cpf);
 Validator.extend('document', document);
 Validator.extend('legal_age', legalAge);
 Validator.extend('today', today);
+Validator.extend('today_off_time', todayOffTime);
 Validator.extend('date_after', dateAfter);
 Validator.extend('date_before', dateBefore);
+Validator.extend('date_after_off_time', dateAfterOffTime);
+Validator.extend('date_before_off_time', dateBeforeOffTime);

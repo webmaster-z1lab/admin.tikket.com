@@ -89,13 +89,12 @@
                             <hr>
                             <p class="mb-0">Imagens com dimensões diferentes serão redimensionadas.</p>
                         </div>
-                        <div class="text-right mt-3" v-if="attachment">
+                        <div class="text-right mt-3" v-if="event.relationships.image">
                             <button type="button" class="btn btn-primary btn-sm" @click="clickUpload">Trocar Imagem</button>
-                            <button type="button" class="btn btn-danger btn-sm" @click="removeAttachment">Remover</button>
                         </div>
                     </div>
                     <div class="col-md-6 align-self-center">
-                        <div class="form-group" @dragover.prevent @drop="onDrop" v-if="!attachment">
+                        <div class="form-group" @dragover.prevent @drop="onDrop" v-if="!event.relationships.image">
                             <div class="dropzone dz-clickable" :class="errors.has(uploadFieldName) ? 'is-invalid' : ''" @click="clickUpload">
                                 <div class="dz-message needsclick">
                                     <i class="h1 text-muted dripicons-cloud-upload"></i>
@@ -107,7 +106,8 @@
                             </div>
                         </div>
                         <div v-else>
-                            <img :src="attachment.imageURL" alt="" class="img" width="100%"/>
+                            <img :src="attachment.imageURL" alt="" class="img" width="100%" v-if="attachment"/>
+                            <img :src="event.relationships.image.attributes.cover" alt="" class="img" width="100%" v-else/>
                         </div>
 
                         <input type="file" :name="uploadFieldName" @change="onFileChange($event.target.name, $event.target.files)"
@@ -152,7 +152,7 @@
             VueEditor
         },
         data: () => ({
-            categories: {},
+            categories: [],
             attachment: null,
             uploadFieldName: 'cover',
             maxSize: 2048
@@ -193,9 +193,6 @@
                     }
                 }
             },
-            removeAttachment() {
-                this.attachment = null;
-            },
             createImage(file) {
                 let reader = new FileReader(),
                     me = this
@@ -223,7 +220,7 @@
                             params.set('starts_at', moment(this.event.attributes.starts_at, 'DD/MM/YYYY HH:mm').format('YYYY-MM-DD HH:mm'))
                             params.set('finishes_at', moment(this.event.attributes.finishes_at, 'DD/MM/YYYY HH:mm').format('YYYY-MM-DD HH:mm'))
                             params.append('is_public', _.isBoolean(this.event.attributes.is_public) ? this.event.attributes.is_public : false)
-                            params.append('cover', this.attachment.imageFile)
+                            if (this.attachment) params.append('cover', this.attachment.imageFile)
                             params.set('_method', 'PUT')
 
                             await sendUploadAPIPOST(`${process.env.MIX_API_VERSION_ENDPOINT}/events/${this.event.id}`, params)
@@ -250,12 +247,15 @@
                 e = e || event;
                 e.preventDefault();
             },false);
+
             window.addEventListener("drop",function(e){
                 e = e || event;
                 e.preventDefault();
             },false);
 
-            toSeek(`${process.env.MIX_API_VERSION_ENDPOINT}/categories`).then(response => this.categories = response.data).catch((error) => exceptionError(error))
+            toSeek(`${process.env.MIX_API_VERSION_ENDPOINT}/categories`)
+                .then(response => this.categories = response.data)
+                .catch((error) => exceptionError(error))
         }
     }
 </script>
