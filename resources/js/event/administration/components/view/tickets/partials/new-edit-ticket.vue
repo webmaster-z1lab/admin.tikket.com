@@ -46,12 +46,12 @@
                     </div>
 
                     <div class="form-group" :class="ticket.free_ticket ? 'col-md-3' : 'col-md-4'">
-                        <label class="col-form-label"> Data de Início <span class="text-danger">*</span></label>
+                        <label class="col-form-label"> Início das Vendas <span class="text-danger">*</span></label>
                         <the-mask class="form-control" type="text" name="start_date" placeholder="##/##/####"
                                   :class="errors.has('start_date') ? 'is-invalid' : ''"
                                   v-bind:disabled="inArr(['published', 'canceled', 'finalized'], event.attributes.status) && ticket.is_locked"
-                                  v-validate="`required|date_format:dd/MM/yyyy|date_before:${event.attributes.starts_at}|today`"
-                                  data-vv-as="Data de Início" :masked="true" :mask="'##/##/####'"
+                                  v-validate="`required|date_format:dd/MM/yyyy|date_before:${event.attributes.starts_at}|today_off_time`"
+                                  data-vv-as="Início das Vendas" :masked="true" :mask="'##/##/####'"
                                   v-model="ticket.starts_at">
                         </the-mask>
                         <div v-show="errors.has('start_date')" class="invalid-feedback">
@@ -60,11 +60,11 @@
                     </div>
 
                     <div class="form-group col-md-3" v-if="ticket.free_ticket">
-                        <label class="col-form-label"> Data de Final <span class="text-danger">*</span></label>
+                        <label class="col-form-label"> Fim das Vendas <span class="text-danger">*</span></label>
                         <the-mask class="form-control" type="text" name="end_at" placeholder="##/##/####"
                                   :class="errors.has('end_at') ? 'is-invalid' : ''"
                                   v-validate="`required|date_format:dd/MM/yyyy|date_before:${event.attributes.starts_at}|date_after:${ticket.starts_at}`"
-                                  data-vv-as="'Data de Final'" :masked="true" :mask="'##/##/####'"
+                                  data-vv-as="'Fim das Vendas'" :masked="true" :mask="'##/##/####'"
                                   v-bind:disabled="inArr(['published', 'canceled', 'finalized'], event.attributes.status)"
                                   v-model="ticket.lots[0].finishes_at"/>
                         <div v-show="errors.has('end_at')" class="invalid-feedback">
@@ -114,26 +114,26 @@
                                 </div>
                             </div>
                             <div class="form-group col-md-3" v-if="index <= 0">
-                                <label class="col-form-label"> Data de Final <span class="text-danger">*</span></label>
+                                <label class="col-form-label"> Fim das Vendas<span class="text-danger">*</span></label>
                                 <the-mask class="form-control" type="text" :name="`end_at-${index}`"
                                           placeholder="##/##/####"
                                           :class="errors.has(`end_at-${index}`) ? 'is-invalid' : ''"
                                           v-validate="`required|date_format:dd/MM/yyyy|date_before:${event.attributes.starts_at}|date_after:${ticket.starts_at}`"
                                           v-bind:disabled="inArr(['closed', 'expired', 'locked'], lot.status)"
-                                          data-vv-as="'Data de Final'" :masked="true" :mask="'##/##/####'"
+                                          data-vv-as="'Fim das Vendas'" :masked="true" :mask="'##/##/####'"
                                           v-model="lot.finishes_at"/>
                                 <div v-show="errors.has(`end_at-${index}`)" class="invalid-feedback">
                                     {{ errors.first(`end_at-${index}`) }}
                                 </div>
                             </div>
                             <div class="form-group col-md-3" v-else>
-                                <label class="col-form-label"> Data de Final <span class="text-danger">*</span></label>
+                                <label class="col-form-label"> Fim das Vendas <span class="text-danger">*</span></label>
                                 <the-mask class="form-control" type="text" :name="`end_at-${index}`"
                                           placeholder="##/##/####"
                                           :class="errors.has(`end_at-${index}`) ? 'is-invalid' : ''"
                                           v-validate="`required|date_format:dd/MM/yyyy|date_before:${event.attributes.starts_at}|date_after:${ticket.lots[(index - 1)].finishes_at}`"
                                           v-bind:disabled="inArr(['closed', 'expired', 'locked'], lot.status)"
-                                          data-vv-as="'Data de Final'" :masked="true" :mask="'##/##/####'"
+                                          data-vv-as="'Fim das Vendas'" :masked="true" :mask="'##/##/####'"
                                           v-model="lot.finishes_at"/>
                                 <div v-show="errors.has(`end_at-${index}`)" class="invalid-feedback">
                                     {{ errors.first(`end_at-${index}`) }}
