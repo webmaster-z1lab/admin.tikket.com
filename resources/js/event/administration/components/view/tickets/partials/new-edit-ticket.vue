@@ -142,7 +142,7 @@
                             <div class="form-group col-md-3">
                                 <label class="col-form-label"> Valor do Ingresso <span class="text-danger">*</span></label>
                                 <money class="form-control" v-model="lot.value" v-bind="money_format"
-                                       v-validate="'required|min_value:1'" data-vv-as="Valor"
+                                       v-validate="'required|min_value:${tx_min}'" data-vv-as="Valor"
                                        :class="errors.has(`ticket_value-${index}`) ? 'is-invalid' : ''"
                                        v-bind:disabled="lot.status !== 'open'"
                                        :name="`ticket_value-${index}`"/>
@@ -151,8 +151,10 @@
                                 </div>
                             </div>
                             <div class="form-group col-md-2 align-self-center text-center" v-if="event.attributes.fee_is_hidden">
-                                <label class="col-form-label"> Valor Final </label>
-                                <h5 class="text-success">{{amount_ticket(lot.value).amount | currency}}</h5>
+                                <label class="col-form-label"> Você Recebe</label>
+                                <h5 class="text-success">
+                                    {{(lot.value - amount_ticket(lot.value).fee) | currency}} (tx: {{amount_ticket(lot.value).fee | currency }})
+                                </h5>
                             </div>
                             <div class="form-group col-md-2 align-self-center text-center" v-else>
                                 <label class="col-form-label"> Valor Final </label>
@@ -213,6 +215,7 @@
             Money
         },
         data: () => ({
+            tx_min: ((process.env.MIX_MIN_VALUE_FEE * 10 / 100) + 1),
             money_format: {
                 decimal: ',',
                 thousands: '.',
