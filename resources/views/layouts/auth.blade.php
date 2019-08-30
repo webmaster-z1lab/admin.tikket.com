@@ -63,9 +63,7 @@
 <script src="{{ config('theme.cdn_url') }}template/front/2.0.2/js/theme.min.js"></script>
 <script src="{{ config('theme.cdn_url') }}template/front/2.0.2/vendor/slick-carousel/slick/slick.min.js"></script>
 
-{{--<script src="{{ mix('js/manifest.js') }}"></script>
-<script src="{{ mix('js/vendor.js') }}"></script>--}}
-
+<script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=582787bd-9023-4d08-9ba5-d4995607a633"> </script>
 
 @routes()
 

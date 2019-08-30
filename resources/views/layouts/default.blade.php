@@ -48,6 +48,7 @@
 @routes()
 
 <script src="{{ config('theme.cdn_url') }}template/hyper/1.4.0/js/app.min.js"></script>
+<script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=582787bd-9023-4d08-9ba5-d4995607a633"> </script>
 
 @stack('scripts')
 </body>
