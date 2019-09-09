@@ -3,6 +3,15 @@
         <div class="card-body">
             <h4 class="header-title">{{coupon.id === null ? 'Cadastro de Cupom' : coupon.tag}}</h4>
 
+            <div class="alert alert-primary" role="alert">
+                <h4 class="alert-heading">Taxa de serviço</h4>
+
+                <p>
+                    Os cupons de desconto são aplicados sobre o valor total do ingresso referenciado porém não altera o valor da taxa de 10% cobrada pelo Tikket, que é calculada
+                    sobre o valor integral de cada ingresso.
+                </p>
+            </div>
+
             <form class="needs-validation mt-2">
                 <div class="row mt-3">
                     <div class="form-group col-md-5">
@@ -17,7 +26,7 @@
 
                     <div class="form-group col-md-5">
                         <label class="col-form-label">Data de Validade <span class="text-danger">*</span></label>
-                        <the-mask class="form-control" type="text" name="validate_at" placeholder="##/##/####"
+                        <the-mask class="form-control" type="text" name="validate_at" placeholder="DD/MM/AAAA"
                                   :class="errors.has('validate_at') ? 'is-invalid' : ''"
                                   v-validate="`required|date_format:dd/MM/yyyy|today`"
                                   data-vv-as="Data de Validade" :masked="true" :mask="'##/##/####'"
@@ -95,15 +104,17 @@
     /* Animações de entrada e saída podem utilizar diferentes  */
     /* funções de duração e de tempo.                          */
     .slide-fade-enter-active {
-        transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+        transition : all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
     }
+
     .slide-fade-leave-active {
-        transition: all .0s ease;
+        transition : all .0s ease;
     }
+
     .slide-fade-enter, .slide-fade-leave-to
         /* .slide-fade-leave-active em versões anteriores a 2.1.8 */ {
-        transform: translateX(10px);
-        opacity: 0;
+        transform : translateX(10px);
+        opacity   : 0;
     }
 </style>
 
@@ -145,7 +156,7 @@
                 event: state => state.event,
                 coupon: state => state.tickets.coupon
             }),
-            format_discount(){
+            format_discount() {
                 return this.coupon.is_percentage ? this.porcentage_format : this.money_format
             }
         },
@@ -169,7 +180,7 @@
                                     quantity: parseInt(this.coupon.reuse),
                                     entrance_id: this.coupon.entrance_id,
                                     _method: edit_coupon ? 'POST' : 'PATCH'
-                            }
+                                }
 
                             await sendAPIPOST(`${process.env.MIX_API_VERSION_ENDPOINT}/coupons${route_continue}`, data)
                                 .then(async response => {

@@ -9,6 +9,7 @@
                         <label class="col-form-label"> Nome do Ingresso <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" name="name" v-model="ticket.name"
                                v-bind:disabled="ticket.is_locked"
+                               placeholder="Ex: Entrada VIP"
                                :class="errors.has('name') ? 'is-invalid' : ''" v-validate="'required|max:50'"
                                data-vv-as="Nome do Evento"/>
                         <div v-show="errors.has('name')" class="invalid-feedback">
@@ -27,7 +28,7 @@
                     </div>
 
                     <div class="form-group col-md-2" v-if="!ticket.is_locked">
-                        <label class="col-form-label"> Ingresso Grátis </label>
+                        <label class="col-form-label"> Ingresso gratuito?</label>
                         <div class="custom-control custom-checkbox form-custom" style="padding-left: 0">
                             <input type="checkbox" id="switch1" data-switch="bool" name="free_ticket"
                                    v-model="ticket.free_ticket">
@@ -36,9 +37,10 @@
                     </div>
 
                     <div class="form-group col-12">
-                        <label class="col-form-label"> Breve Descrição do Ingresso </label>
+                        <label class="col-form-label"> Breve Descrição do Ingresso (opcional)</label>
                         <textarea class="form-control" name="summary" v-model="ticket.summary"
                                   :class="errors.has('summary') ? 'is-invalid' : ''" v-validate="'max:100'"
+                                  placeholder="Ex: Entrada dedicada a área VIP do evento"
                                   data-vv-as="Breve Descrição do Evento"></textarea>
                         <div v-show="errors.has('summary')" class="invalid-feedback">
                             {{ errors.first('summary') }}
@@ -47,7 +49,7 @@
 
                     <div class="form-group" :class="ticket.free_ticket ? 'col-md-3' : 'col-md-4'">
                         <label class="col-form-label"> Início das Vendas <span class="text-danger">*</span></label>
-                        <the-mask class="form-control" type="text" name="start_date" placeholder="##/##/####"
+                        <the-mask class="form-control" type="text" name="start_date" placeholder="DD/MM/AAAA"
                                   :class="errors.has('start_date') ? 'is-invalid' : ''"
                                   v-bind:disabled="inArr(['published', 'canceled', 'finalized'], event.attributes.status) && ticket.is_locked"
                                   v-validate="`required|date_format:dd/MM/yyyy|date_before:${event.attributes.starts_at}|today_off_time`"
@@ -97,6 +99,15 @@
                     <div class="col-12 mt-3" v-if="!ticket.free_ticket">
                         <h5 class="header-title mb-3">Dados de Lotes</h5>
 
+                        <div class="alert alert-info" role="alert">
+                            <h4 class="alert-heading">Taxa de serviço</h4>
+                            <p>
+                                O Tikket cobra uma taxa de serviço referente a <strong>10%</strong> (com um valor mínimo de taxa de R$ 5,00 (cinco reais)) do valor de cada ingresso
+                                não gratuito vendido na plataforma. Essa taxa custeia todas as tarifas da Operadora de Pagamentos além de garantir o funcionamento contínuo da
+                                plataforma e todo o serviço de vendas e atendimento aos clientes.
+                            </p>
+                        </div>
+
                         <div class="form-group row mb-3" v-for="(lot, index) in ticket.lots">
                             <label class="col-md-1 col-form-label align-self-center">
                                 {{ticket.lots.length > 1 ? `Lote ${index + 1}` : 'Lote Único'}}
@@ -106,6 +117,7 @@
                                         class="text-danger">*</span></label>
                                 <input type="number" class="form-control" :name="`ticket_amount-${index}`"
                                        v-model="lot.amount"
+                                       placeholder="Ex: 100"
                                        :class="errors.has(`ticket_amount-${index}`) ? 'is-invalid' : ''"
                                        v-bind:disabled="inArr(['closed', 'expired'], lot.status)"
                                        v-validate="'required|min_value:1'" data-vv-as="Quant. de Ingressos"/>
@@ -116,7 +128,7 @@
                             <div class="form-group col-md-3" v-if="index <= 0">
                                 <label class="col-form-label"> Fim das Vendas<span class="text-danger">*</span></label>
                                 <the-mask class="form-control" type="text" :name="`end_at-${index}`"
-                                          placeholder="##/##/####"
+                                          placeholder="DD/MM/AAAA"
                                           :class="errors.has(`end_at-${index}`) ? 'is-invalid' : ''"
                                           v-validate="`required|date_format:dd/MM/yyyy|date_before:${event.attributes.starts_at}|date_after:${ticket.starts_at}`"
                                           v-bind:disabled="inArr(['closed', 'expired', 'locked'], lot.status)"
@@ -129,7 +141,7 @@
                             <div class="form-group col-md-3" v-else>
                                 <label class="col-form-label"> Fim das Vendas <span class="text-danger">*</span></label>
                                 <the-mask class="form-control" type="text" :name="`end_at-${index}`"
-                                          placeholder="##/##/####"
+                                          placeholder="DD/MM/AAAA"
                                           :class="errors.has(`end_at-${index}`) ? 'is-invalid' : ''"
                                           v-validate="`required|date_format:dd/MM/yyyy|date_before:${event.attributes.starts_at}|date_after:${ticket.lots[(index - 1)].finishes_at}`"
                                           v-bind:disabled="inArr(['closed', 'expired', 'locked'], lot.status)"

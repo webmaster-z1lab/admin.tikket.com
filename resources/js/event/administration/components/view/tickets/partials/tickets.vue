@@ -7,15 +7,6 @@
         </div>
         <h4 class="card-title mb-0">Ingressos</h4>
 
-        <!--<div class="form-group my-3">-->
-            <!--<label class="col-form-label" style="padding-top: 0;">Absolver Taxa?</label>-->
-
-            <!--<div class="custom-control custom-checkbox form-custom" style="padding-left: 0">-->
-                <!--<input type="checkbox" id="switch1" data-switch="bool" name="private" v-model="event.attributes.fee_is_hidden" @click="changeFee">-->
-                <!--<label for="switch1" data-on-label="Sim" data-off-label="Não"></label>-->
-            <!--</div>-->
-        <!--</div>-->
-
         <div class="table-responsive-sm mt-3">
             <table class="table table-striped table-centered mb-0">
                 <thead>

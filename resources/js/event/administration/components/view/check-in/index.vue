@@ -10,9 +10,9 @@
                     </figure>
 
                     <div class="mb-4">
-                        <h1 class="h3"><strong>Página em Contrução!</strong></h1>
+                        <h1 class="h3"><strong>Página em Construção!</strong></h1>
 
-                        <p class="h5">Desculpe, estamos trabalhando o mais rápido possível para poder lhe atender da melhor forma! Em breve tudo estará pronto.</p>
+                        <p class="h5">Estamos trabalhando o mais rápido possível para disponibilizar essa funcionalidade! Em breve tudo estará pronto.</p>
                     </div>
                 </div>
             </div>

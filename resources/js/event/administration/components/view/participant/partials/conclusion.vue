@@ -23,12 +23,12 @@
                                             <b>Tudo certo!</b>
                                         </p>
                                         <p class="text-muted font-13">
-                                            O pedido foi cadastrado com successo em nosso sistema! Obrigado por utilizar nosso sistema, para quaisquer dúvidas entrem em
-                                            <a class="text-dark" href="https://tawk.to/chat/5b789d4dafc2c34e96e7b2ec/default" target="_blank">contato conosco</a>.
+                                            O pedido foi cadastrado com successo em nosso sistema! Para quaisquer dúvidas entre em contato com a gente utilizando um dos nossos <a
+                                            class="text-dark" href="https://tikket.com.br/contato-e-suporte" target="_blank">canais de atendimento</a>.
                                         </p>
                                     </div>
                                 </div>
-                                <div class="col-sm-4 offset-sm-2">
+                                <div class="col-sm-4">
                                     <div class="mt-3 float-sm-right">
                                         <p class="font-13"><strong>Data do Pedido: </strong> &nbsp;&nbsp;&nbsp; {{now}}</p>
                                         <p class="font-13"><strong>Status do Pedido: </strong> <span class="badge badge-success float-right">Pago</span></p>
@@ -72,15 +72,15 @@
                                     <div class="clearfix pt-3">
                                         <h6 class="text-muted">Notas:</h6>
                                         <small>
-                                            Caso as informações do cliente tenham sido cadastradas no ingresso o mesmo terá todas as funcionalidades de
-                                            segurança do ingresso que nosso sistema oferece,
-                                            deve apenas ter uma conta ou se cadastrar com uma conta no nosso sistema com o mesmo email fornecido no ingresso.
+                                            Caso as informações do cliente tenham sido cadastradas no ingresso o mesmo terá todas as funcionalidades de segurança que
+                                            nosso sistema oferece, deve apenas ter uma conta ou se cadastrar com uma conta no nosso sistema com o mesmo email fornecido no ingresso.
                                         </small>
                                     </div>
                                 </div>
+
                                 <div class="col-sm-6">
                                     <div class="float-right mt-3 mt-sm-0">
-                                        <p><b>Valor Total: </b> <span class="float-right">{{((order.attributes.amount + order.attributes.fee) / 100) | currency}}</span></p>
+                                        <p><b>Valor Total: </b> <span class="float-right">{{(order.attributes.amount / 100) | currency}}</span></p>
                                     </div>
                                     <div class="clearfix"></div>
                                 </div>
@@ -88,7 +88,7 @@
 
                             <div class="d-print-none mt-4">
                                 <div class="text-right">
-                                    <button type="button" class="btn btn-info" onclick="window.print();return false;" >
+                                    <button type="button" class="btn btn-info" onclick="window.print();return false;">
                                         <i class="mdi mdi-printer"></i> Imprimir
                                     </button>
                                     <button type="button" class="btn btn-primary" @click="resetOrder()">Novo Pedido</button>
@@ -104,27 +104,31 @@
 
 <style>
     .logo-invoice {
-        font-size: 2.25rem;
-        font-weight: 700;
-        color: #6000a7;
+        font-size   : 2.25rem;
+        font-weight : 700;
+        color       : #6000A7;
     }
+
     @media print {
         body * {
-            visibility: hidden;
+            visibility : hidden;
         }
+
         #printable, #printable * {
-            visibility: visible;
+            visibility : visible;
         }
+
         #printable {
-            position: fixed;
-            top: 6rem;
-            left: 2rem;
+            position : fixed;
+            top      : 6rem;
+            left     : 2rem;
         }
     }
 </style>
 
 <script>
     import moment from 'moment'
+
     moment.locale('pt-br');
 
     import {toSeek} from "../../../../../../vendor/common";

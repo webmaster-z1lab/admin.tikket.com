@@ -10,11 +10,21 @@
                                 {{ item.entrance_name }} - {{ item.lot ? `Lote ${item.lot}` : '' }}
                             </p>
 
+                            <div class="alert alert-primary" role="alert">
+                                <h4 class="alert-heading">Informações do Cliente</h4>
+                                <p>
+                                    Caso as informações do cliente sejam cadastradas no ingresso o mesmo terá todas as funcionalidades de segurança que o Tikket oferece. Para acesso ao ingresso digital basta o cliente se cadastrar no nosso site utilizando as mesmas informações fornecidas no cadastro abaixo.
+                                </p>
+                            </div>
+
+
+
                             <form>
                                 <div class="form-group mb-3">
-                                    <label>Código do Ingresso <span class="text-danger">*</span></label>
+                                    <label>Código do Ingresso (utilizado para identificação na portaria) <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" :name="`code-${index}`"
                                            v-model="item.code" data-vv-as="Código do Ingresso"
+                                           placeholder="Ex: 123456789"
                                            :class="errors.has(`code-${index}`) ? 'is-invalid' : ''" v-validate="'required'">
                                     <div v-show="errors.has(`code-${index}`)" class="invalid-feedback">
                                         {{ errors.first(`code-${index}`) }}
@@ -22,8 +32,9 @@
                                 </div>
 
                                 <div class="form-group mb-3">
-                                    <label>Nome</label>
+                                    <label>Nome do cliente</label>
                                     <input type="text" class="form-control" :name="`name-${index}`" @change="validateAll(item, item.name)"
+                                           placeholder="Ex: João das Neves"
                                            v-model="item.name" data-vv-as="Nome"
                                            :class="errors.has(`name-${index}`) ? 'is-invalid' : ''" v-validate="`${item.validate_user}`">
                                     <div v-show="errors.has(`name-${index}`)" class="invalid-feedback">
@@ -32,8 +43,9 @@
                                 </div>
 
                                 <div class="form-group mb-3">
-                                    <label>Email</label>
+                                    <label>E-mail do cliente</label>
                                     <input type="email" class="form-control" :name="`email-${index}`" @change="validateAll(item, item.email)"
+                                           placeholder="Ex: joao@email.com.br"
                                            v-model="item.email" data-vv-as="Email"
                                            :class="errors.has(`email-${index}`) ? 'is-invalid' : ''" v-validate="`${item.validate_user}email`">
                                     <div v-show="errors.has(`email-${index}`)" class="invalid-feedback">
@@ -42,7 +54,7 @@
                                 </div>
 
                                 <div class="form-group mb-3">
-                                    <label>CPF</label>
+                                    <label>CPF do cliente</label>
                                     <the-mask class="form-control" type="text" :name="`document-${index}`" placeholder="000.000.000-00"
                                               @change="validateAll(item, item.document)" v-validate="`${item.validate_user}cpf`"
                                               data-vv-as="'CPF'" mask="###.###.###-##" v-model="item.document" :class="errors.has(`document-${index}`) ? 'is-invalid' : ''">

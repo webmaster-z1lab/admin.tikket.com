@@ -3,8 +3,9 @@
         <form class="needs-validation">
             <div class="row">
                 <div class="form-group col-12">
-                    <label class="col-form-label"> Nome do Evento <span class="text-danger">*</span></label>
+                    <label class="col-form-label"> Nome do Evento (máx. 100 caracteres) <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" name="name" v-model="event.attributes.name"
+                           placeholder="Ex: Festa da turma"
                            :class="errors.has('name') ? 'is-invalid' : ''" v-validate="'required|max:100'"
                            data-vv-as="Nome do Evento"/>
                     <div v-show="errors.has('name')" class="invalid-feedback">
@@ -13,8 +14,9 @@
                 </div>
 
                 <div class="form-group col-12">
-                    <label class="col-form-label"> Breve Descrição do Evento <span class="text-danger">*</span></label>
+                    <label class="col-form-label"> Breve Descrição do Evento (máx. 250 caracteres) <span class="text-danger">*</span></label>
                     <textarea class="form-control" name="summary" v-model="event.attributes.description"
+                              placeholder="Ex: Melhor festa do ano, com o melhor som da cidade, bebida liberada e muita gente animada."
                               :class="errors.has('summary') ? 'is-invalid' : ''" v-validate="'required|max:250'"
                               data-vv-as="Breve Descrição do Evento"></textarea>
                     <div v-show="errors.has('summary')" class="invalid-feedback">
@@ -44,7 +46,7 @@
 
                 <div class="form-group col-md-4">
                     <label class="col-form-label"> Data de Início <span class="text-danger">*</span></label>
-                    <the-mask class="form-control" type="text" name="start_date" placeholder="##/##/#### ##:##"
+                    <the-mask class="form-control" type="text" name="start_date" placeholder="DD/MM/AAAA HH:MM"
                               :class="errors.has('start_date') ? 'is-invalid' : ''"
                               v-validate="'required|date_format:dd/MM/yyyy HH:mm|today'"
                               data-vv-as="Data de Início" :masked="true" :mask="'##/##/#### ##:##'"
@@ -57,7 +59,7 @@
 
                 <div class="form-group col-md-4">
                     <label class="col-form-label"> Data de Término <span class="text-danger">*</span></label>
-                    <the-mask class="form-control" type="text" name="end_date" placeholder="##/##/#### ##:##"
+                    <the-mask class="form-control" type="text" name="end_date" placeholder="DD/MM/AAAA HH:MM"
                               :class="errors.has('end_date') ? 'is-invalid' : ''"
                               v-validate="`required|date_format:dd/MM/yyyy HH:mm|date_after:${event.attributes.starts_at}`"
                               data-vv-as="Data de Término" :masked="true" :mask="'##/##/#### ##:##'"
@@ -69,7 +71,16 @@
                 </div>
 
                 <div class="form-group col-12">
-                    <label class="col-form-label"> Descrição do Evento <span class="text-danger">*</span></label>
+                    <div class="alert alert-primary" role="alert">
+                        <h4 class="alert-heading">Descrição do Evento</h4>
+
+                        <p class="mb-0">
+                            Utilize esse campo para fornecer informações detalhadas sobre o seu evento, como informações de transporte no dia do evento, regras de idade, cardápio,
+                            carta de bebidas, mapa dos ambientes e tudo mais que considerar necessário para que os participantes tenham total conhecimento de tudo que a sua
+                            organização está oferecendo.
+                        </p>
+                    </div>
+
                     <div>
                         <vue-editor name="description" :class="errors.has('description') ? 'is-invalid' : ''"
                                     data-vv-as="Descrição do Evento" v-validate="'required'"
@@ -84,12 +95,14 @@
                     <div class="row">
                         <div class="col-md-6 align-self-center">
                             <div class="alert alert-primary" role="alert">
-                                <h4 class="alert-heading">Capa do Evento!</h4>
-                                <p>A dimensão recomendada é de 1600 x 838.</p>
-                                <p>Formato JPEG, WEBP, SVG ou PNG de no máximo 2MB.</p>
+                                <h4 class="alert-heading">Capa do Evento</h4>
+
+                                <p>A dimensão recomendada é de 1600 x 838 e os formatos aceitos são JPEG, WEBP, SVG ou PNG. O tamanho máximo do arquivo é de 2 mb.</p>
                                 <hr>
-                                <p class="mb-0">Imagens com dimensões diferentes serão redimensionadas.</p>
+                                <p class="mb-0">Imagens com dimensões diferentes da recomendada serão adaptadas. Os diversos formatos e dimensões utilizados pelo site serão gerados
+                                    automaticamente pelo nosso sistema.</p>
                             </div>
+
                             <div class="text-right mt-3" v-if="attachment">
                                 <button type="button" class="btn btn-primary btn-sm" @click="clickUpload">Trocar Imagem</button>
                                 <button type="button" class="btn btn-danger btn-sm" @click="removeAttachment">Remover</button>
@@ -118,6 +131,13 @@
                 </div>
             </div>
 
+            <div class="alert alert-info" role="alert">
+                <h4 class="alert-heading">Termos de uso do organizador</h4>
+                <p>Ao continuar você concorda com os nossos <a :href="getSiteUrl('termos-de-uso-organizador')" target="_blank">Termos de uso do
+                    organizador</a> e <a :href="getSiteUrl('privacidade-e-cookies')" target="_blank">política de privacidade e cookies</a> além de
+                    aceitar receber nossos e-mails com notificações e atualizações relacionadas ao seu evento.</p>
+            </div>
+
             <ul class="list-inline mb-2 mt-3 wizard">
                 <li class="next list-inline-item float-right">
                     <button type="button" class="btn btn-primary" @click="submit">Salvar e Continuar</button>
@@ -129,12 +149,12 @@
 
 <style>
     .dropzone.is-invalid {
-        border: 2px dashed #de6557;
-        background: #fff;
-        border-radius: 6px;
-        cursor: pointer;
-        min-height: 150px;
-        padding: 20px;
+        border        : 2px dashed #DE6557;
+        background    : #FFFFFF;
+        border-radius : 6px;
+        cursor        : pointer;
+        min-height    : 150px;
+        padding       : 20px;
     }
 </style>
 
@@ -168,7 +188,7 @@
         },
         methods: {
             ...mapActions(['changeEvent']),
-            onDrop: function(e) {
+            onDrop: function (e) {
                 e.stopPropagation();
                 e.preventDefault();
 
@@ -196,6 +216,9 @@
                         this.attachment = {imageFile, imageURL}
                     }
                 }
+            },
+            getSiteUrl(uri) {
+                return `${process.env.MIX_MAIN_SITE}/${uri}`
             },
             removeAttachment() {
                 this.attachment = null;
@@ -231,7 +254,7 @@
                             params.set('_method', this.start_event ? 'POST' : 'PUT')
 
                             await sendUploadAPIPOST(`${process.env.MIX_API_VERSION_ENDPOINT}/events${this.start_event ? '' : ('/' + this.event.id)}`, params)
-                                .then( async response => {
+                                .then(async response => {
                                     if (this.start_event) new LocalStorage('event__').setItem('id', response.data.data.id)
 
                                     await this.changeEvent(response.data.data)
@@ -255,14 +278,14 @@
             }
         },
         mounted() {
-            window.addEventListener("dragover",function(e){
+            window.addEventListener("dragover", function (e) {
                 e = e || event;
                 e.preventDefault();
-            },false);
-            window.addEventListener("drop",function(e){
+            }, false);
+            window.addEventListener("drop", function (e) {
                 e = e || event;
                 e.preventDefault();
-            },false);
+            }, false);
 
             toSeek(`${process.env.MIX_API_VERSION_ENDPOINT}/categories`).then(response => this.categories = response.data).catch((error) => exceptionError(error))
         }
